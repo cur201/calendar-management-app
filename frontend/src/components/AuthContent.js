@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { request } from "../axios_helper";
+import { request, setAuthToken } from "../axios_helper";
 
 export default class AuthContent extends React.Component {
     constructor(props) {
@@ -14,19 +14,21 @@ export default class AuthContent extends React.Component {
         request(
             "GET",
             "/message",
-            {}
-        ).then((response) => {
-            console.log("pass response");
-            console.log("Response data: ", response.data); 
-            if (Array.isArray(response.data)) { 
-                this.setState({data: response.data});
-            } else {
-                console.error("Response data is not an array.");
+            {}).then(
+            (response) => {
+                this.setState({data: response.data})
+            }).catch(
+            (error) => {
+                if (error.response.status === 401) {
+                    setAuthToken(null);
+                } else {
+                    this.setState({data: error.response.code})
+                }
+
             }
-        }).catch((error) => {
-            console.error("Error fetching data:", error);
-        });
+        );
     };
+
     render() {
         return (
             <div className="row justify-content-md-center">
@@ -47,6 +49,6 @@ export default class AuthContent extends React.Component {
                 </div>
             </div>
         );
-    };
-}
+      };
+    }
 

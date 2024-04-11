@@ -22,7 +22,7 @@ export default class LoginForm extends React.Component {
     };
 
     onSubmitLogin = (e) => {
-        this.state.onLogin(e, this.state.login, this.state.password);
+        this.state.onLogin(e, this.state.login, this.state.password)
 
     };
 
@@ -30,7 +30,7 @@ export default class LoginForm extends React.Component {
         this.state.onRegister(
             e, this.state.name, this.state.login, this.state.password
         )
-    }
+    };
 
     render() {
         return (
