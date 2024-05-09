@@ -8,15 +8,18 @@ import com.project.exceptions.AppException;
 import com.project.mappers.UserMapper;
 import com.project.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@ComponentScan
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -46,8 +49,13 @@ public class UserService {
 
         User user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
+        user.setVisible(1L);
 
         User savedUser = userRepository.save(user);
         return userMapper.toUserDto(user);
+    }
+
+    public List<User> getUsersByMeetingPlanId(Long meetingPlanId) {
+        return userRepository.findUsersByMeetingPlanId(meetingPlanId);
     }
 }

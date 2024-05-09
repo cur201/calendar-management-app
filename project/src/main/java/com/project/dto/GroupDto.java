@@ -6,14 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.sql.Time;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 @ComponentScan
-public class SignUpDto {
-    private String name;
-    private String login;
-    private char[] password;
-    private String role;
+public class GroupDto {
+    private Long id;
+    private Long meetingPlanId;
+    private Long leaderId;
+    private Time approveTime;
+    private Long visible;
 }

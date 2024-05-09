@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @Entity
-@Table(name = "app_user")
-public class User {
+@Table(name = "meeting_plan")
+public class MeetingPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +21,17 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "username", nullable = false)
-    private String login;
+    @Column(name = "duration", nullable = false)
+    private String duration;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "location", nullable = false)
+    private String location;
 
-    @Column(name = "role", nullable = false)
-    private String role;
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "owner_user_id", nullable = false)
+    private Long ownerUserId;
 
     @Column(name = "visible", nullable = false)
     private Long visible;

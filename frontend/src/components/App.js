@@ -1,7 +1,7 @@
-import './App.css'
+import './unauthenticated/App.css'
 import logo from '../logo.svg'
-import Header from './Header'
-import AppContent from './AppContent';
+import Header from './unauthenticated/Header'
+import AppContent from './unauthenticated/AppContent';
 
 function App() {
     return (

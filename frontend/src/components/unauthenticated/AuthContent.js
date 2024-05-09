@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { request, setAuthToken } from "../axios_helper";
+import { request, setAuthToken } from "../../axios_helper";
 
 export default class AuthContent extends React.Component {
     constructor(props) {

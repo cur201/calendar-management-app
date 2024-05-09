@@ -3,7 +3,9 @@ import WelcomeContent from './WelcomeContent';
 import AuthContent from './AuthContent';
 import LoginForm from './LoginForm';
 import Buttons from './Buttons';
-import { request, setAuthToken } from '../axios_helper';
+import { request, setAuthToken } from '../../axios_helper';
+import Navigator from '../common/Navigator';
+import MeetingPlan from '../common/MeetingPlan';
 
 export default class AppContent extends React.Component {
     
@@ -19,6 +21,7 @@ export default class AppContent extends React.Component {
     };
 
     logout = () => {
+        setAuthToken(null);
         this.setState({componentToShow: "welcome"});
     };
 
@@ -29,7 +32,7 @@ export default class AppContent extends React.Component {
             "/login",
             { login: username, password: password}
         ).then((Response) => {
-            this.setState({componentToShow: "message"});
+            this.setState({componentToShow: "navigator"});
             setAuthToken(Response.data.token);
         }).catch((error) => {
             setAuthToken(null);
@@ -37,14 +40,15 @@ export default class AppContent extends React.Component {
         });
     };
 
-    onRegister = (e, name, username, password) => {
+    onRegister = (e, name, username, password, role) => {
         e.preventDefault();
         request("POST",
             "/register",
             {
                 name: name, 
                 login: username, 
-                password: password
+                password: password,
+                role: role
             }
         ).then((Response) => {
             this.setState({componentToShow: "message"});
@@ -60,7 +64,8 @@ export default class AppContent extends React.Component {
             <div>
                 <Buttons login = {this.login} logout={this.logout}
                 />
-
+                {this.state.componentToShow === "navigator" && <Navigator/>}
+                {this.state.componentToShow === "meetingplan" && <MeetingPlan/>}
                 {this.state.componentToShow === "welcome" && <WelcomeContent/>}
                 {this.state.componentToShow === "message" && <AuthContent/>}
                 {this.state.componentToShow === "login" && <LoginForm onLogin={this.onLogin} onRegister={this.onRegister}/>}

@@ -5,30 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.ComponentScan;
 
+import java.sql.Time;
+
+@ComponentScan
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 @Entity
-@Table(name = "app_user")
-public class User {
+@Table(name = "group_tbl")
+public class GroupTbl {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "meeting_plan_id", nullable = false)
+    private Long meetingPlanId;
 
-    @Column(name = "username", nullable = false)
-    private String login;
+    @Column(name = "leader_id", nullable = false)
+    private Long leaderId;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "role", nullable = false)
-    private String role;
+    @Column(name = "approve_time", nullable = false)
+    private Time approveTime;
 
     @Column(name = "visible", nullable = false)
     private Long visible;
