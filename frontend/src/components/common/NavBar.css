@@ -1,0 +1,12 @@
+.nav-item {
+    box-sizing: border-box;
+    height: 3rem;
+    padding: 1rem 0;
+}
+
+.nav-item > .icon {
+    display: inline-block;
+    text-align: center;
+    width: 1.5rem;
+    padding-right: .5rem;
+}

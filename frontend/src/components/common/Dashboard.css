@@ -1,0 +1,14 @@
+.nav-container {
+    display: grid;
+    grid-template-columns: 300px auto;
+    grid-template-rows: 100vw;
+    height: 100vh;
+}
+
+.nav-container .nav-item{
+    color: white;
+}
+
+.nav-container > .nav-window-container{
+    border-radius: 10px;
+}
