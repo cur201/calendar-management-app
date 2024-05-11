@@ -1,21 +1,21 @@
-import './unauthenticated/App.css'
-import logo from '../logo.svg'
-import Header from './unauthenticated/Header'
-import AppContent from './unauthenticated/AppContent';
+import './common/App.css'
+import React from 'react';
+import  { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import LoginModal from './unauthenticated/LoginModal';
+import SignupModal from './unauthenticated/SignupModal'
+
 
 function App() {
     return (
-        <div>
-            <Header pageTitle = "Login" logoSrc={logo} />
-            <div className='container-fluid'>
-                <div className='row'>
-                    <div className='col'>
-                        <AppContent/>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<LoginModal />} />
+          <Route path="/signup" element={<SignupModal />} />
+        </Routes>
+      </Router>
     );
-}
+  }
+
 
 export default App;
