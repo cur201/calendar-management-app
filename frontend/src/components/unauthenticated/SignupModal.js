@@ -3,13 +3,6 @@ import { Link } from 'react-router-dom';
 import { Form, FormInput } from '../common/Form';
 
 
-FormInput.defaultProps = {
-    displayName: "Input",
-    name: "input",
-    type: "text",
-};
-
-
 export default class SignupModel extends React.Component {
     constructor(props) {
         super(props);
