@@ -11,15 +11,30 @@ export const FormInput = ({ displayName, name, type = "text" }) => {
 }
 
 
-export const Form = ({ name, content }) => {
-    return (
-        <div className='form-container'>
-            <h1>{name}</h1>
-            <div className='line-break'></div>
-            <form>
-                {content}
-            </form>
-        </div>
+export class Form extends React.Component {
+    constructor(props, name, content) {
+        super(props);
+        this.name = name
+        this.content = content
+    }
 
-    )
+    onSubmit = (e) => { };
+
+    _onSubmit = (e) => {
+        e.preventDefault();
+        this.onSubmit(e);
+    };
+
+    render() {
+        return (
+            <div className='form-container'>
+                <h1>{this.name}</h1>
+                <div className='line-break'></div>
+                <form onSubmit={this.onSubmit}>
+                    {this.content}
+                </form>
+            </div>
+
+        )
+    }
 }

@@ -1,18 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormInput } from '../common/Form';
+import withNavigate from '../common/Utils'
 
 
-export default class LoginModel extends React.Component {
+class _LoginModal extends Form {
     constructor(props) {
-        super(props);
-        this.state = {
-            username: "",
-            password: "",
-        }
-    }
-
-    render() {
         var content = (
             <div>
                 <FormInput displayName="Username" name="username" />
@@ -24,8 +16,19 @@ export default class LoginModel extends React.Component {
                 <span>Not registered? <Link to='/signup'>Create an account</Link></span>
             </div>
         )
-        return (
-            <Form name="Login" content={content} />
-        )
+        super(props, "Login", content);
+        this.state = {
+            username: "",
+            password: "",
+        }
     }
+
+    onSubmit = (e) => {
+        this.props.navigate("/dashboard");
+    };
 }
+
+
+const LoginModal = withNavigate(_LoginModal);
+
+export default LoginModal

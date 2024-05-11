@@ -1,19 +1,9 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormInput } from '../common/Form';
 
 
-export default class SignupModel extends React.Component {
+export default class SignupModel extends Form {
     constructor(props) {
-        super(props);
-        this.state = {
-            name: "",
-            username: "",
-            password: "",
-        }
-    }
-
-    render() {
         var content = (
             <div>
                 <FormInput displayName="Name" name="name" />
@@ -26,8 +16,15 @@ export default class SignupModel extends React.Component {
                 <span>Already have an account? <Link to='/login'>Login</Link></span>
             </div>
         )
-        return (
-            <Form name="Signup" content={content}/>
-        )
+        super(props, "Sign up", content);
+        this.state = {
+            name: "",
+            username: "",
+            password: "",
+        }
+    }
+
+    onSubmit = (e) => {
+        console.log("Sign up.")
     }
 }
