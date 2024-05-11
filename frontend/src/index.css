@@ -28,6 +28,7 @@ html {
   width: 100vw;
   background-image: url("./background.jpg");
   background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
 }
 
@@ -52,4 +53,11 @@ input, button{
 .primary-button {
   color: #353535;
   background-color: #ffd000;
+}
+
+.acrylic {
+  background-color: #fffb;
+  backdrop-filter: blur(20px);
+
+  color: white;
 }
