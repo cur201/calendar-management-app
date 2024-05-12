@@ -5,6 +5,7 @@ import com.project.entities.*;
 import com.project.mappers.GroupMapper;
 import com.project.mappers.MeetingMapper;
 import com.project.mappers.MeetingPlanMapper;
+import com.project.mappers.UserDtoUserDetailsMapper;
 import com.project.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/teacher")
 public class TeacherController {
 
     private final MeetingPlanService meetingPlanService;
@@ -26,21 +29,21 @@ public class TeacherController {
     private final GroupMapper groupMapper;
     private final GroupUserService groupUserService;
     private final MeetingService meetingService;
-    private final MeetingMapper meetingMapper;
     private final UserService userService;
+    private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
 
     @Autowired
     public TeacherController(MeetingPlanService meetingPlanService, MeetingPlanMapper meetingPlanMapper,
                              GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
-                             MeetingService meetingService, MeetingMapper meetingMapper, UserService userService) {
+                             MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper) {
         this.meetingPlanService = meetingPlanService;
         this.meetingPlanMapper = meetingPlanMapper;
         this.groupService = groupService;
         this.groupMapper = groupMapper;
         this.groupUserService = groupUserService;
         this.meetingService = meetingService;
-        this.meetingMapper = meetingMapper;
         this.userService = userService;
+        this.userDtoUserDetailsMapper = userDtoUserDetailsMapper;
     }
 
 
@@ -48,14 +51,16 @@ public class TeacherController {
 
     ///-----------------------------------------------Meeting Plan API------------------------------------///
     @GetMapping("/get-plans")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<MeetingPlan>> getMeetingPlans()
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
-            UserDto userDetails = (UserDto) authentication.getPrincipal();
-            Long userId = userDetails.getId();
+        System.out.println("Print authen: " + authentication);
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long userId = userDto.getId();
+            System.out.println("Teacher ID: " + userId);
             List<MeetingPlan> meetingPlans = meetingPlanService.findMeetingPlanByOwnerUserId(userId);
             return new ResponseEntity<>(meetingPlans, HttpStatus.OK);
         } else {
@@ -64,14 +69,15 @@ public class TeacherController {
     }
 
     @PostMapping("/add-meeting-plan")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> addMeetingPlan(@RequestBody MeetingPlanDto meetingPlanDto){
 
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
-                UserDto userDetails = (UserDto) authentication.getPrincipal();
-                Long userId = userDetails.getId();
+            if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+                Long userId = userDto.getId();
                 meetingPlanDto.setOwnerUserId(userId);
                 MeetingPlanDto newMeetingPlan = meetingPlanService.addMeetingPlan(meetingPlanDto);
                 MeetingPlan meetingPlan = meetingPlanMapper.toMeetingPlan(newMeetingPlan);
@@ -87,7 +93,7 @@ public class TeacherController {
     }
 
     @PostMapping("/update-meeting-plan")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> updateMeetingPlan(@RequestBody UpdateMeetingPlanDto updateMeetingPlanDto){
         try{
             UpdateMeetingPlanDto updateMeetingPlan = meetingPlanService.updateMeetingPlan(updateMeetingPlanDto);
@@ -100,7 +106,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/delete-meeting-plan/{id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> deleteMeetingPlan(@PathVariable Long id){
         try{
             MeetingPlan deleteMeetingPlan = meetingPlanService.deleteMeetingPlan(id);
@@ -113,25 +119,27 @@ public class TeacherController {
 
 
     ///------------------------------------------Group API-----------------------------------------///
+
+    //TODO::Fix to apply to only teacher acc
     @GetMapping("/get-group-by-owner-user-id/{id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public List<GroupTbl> getGroupsByOwnerUserId(@PathVariable("id") Long userId) {
         return groupService.getGroupByOwnerUserId(userId);
     }
 
     @GetMapping("/get-group-by-meeting-plan-id/{id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public List<GroupTbl> getGroupByMeetingPlanId(@PathVariable("id") Long meetingPlanId) {
         return groupService.getGroupByMeetingPlanId(meetingPlanId);
     }
 
     @PostMapping("/add-group")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> addGroup(@RequestBody GroupDto groupDto){
 
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
+            if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
                 GroupDto newGroup = groupService.addGroup(groupDto);
                 GroupTbl groupTbl = groupMapper.toGroup(newGroup);
                 return ResponseEntity.created(URI.create("/meeting-plans/" + groupTbl.getId())).body(newGroup);
@@ -146,7 +154,7 @@ public class TeacherController {
     }
 
     @PostMapping("/update-group")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> updateGroup(@RequestBody GroupDto updateGroupDto){
         try{
             GroupDto updateGroup = groupService.updateGroup(updateGroupDto);
@@ -159,7 +167,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/delete-group/{id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> deleteGroup(@PathVariable Long id){
         try{
             GroupTbl deleteGroup = groupService.deleteGroup(id);
@@ -197,29 +205,31 @@ public class TeacherController {
 
 
     ///--------------------------------------Meeting API------------------------------------------///
+    //TODO::Add get all meeting for teacher API
+    //TODO::Apply to only teacher acc
     @GetMapping("/get-meeting-by-owner-user-id/{userId}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<Meeting>> getMeetingsByOwnerUserId(@PathVariable("userId") Long userId) {
         List<Meeting> meetings = meetingService.findMeetingByOwnerUserId(userId);
         return ResponseEntity.ok(meetings);
     }
 
     @GetMapping("/get-meeting-by-group-id/{groupId}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<Meeting>> getMeetingsByGroupId(@PathVariable("groupId") Long groupId) {
         List<Meeting> meetings = meetingService.findMeetingByGroupId(groupId);
         return ResponseEntity.ok(meetings);
     }
 
     @PostMapping("/add-meeting")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<Meeting> addMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting newMeeting = meetingService.addMeeting(meetingDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMeeting);
     }
 
     @PostMapping("/update-meeting")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting updatedMeeting = meetingService.updateMeeting(meetingDto);
         if (updatedMeeting != null) {
@@ -230,7 +240,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/delete-meeting/{meetingId}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<String> deleteMeeting(@PathVariable("meetingId") Long meetingId) {
         boolean deleted = meetingService.deleteMeeting(meetingId);
         if (deleted) {
@@ -244,7 +254,7 @@ public class TeacherController {
     //TODO::Finish add, delete and search Student API
     ///--------------------------------------------Student API---------------------------------///
     @GetMapping("/get-user-by-meeting-plan-id/{meetingPlanId}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<User>> getUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
         List<User> users = userService.getUsersByMeetingPlanId(meetingPlanId);
         if (users.isEmpty()) {

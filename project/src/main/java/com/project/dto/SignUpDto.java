@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan
 public class SignUpDto {
     private String name;
-    private String login;
+    private String username;
     private char[] password;
     private String role;
 }

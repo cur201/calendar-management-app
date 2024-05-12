@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByLogin(String login);
+    Optional<User> findByUsername(String username);
 
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN GroupUser gu ON u.id = gu.userId " +
