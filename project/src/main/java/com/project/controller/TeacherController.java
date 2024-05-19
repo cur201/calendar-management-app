@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -178,11 +179,16 @@ public class TeacherController {
         }
     }
 
-
     ///-------------------------------------Group User API------------------------------------------///
-    @GetMapping("/get-group-user/{groupId}")
+    @GetMapping("/get-group-user-in-group/{groupId}")
     public ResponseEntity<List<GroupUser>> getGroupUsersByGroupId(@PathVariable Long groupId) {
         List<GroupUser> groupUsers = groupUserService.getGroupUserByGroupId(groupId);
+        return ResponseEntity.ok(groupUsers);
+    }
+
+    @GetMapping("/get-group-user-in-meeting-plan/{meetingPlanId}")
+    public ResponseEntity<List<GroupUser>> getGroupUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
+        List<GroupUser> groupUsers = groupUserService.getGroupUsersByMeetingPlanId(meetingPlanId);
         return ResponseEntity.ok(groupUsers);
     }
 
@@ -251,7 +257,7 @@ public class TeacherController {
     }
 
 
-    //TODO::Finish add, delete and search Student API
+    //TODO::Finish delete and search Student API
     ///--------------------------------------------Student API---------------------------------///
     @GetMapping("/get-user-by-meeting-plan-id/{meetingPlanId}")
     @PreAuthorize("hasAuthority('TEACHER')")
@@ -261,5 +267,56 @@ public class TeacherController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/add-user-to-meeting-plan")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<String>> addUserToMeetingPlan(@RequestBody List<StudentInfoDto> studentInfoDtos, Long meetingPlanId) {
+        List<String> results = new ArrayList<>();
+        for( StudentInfoDto studentInfo: studentInfoDtos)
+        {
+            System.out.println("Student info: " + studentInfo);
+            UserDto newUserDto = new UserDto();
+            String studentEmail = studentInfo.getStudentEmail();
+            String studentName = studentInfo.getStudentName();
+
+            boolean checkExistEmail = userService.checkExistUsername(studentEmail);
+
+            if(checkExistEmail == false){
+                System.out.println("Creat new account");
+                //Create new account with default password 123
+                SignUpDto signUpDto = new SignUpDto(studentName, studentEmail, "123".toCharArray(), "STUDENT");
+                newUserDto = userService.register(signUpDto);
+                System.out.println("New user dto: " + newUserDto);
+                results.add("Create account: " + studentName);
+            }else{
+                newUserDto = userService.findByLogin(studentEmail);
+            }
+
+            //Check if account already in one group
+            boolean isInGroup = groupUserService.isUserInAnyGroup(newUserDto.getId());
+            System.out.println("Is in group: " + isInGroup);
+            if (!isInGroup) {
+                // Add new group
+                GroupDto newGroupDto = new GroupDto();
+                newGroupDto.setMeetingPlanId(meetingPlanId);
+                newGroupDto.setLeaderId(newUserDto.getId());
+                newGroupDto.setVisible(1L);
+                GroupDto newGroup = groupService.addGroup(newGroupDto);
+
+                // Add new group user
+                GroupUser groupUser = new GroupUser();
+                groupUser.setUserId(newUserDto.getId());
+                groupUser.setGroupId(newGroup.getId());
+                groupUserService.saveGroupUser(groupUser);
+
+                User newMeetingPlanUser = new User(null, newUserDto.getName(), newUserDto.getUsername(),
+                        newUserDto.getPassword(), newUserDto.getRole(), 1L);
+                results.add("Added " + newMeetingPlanUser + " to the meeting plan " + meetingPlanId + ".");
+            }else{
+                results.add("Account already exists for email: " + studentEmail);
+            }
+        }
+        return ResponseEntity.ok(results);
     }
 }

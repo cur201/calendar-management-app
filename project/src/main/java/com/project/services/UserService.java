@@ -59,4 +59,8 @@ public class UserService {
     public List<User> getUsersByMeetingPlanId(Long meetingPlanId) {
         return userRepository.findUsersByMeetingPlanId(meetingPlanId);
     }
+
+    public boolean checkExistUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
 }

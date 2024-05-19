@@ -28,7 +28,7 @@ public class GroupTbl {
     @Column(name = "leader_id", nullable = false)
     private Long leaderId;
 
-    @Column(name = "approve_time", nullable = false)
+    @Column(name = "approve_time", nullable = true)
     private Time approveTime;
 
     @Column(name = "visible", nullable = false)

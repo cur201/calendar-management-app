@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "JOIN GroupTbl gt ON gu.groupId = gt.id " +
             "WHERE gt.meetingPlanId = :meetingPlanId")
     List<User> findUsersByMeetingPlanId(Long meetingPlanId);
+
+    boolean existsByUsername(String username);
 }
