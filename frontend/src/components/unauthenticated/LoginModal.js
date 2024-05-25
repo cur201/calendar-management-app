@@ -1,12 +1,15 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, FormInput } from '../common/Form';
-import withNavigate from '../common/Utils'
-
+import withNavigate from '../common/Utils';
+import { request, setAuthToken } from '../../axios_helper';
+import useErrorToast from '../common/useErrorToast'; 
 
 class _LoginModal extends Form {
     constructor(props) {
-        var content = (
-            <div>
+        super(props, "Login");
+        this.content = (
+            <div onSubmit={this.onSubmit}>
                 <FormInput displayName="Username" name="username" />
                 <FormInput displayName="Password" name="password" type="password" />
                 <div className='line-break'></div>
@@ -15,8 +18,8 @@ class _LoginModal extends Form {
                 <div className='line-break'></div>
                 <span>Not registered? <Link to='/signup'>Create an account</Link></span>
             </div>
-        )
-        super(props, "Login", content);
+        );
+    
         this.state = {
             username: "",
             password: "",
@@ -24,11 +27,47 @@ class _LoginModal extends Form {
     }
 
     onSubmit = (e) => {
-        this.props.navigate("/dashboard");
+        var data = new FormData(e.target)
+        const username = data.get('username');
+        const password = data.get('password');
+        e.preventDefault();
+        request(
+            "POST",
+            "/login",
+            { username: username, password: password }
+        ).then((response) => {
+            this.props.navigate("/dashboard");
+            setAuthToken(response.data.token);
+        }).catch((error) => {
+            setAuthToken(null);
+            this.props.showErrorToast("Invalid username or password.");
+        });
     };
+
+    render() {
+        return (
+            <div className='form-container'>
+                <h1>{this.name}</h1>
+                <div className='line-break'></div>
+                <form onSubmit={this._onSubmit}>
+                    {this.content}
+                </form>
+            </div>
+        );
+    }
 }
 
+const LoginModalWithNavigate = withNavigate(_LoginModal);
 
-const LoginModal = withNavigate(_LoginModal);
+const LoginModal = (props) => {
+    const [showErrorToast, ErrorToastComponent] = useErrorToast();
 
-export default LoginModal
+    return (
+        <div>
+            <LoginModalWithNavigate showErrorToast={showErrorToast} {...props} />
+            <ErrorToastComponent /> {/* Include Toast component */}
+        </div>
+    );
+};
+
+export default LoginModal;
