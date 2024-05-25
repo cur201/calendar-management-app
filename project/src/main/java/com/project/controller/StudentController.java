@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/student")
 public class StudentController {
     private final MeetingService meetingService;
     private final MeetingPlanService meetingPlanService;
@@ -27,14 +28,14 @@ public class StudentController {
 
 
     @PostMapping("/add-meeting-student")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<Meeting> addMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting newMeeting = meetingService.addMeeting(meetingDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMeeting);
     }
 
     @PostMapping("/update-meeting-student")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {
         Meeting updatedMeeting = meetingService.updateMeeting(meetingDto);
         if (updatedMeeting != null) {
@@ -45,23 +46,25 @@ public class StudentController {
     }
 
     @GetMapping("/get-meeting-by-group-id-student/{groupId}")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<List<Meeting>> getMeetingsByGroupId(@PathVariable("groupId") Long groupId) {
         List<Meeting> meetings = meetingService.findMeetingByGroupId(groupId);
         return ResponseEntity.ok(meetings);
     }
 
     @GetMapping("/get-meeting-by-student-id/{studentId}")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<List<Meeting>> getMeetingsByStudentId(@PathVariable("studentId") Long studentId) {
         List<Meeting> meetings = meetingService.findMeetingByUserId(studentId);
         return ResponseEntity.ok(meetings);
     }
 
     @GetMapping("/get-meeting-plan-by-student-id/{studentId}")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<List<MeetingPlan>> getMeetingPlanByStudentId(@PathVariable("studentId") Long studentId) {
         List<MeetingPlan> meetingPlans = meetingPlanService.findMeetingPlanByUserId(studentId);
         return ResponseEntity.ok(meetingPlans);
     }
+
+    //TODO::Add API for group action(Consider later)
 }

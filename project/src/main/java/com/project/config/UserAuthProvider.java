@@ -5,17 +5,16 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.project.dto.UserDto;
+import com.project.mappers.UserDtoUserDetailsMapper;
 import com.project.services.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class UserAuthProvider {
     private String secretKey;
 
     private final UserService userService;
+    private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
 
     @PostConstruct
     protected void init() {
@@ -42,14 +42,15 @@ public class UserAuthProvider {
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
-    public Authentication validateToken(String token) {
+    public UserDetails validateToken(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey))
                 .build();
 
         DecodedJWT decoded = verifier.verify(token);
 
-        UserDto user = userService.findByLogin(decoded.getIssuer());
+        UserDto userDto = userService.findByLogin(decoded.getIssuer());
 
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        UserDetails returnUserDetails = userDtoUserDetailsMapper.convertFromUserDtoToUserDetails(userDto);
+        return returnUserDetails;
     }
 }

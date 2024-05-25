@@ -57,6 +57,12 @@ public class MeetingPlanService {
             for (int j = 0; j < repetitionCount; j++) {
                 LocalDate nextDate = currentDate.plusWeeks(j).with(weekday);
 
+                List<TimeSlot> conflictingSlots = timeSlotRepository.findConflictingTimeSlots(nextDate, startTime, endTime);
+                if (!conflictingSlots.isEmpty()) {
+                    String conflictMessage = "Time slot has been conflict in " + nextDate + " from " + startTime + " to " + endTime;
+                    throw new RuntimeException(conflictMessage);
+                }
+
                 TimeSlot timeSlot = new TimeSlot();
                 timeSlot.setMeetingPlanId(savedMeetingPlan.getId());
                 timeSlot.setStartTime(startTime);

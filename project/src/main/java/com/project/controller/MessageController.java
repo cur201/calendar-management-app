@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +14,8 @@ import java.util.List;
 @RestController
 public class MessageController {
 
+
+    //TODO:: Remove message controller
     @GetMapping("/message")
     public ResponseEntity<List<String>> message()
     {
@@ -22,7 +23,8 @@ public class MessageController {
         //System.out.println(authentication);
         if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
             UserDto userDetails = (UserDto) authentication.getPrincipal();
-            String userName = userDetails.getLogin();
+            System.out.println(userDetails);
+            String userName = userDetails.getUsername();
             String name = userDetails.getName();
             String role = userDetails.getRole();
             return ResponseEntity.ok(Arrays.asList(userName, name, role));
