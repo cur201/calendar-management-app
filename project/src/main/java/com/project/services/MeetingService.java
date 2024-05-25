@@ -55,21 +55,6 @@ public class MeetingService {
         return null;
     }
 
-    //TODO::Future updateMeeting function
-    /*public Meeting updateMeeting(Long meetingId, MeetingDto meetingDto) {
-        Optional<Meeting> existingMeetingOptional = meetingRepository.findById(meetingId);
-        if (existingMeetingOptional.isPresent()) {
-            Meeting existingMeeting = existingMeetingOptional.get();
-            if (existingMeeting.isVisible()) {
-                Meeting updatedMeeting = meetingMapper.toMeeting(meetingDto);
-                updatedMeeting.setId(existingMeeting.getId());
-                updatedMeeting.setIsVisible(true);
-                return meetingRepository.save(updatedMeeting);
-            }
-        }
-        return null;
-    }*/
-
     public boolean deleteMeeting(Long meetingId) {
         Optional<Meeting> existingMeetingOptional = meetingRepository.findById(meetingId);
         if (existingMeetingOptional.isPresent()) {

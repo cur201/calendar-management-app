@@ -51,6 +51,12 @@ public class GroupUserService {
         return groupUserMapper.toGroupUserDto(newGroupUser);
     }
 
+    public GroupUserDto updateGroupUser(GroupUserDto groupUserDto) {
+        GroupUser updateGroupUser = groupUserMapper.toGroupUser(groupUserDto);
+        GroupUser savedGroupUser = groupUserRepository.save(updateGroupUser);
+        return groupUserMapper.toGroupUserDto(updateGroupUser);
+    }
+
     public boolean deleteGroupUser(Long userId, Long groupId) {
         try {
             groupUserRepository.deleteByUserIdAndGroupId(userId, groupId);
@@ -60,4 +66,5 @@ public class GroupUserService {
             return false;
         }
     }
+
 }

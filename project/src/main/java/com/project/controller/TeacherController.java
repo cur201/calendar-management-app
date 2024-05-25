@@ -53,15 +53,12 @@ public class TeacherController {
     ///-----------------------------------------------Meeting Plan API------------------------------------///
     @GetMapping("/get-plans")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<MeetingPlan>> getMeetingPlans()
-    {
+    public ResponseEntity<List<MeetingPlan>> getMeetingPlans() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Print authen: " + authentication);
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
             Long userId = userDto.getId();
-            System.out.println("Teacher ID: " + userId);
             List<MeetingPlan> meetingPlans = meetingPlanService.findMeetingPlanByOwnerUserId(userId);
             return new ResponseEntity<>(meetingPlans, HttpStatus.OK);
         } else {
@@ -121,11 +118,19 @@ public class TeacherController {
 
     ///------------------------------------------Group API-----------------------------------------///
 
-    //TODO::Fix to apply to only teacher acc
-    @GetMapping("/get-group-by-owner-user-id/{id}")
+    @GetMapping("/get-group-by-owner-user-id")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public List<GroupTbl> getGroupsByOwnerUserId(@PathVariable("id") Long userId) {
-        return groupService.getGroupByOwnerUserId(userId);
+    public ResponseEntity<List<GroupTbl>> getGroupsByOwnerUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long userId = userDto.getId();
+            List<GroupTbl> groupTblList = groupService.getGroupByOwnerUserId(userId);
+            return new ResponseEntity<>(groupTblList, HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @GetMapping("/get-group-by-meeting-plan-id/{id}")
@@ -181,27 +186,38 @@ public class TeacherController {
 
     ///-------------------------------------Group User API------------------------------------------///
     @GetMapping("/get-group-user-in-group/{groupId}")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<GroupUser>> getGroupUsersByGroupId(@PathVariable Long groupId) {
         List<GroupUser> groupUsers = groupUserService.getGroupUserByGroupId(groupId);
         return ResponseEntity.ok(groupUsers);
     }
 
     @GetMapping("/get-group-user-in-meeting-plan/{meetingPlanId}")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<GroupUser>> getGroupUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
         List<GroupUser> groupUsers = groupUserService.getGroupUsersByMeetingPlanId(meetingPlanId);
         return ResponseEntity.ok(groupUsers);
     }
 
     @PostMapping("/add-group-user")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<GroupUserDto> addGroupUser(@RequestBody GroupUserDto groupUserDto) {
         GroupUserDto addedGroupUser = groupUserService.addGroupUser(groupUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedGroupUser);
     }
 
+    @PostMapping("/update-group-user")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<GroupUserDto> updateGroupUser(@RequestBody GroupUserDto groupUserDto) {
+        GroupUserDto updateGroupUser = groupUserService.updateGroupUser(groupUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateGroupUser);
+    }
+
+
     @DeleteMapping("/delete-group-user/{userId}/{groupId}")
+    @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<String> deleteGroupUser(@PathVariable Long userId, @PathVariable Long groupId) {
         boolean deleted = groupUserService.deleteGroupUser(userId, groupId);
-        System.out.println("userId: " + userId + ", groupId: " + groupId);
         if (deleted) {
             return ResponseEntity.ok("Group user deleted successfully");
         } else {
@@ -211,13 +227,19 @@ public class TeacherController {
 
 
     ///--------------------------------------Meeting API------------------------------------------///
-    //TODO::Add get all meeting for teacher API
-    //TODO::Apply to only teacher acc
-    @GetMapping("/get-meeting-by-owner-user-id/{userId}")
+    @GetMapping("/get-meeting-by-owner-user-id")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<Meeting>> getMeetingsByOwnerUserId(@PathVariable("userId") Long userId) {
-        List<Meeting> meetings = meetingService.findMeetingByOwnerUserId(userId);
-        return ResponseEntity.ok(meetings);
+    public ResponseEntity<List<Meeting>> getMeetingsByOwnerUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long userId = userDto.getId();
+            List<Meeting> meetings = meetingService.findMeetingByOwnerUserId(userId);
+            return ResponseEntity.ok(meetings);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @GetMapping("/get-meeting-by-group-id/{groupId}")
@@ -257,7 +279,7 @@ public class TeacherController {
     }
 
 
-    //TODO::Finish delete and search Student API
+    //TODO::Finish search Student API
     ///--------------------------------------------Student API---------------------------------///
     @GetMapping("/get-user-by-meeting-plan-id/{meetingPlanId}")
     @PreAuthorize("hasAuthority('TEACHER')")
@@ -275,7 +297,6 @@ public class TeacherController {
         List<String> results = new ArrayList<>();
         for( StudentInfoDto studentInfo: studentInfoDtos)
         {
-            System.out.println("Student info: " + studentInfo);
             UserDto newUserDto = new UserDto();
             String studentEmail = studentInfo.getStudentEmail();
             String studentName = studentInfo.getStudentName();
@@ -283,11 +304,9 @@ public class TeacherController {
             boolean checkExistEmail = userService.checkExistUsername(studentEmail);
 
             if(checkExistEmail == false){
-                System.out.println("Creat new account");
                 //Create new account with default password 123
                 SignUpDto signUpDto = new SignUpDto(studentName, studentEmail, "123".toCharArray(), "STUDENT");
                 newUserDto = userService.register(signUpDto);
-                System.out.println("New user dto: " + newUserDto);
                 results.add("Create account: " + studentName);
             }else{
                 newUserDto = userService.findByLogin(studentEmail);
@@ -295,7 +314,6 @@ public class TeacherController {
 
             //Check if account already in one group
             boolean isInGroup = groupUserService.isUserInAnyGroup(newUserDto.getId());
-            System.out.println("Is in group: " + isInGroup);
             if (!isInGroup) {
                 // Add new group
                 GroupDto newGroupDto = new GroupDto();
@@ -319,4 +337,6 @@ public class TeacherController {
         }
         return ResponseEntity.ok(results);
     }
+
+
 }
