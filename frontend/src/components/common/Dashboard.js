@@ -5,21 +5,21 @@ import NavWindow from './NavWindow';
 
 
 export default class Dashboard extends React.Component {
-    constructor(props, items) {
+    constructor(props) {
         super(props);
         this.state = {
             componentToShow: "meetingplan"
         };
-        this.items = items
-        console.log(items)
+        //this.items = items
+        //console.log(items)
     };
 
     render() {
         return (
             <div className="nav-container">
-                <NavBar items={this.items} />
+                <NavBar items={this.props.items} />
                 <div className="nav-window-container acrylic">
-                    <NavWindow />
+                    <NavWindow componentToShow={this.state.componentToShow} />
                 </div>
 
             </div>

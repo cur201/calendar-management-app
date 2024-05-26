@@ -13,19 +13,20 @@ export const NavItem = ({ icon, title }) => {
 
 
 export class NavBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.items = props.items
-        this.state = {
-            componentToShow: "meetingplan"
-        }
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.items = props.items
+    //     this.state = {
+    //         componentToShow: "meetingplan"
+    //     }
+    // }
 
     render() {
         return (
             <div>
                 <div>
-                    {this.items}
+                    {/* {this.items} */}
+                    {this.props.items}
                 </div>
             </div>
         );

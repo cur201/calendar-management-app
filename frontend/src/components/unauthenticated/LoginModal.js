@@ -35,9 +35,19 @@ class _LoginModal extends Form {
             "POST",
             "/login",
             { username: username, password: password }
-        ).then((response) => {
+        ).then((Response) => {
+            const id = Response.data.id;
+            const name = Response.data.name;
+            const token = Response.data.token;
+            const role = Response.data.role;
+
+            setAuthToken(Response.data.token);
+            localStorage.setItem('userId', id);
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userToken', token);
+            localStorage.setItem('userRole', role);
+            //TODO:: Must to remove when logout. Example: 'localStorage.removeItem('userRole');'
             this.props.navigate("/dashboard");
-            setAuthToken(response.data.token);
         }).catch((error) => {
             setAuthToken(null);
             this.props.showErrorToast("Invalid username or password.");
