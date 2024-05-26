@@ -15,33 +15,6 @@ export default class Event extends React.Component {
         };
     }
 
-    componentDidMount() {
-        const userRole = localStorage.getItem('userRole');
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('userToken');
-
-        let url = '';
-        if (userRole === 'STUDENT') {
-            url = `/student/get-meeting-by-student-id/${userId}`;
-        } else if (userRole === 'TEACHER') {
-            url = `/teacher/get-meeting-by-owner-user-id`;
-        }
-
-        if (url) {
-            request("GET", url, null, { Authorization: `Bearer ${token}` })
-                .then((response) => {
-                    this.setState({ data: response.data }, this.fetchAdditionalData);
-                })
-                .catch((error) => {
-                    if (error.response.status === 401) {
-                        setAuthToken(null);
-                    } else {
-                        this.setState({ data: error.response.code });
-                    }
-                });
-        }
-    }
-
     fetchAdditionalData() {
         const { data } = this.state;
         data.forEach(meeting => {

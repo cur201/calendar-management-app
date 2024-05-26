@@ -31,7 +31,7 @@ export default class TeacherDashboard extends Dashboard {
 
     getContent() {
         switch (this.props.componentToShow) {
-            case "meeting-plan":
+            case "meeting-plans":
                 return <TeacherMeetingPlan />;
             case "scheduled-event":
                 return <Event />

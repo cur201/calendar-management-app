@@ -25,10 +25,14 @@ function App() {
           <Route path="/dashboard" element={<Navigate to="/dashboard/meeting-plans" />} />
           <Route path="/dashboard/meeting-plans" element={
             <ProtectedRoute>
-              {userRole === "TEACHER" ? <TeacherDashboard componentToShow="meeting-plan"/> : <StudentDashboard componentToShow="meeting-plans"/>}
+              {userRole === "TEACHER" ? <TeacherDashboard componentToShow="meeting-plans"/> : <StudentDashboard componentToShow="meeting-plans"/>}
             </ProtectedRoute>
           } />
-          <Route path="/dashboard/events" element={<TeacherDashboard componentToShow="scheduled-event"/>} />
+          <Route path="/dashboard/events" element={
+            <ProtectedRoute>
+              {userRole === "TEACHER" ? <TeacherDashboard componentToShow="scheduled-event"/> : <StudentDashboard componentToShow="scheduled-event"/>}
+            </ProtectedRoute>
+          } />
           <Route path="/dashboard/students" element={<TeacherDashboard componentToShow="students" />} />
           <Route path="/dashboard/notifications" element={<TeacherDashboard componentToShow="notifications" />} />
         </Routes>
