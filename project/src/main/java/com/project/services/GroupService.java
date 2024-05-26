@@ -2,6 +2,7 @@ package com.project.services;
 
 import com.project.dto.GroupDto;
 import com.project.entities.GroupTbl;
+import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.GroupMapper;
 import com.project.repositories.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,10 @@ public class GroupService {
         GroupTbl existingGroupTbl = optionalGroup.get();
         existingGroupTbl.setVisible(0L);
         return groupRepository.save(existingGroupTbl);
+    }
+
+    public GroupTbl getGroupByGroupId(Long groupId) {
+        return groupRepository.findById(groupId)
+                        .orElseThrow(() -> new UserNotFoundException("Group not found with id " + groupId));
     }
 }

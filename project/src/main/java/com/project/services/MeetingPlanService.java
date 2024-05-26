@@ -4,6 +4,8 @@ import com.project.dto.MeetingPlanDto;
 import com.project.dto.UpdateMeetingPlanDto;
 import com.project.entities.MeetingPlan;
 import com.project.entities.TimeSlot;
+import com.project.entities.User;
+import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.MeetingPlanMapper;
 import com.project.repositories.MeetingPlansRepository;
 import com.project.repositories.TimeSlotRepository;
@@ -33,6 +35,11 @@ public class MeetingPlanService {
     {
         return meetingPlansRepository.findMeetingPlansByUserId(userId);
     }
+
+    public MeetingPlan getMeetingPlanByMeetingPlanId(Long meetingPlanId) {
+        return meetingPlansRepository.findById(meetingPlanId)
+                             .orElseThrow(() -> new UserNotFoundException("Meeting plan not found with id " + meetingPlanId));
+    }   
 
     public MeetingPlanDto addMeetingPlan(MeetingPlanDto meetingPlanDto)
     {

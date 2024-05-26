@@ -5,6 +5,7 @@ import com.project.dto.SignUpDto;
 import com.project.dto.UserDto;
 import com.project.entities.User;
 import com.project.exceptions.AppException;
+import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.UserMapper;
 import com.project.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,4 +64,9 @@ public class UserService {
     public boolean checkExistUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    public User getUserByUserId(Long userId) {
+        return userRepository.findById(userId)
+                             .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+    }   
 }

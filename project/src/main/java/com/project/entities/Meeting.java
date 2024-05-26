@@ -29,6 +29,7 @@ public class Meeting {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    //Have 4 states: "Wait for approve, Accepted, Canceled , Finished"
     @Column(name = "state", nullable = false)
     private String state;
 
