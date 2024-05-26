@@ -1,31 +1,32 @@
 import "./NavBar.css"
 import * as React from 'react';
+import { NavLink } from 'react-router-dom';
 
 
-export const NavItem = ({ icon, title }) => {
+export const NavItem = ({ icon, title, href }) => {
     return (
-        <div className='nav-item'>
+        // <div className='nav-item'>
+        //     <Link to={href}>
+        //         <span className="icon">{icon}</span>
+        //         <span className='title'>{title}</span>
+        //     </Link>
+        // </div>
+        <NavLink
+            to={href}
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        >
             <span className="icon">{icon}</span>
             <span className='title'>{title}</span>
-        </div>
+        </NavLink>
     )
 }
 
 
 export class NavBar extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.items = props.items
-    //     this.state = {
-    //         componentToShow: "meetingplan"
-    //     }
-    // }
-
     render() {
         return (
             <div>
                 <div>
-                    {/* {this.items} */}
                     {this.props.items}
                 </div>
             </div>

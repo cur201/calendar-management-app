@@ -1,8 +1,8 @@
+import React from 'react';
 import { NavItem } from '../common/NavBar';
 import Dashboard from '../common/Dashboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarDays, faCalendarCheck, faUserGroup, faBell } from '@fortawesome/free-solid-svg-icons'
-import MeetingPlan from '../common/MeetingPlan';
 
 
 const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />
@@ -15,31 +15,27 @@ export default class TeacherDashboard extends Dashboard {
     constructor(props) {
         super(props);
         const items = [
-            <NavItem icon={meetingIcon} title={"Meeting plans"}/>,
-            <NavItem icon={eventIcon} title={"Scheduled events"}/>,
-            <NavItem icon={studentIcon} title={"Students"}/>,
-            <NavItem icon={notiIcon} title={"Notifications"}/>,
+            <NavItem icon={meetingIcon} title={"Meeting plans"} href = "/dashboard/meeting-plans"/>,
+            <NavItem icon={eventIcon} title={"Scheduled events"} href="/dashboard/events"/>,
+            <NavItem icon={studentIcon} title={"Students"} href="/dashboard/students"/>,
+            <NavItem icon={notiIcon} title={"Notifications"} href="/dashboard/notifications"/>,
         ];
 
-        // var items = [
-        //     NavItem("calendar-days", "Meeting plans"),
-        //     NavItem("calendar-check", "Scheduled events"),
-        //     NavItem("user-group", "Students"),
-        //     NavItem("bell", "Notifications"),
-        // ]
-        //super(props, { items });
-        this.state = {
-            componentToShow: "meetingplan"
-        };
+        // this.state = {
+        //     componentToShow: props.componentToShow  || "meetingplan"
+        // };
         this.items = items;
     };
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.componentToShow !== prevState.componentToShow) {
+            return { componentToShow: nextProps.componentToShow };
+        }
+        return null;
+    }
+
     render () {
         return (
-            // <div>
-            //     <Dashboard items={this.items} />
-            //     {this.state.componentToShow === "meetingplan" && <MeetingPlan/>}
-            // </div>
             <Dashboard items={this.items} componentToShow={this.state.componentToShow} />
         );
     };

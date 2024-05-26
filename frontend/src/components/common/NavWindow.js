@@ -1,5 +1,6 @@
 import * as React from 'react';
 import MeetingPlan from './MeetingPlan';
+import Event from './Event';
 
 
 export default class NavWindow extends React.Component {
@@ -24,7 +25,10 @@ export default class NavWindow extends React.Component {
             case "meetingplan":
                 content = <MeetingPlan />;
                 break;
-            // Add more cases here if you have other components to show
+            case "scheduled-event":
+                content = <Event />;
+                break;
+            
             default:
                 content = <div>Select a component to show</div>;
         }

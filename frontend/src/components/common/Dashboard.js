@@ -1,6 +1,6 @@
 import './Dashboard.css'
 import * as React from 'react';
-import { NavItem, NavBar } from './NavBar';
+import { NavBar } from './NavBar';
 import NavWindow from './NavWindow';
 
 
@@ -8,11 +8,15 @@ export default class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            componentToShow: "meetingplan"
+            componentToShow: props.componentToShow || "meetingplan"
         };
-        //this.items = items
-        //console.log(items)
-    };
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.componentToShow !== this.props.componentToShow) {
+            this.setState({ componentToShow: this.props.componentToShow });
+        }
+    }
 
     render() {
         return (
@@ -21,7 +25,6 @@ export default class Dashboard extends React.Component {
                 <div className="nav-window-container acrylic">
                     <NavWindow componentToShow={this.state.componentToShow} />
                 </div>
-
             </div>
         );
     }

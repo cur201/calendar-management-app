@@ -1,6 +1,7 @@
 import * as React from 'react';
 import CustomNav from './CustomNav';
 import MeetingPlan from './MeetingPlan';
+import Event from './Event';
 import '../../styles.scss';
 
 export default class Navigator extends React.Component{
@@ -27,6 +28,7 @@ export default class Navigator extends React.Component{
                 </div>
                 <div>
                     {this.state.componentToShow === "meetingplan" && <MeetingPlan/>}
+                    {this.state.componentToShow === "scheduled-event" && <Event/>}
                 </div>
             </div>
         );

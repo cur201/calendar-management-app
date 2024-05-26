@@ -15,9 +15,9 @@ function App() {
           <Route path="/signup" element={<SignupModal />} />
           <Route path="/dashboard" element={<Navigate to="/dashboard/meeting-plans" />} />
           <Route path="/dashboard/meeting-plans" element={<TeacherDashboard />} />
-          <Route path="/dashboard/events" element={""} />
-          <Route path="/dashboard/students" element={""} />
-          <Route path="/dashboard/notifications" element={""} />
+          <Route path="/dashboard/events" element={<TeacherDashboard componentToShow="scheduled-event"/>} />
+          <Route path="/dashboard/students" element={<TeacherDashboard componentToShow="students" />} />
+          <Route path="/dashboard/notifications" element={<TeacherDashboard componentToShow="notifications" />} />
         </Routes>
       </Router>
     );
