@@ -5,7 +5,7 @@ export default class TeacherEvent extends Event {
     componentDidMount() {
         request(
             "GET",
-            "/teacher/get-meeting-by-owner-user-id",
+            `/teacher/get-meeting-by-owner-user-id`,
             null,
         ).then((response) => {
             this.setState({ data: response.data }, this.fetchAdditionalData);

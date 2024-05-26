@@ -5,7 +5,7 @@ export default class TeacherMeetingPlan extends MeetingPlan{
     componentDidMount() {
         request(
             "GET",
-            "/teacher/get-plans",
+            `/teacher/get-plans`,
             null,
         ).then((response) => {
             this.setState({data: response.data})

@@ -105,10 +105,10 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/dashboard/students"
           element={<TeacherDashboard componentToShow="students" />}
-        />
+        /> */}
         <Route
           path="/dashboard/students"
           element={

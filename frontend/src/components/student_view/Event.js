@@ -6,7 +6,7 @@ export default class TeacherEvent extends Event {
         const userId = localStorage.getItem("userId");
         request(
             "GET",
-            "/student/get-meeting-by-student-id/${userId}",
+            `/student/get-meeting-by-student-id/${userId}`,
             null,
         ).then((response) => {
             this.setState({ data: response.data }, this.fetchAdditionalData);

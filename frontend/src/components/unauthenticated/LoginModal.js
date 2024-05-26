@@ -47,7 +47,7 @@ class _LoginModal extends Form {
 
     console.log({ username, password });
 
-    request("POST", "/login", { username, password })
+    request("POST", `/login`, { username, password })
       .then((response) => {
         console.log(response.data);
         const { id, name, token, role } = response.data;

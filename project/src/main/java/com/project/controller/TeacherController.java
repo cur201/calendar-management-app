@@ -3,7 +3,6 @@ package com.project.controller;
 import com.project.dto.*;
 import com.project.entities.*;
 import com.project.mappers.GroupMapper;
-import com.project.mappers.MeetingMapper;
 import com.project.mappers.MeetingPlanMapper;
 import com.project.mappers.UserDtoUserDetailsMapper;
 import com.project.services.*;
@@ -46,9 +45,6 @@ public class TeacherController {
         this.userService = userService;
         this.userDtoUserDetailsMapper = userDtoUserDetailsMapper;
     }
-
-
-    //TODO::Handle duplicate timestamp
 
     ///-----------------------------------------------Meeting Plan API------------------------------------///
     @GetMapping("/get-plans")
@@ -289,6 +285,12 @@ public class TeacherController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/get-all-student/{teacherId}")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public List<StudentMeetingPlanDto> getStudentsByTeacher(@PathVariable Long teacherId) {
+        return userService.getStudentsByTeacher(teacherId);
     }
 
     @PostMapping("/add-user-to-meeting-plan")

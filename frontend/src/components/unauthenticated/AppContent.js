@@ -29,7 +29,7 @@ export default class AppContent extends React.Component {
         e.preventDefault();
         request(
             "POST",
-            "/login",
+            `/login`,
             { login: username, password: password}
         ).then((Response) => {
             this.setState({componentToShow: "navigator"});
@@ -43,7 +43,7 @@ export default class AppContent extends React.Component {
     onRegister = (e, name, username, password, role) => {
         e.preventDefault();
         request("POST",
-            "/register",
+            `/register`,
             {
                 name: name, 
                 login: username, 

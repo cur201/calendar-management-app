@@ -10,7 +10,8 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import TeacherMeetingPlan from "./MeetingPlan";
-import Event from "../common/Event";
+import Event from "./Event";
+import Student from "./Student";
 
 const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />;
 const eventIcon = <FontAwesomeIcon icon={faCalendarCheck} />;
@@ -59,25 +60,13 @@ export default class TeacherDashboard extends Dashboard {
         return <TeacherMeetingPlan />;
       case "scheduled-event":
         return <Event />;
+      case "students":
+        return <Student />
 
       default:
         return <div>Select a component to show</div>;
     }
   }
-
-    getContent() {
-        switch (this.props.componentToShow) {
-            case "meeting-plans":
-                return <TeacherMeetingPlan />;
-            case "scheduled-event":
-                return <Event />
-
-
-            default:
-                return <div>Select a component to show</div>;
-        }
-    }
-
     // render () {
     //     return (
     //         <Dashboard items={this.items} componentToShow={this.state.componentToShow} />
