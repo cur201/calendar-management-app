@@ -1,5 +1,11 @@
 import * as React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faClock
+  } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css"
+
+const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
 export default class MeetingPlan extends React.Component{
     constructor(props) {
@@ -17,13 +23,13 @@ export default class MeetingPlan extends React.Component{
         const selectedItems = data.slice(startIndex, startIndex + itemsPerPage);
 
         const gridItems = selectedItems.map((item, index) => (
-            <div className="grid-item" key={index}>
+            <div className="grid-item rounded-more border-light clickable" key={index}>
                 <h3>{item.name}</h3>
-                <div className="grid-item-details">
-                    <span className="duration">{item.duration}</span>
-                    <span className="location">{item.location}</span>
+                <div className="duration">
+                    {clockIcon} <div className="spacing"></div> {item.duration}
                 </div>
-                <p>{item.description}</p>
+                <div className="location"><b>Location:</b> {item.location}</div>
+                {/* <p>{item.description}</p> */}
             </div>
         ));
 

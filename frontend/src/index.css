@@ -2,11 +2,17 @@
 
 
 :root {
-  font-size: 20px;
+  font-size: 16px;
   --main: #2c333c;
+  --main-greyed:#2b323bc2;
+  --main-light: #f0f3f7;
   --border-light: #dddddd;
   --bg-body: #fdfdfd;
   --bg-light: #f2f2f2;
+  --button-primary: #226fce;
+  --hover: #2c333c3f;
+  --soft-shadow: #aaaaaaaa 0 10px 30px;
+  --shadow: #63636389 0 2px 8px;
 }
 
 * {
@@ -30,7 +36,7 @@ html {
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-image: url("./background.jpg");
+  background-image: url("./background.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -51,14 +57,14 @@ input, button{
   display: block;
   height: 2.5rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 14px;
   padding: 0 1rem;
 }
 
 
 .primary-button {
-  color: #353535;
-  background-color: #ffd000;
+  color: var(--main-light);
+  background-color: var(--button-primary);
 }
 
 .acrylic {
@@ -76,6 +82,31 @@ input, button{
   background-color: var(--bg-light);
 }
 
-.clickable {
+.clickable, button{
   cursor: pointer;
+}
+
+.border-light {
+  border: 1px var(--border-light) solid;
+}
+
+.soft-shadow {
+  box-shadow: #aaaaaaaa 0 10px 30px;
+}
+
+.rounded {
+  border-radius: 10px;
+}
+
+.rounded-more {
+  border-radius: 14px;
+}
+
+
+b {
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.1rem;
 }

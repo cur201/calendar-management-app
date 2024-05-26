@@ -27,7 +27,7 @@ export default class    Dashboard extends React.Component {
         return (
             <div className="nav-container">
                 <NavBar items={this.getNavItems()} />
-                <div className="nav-window-container bg-body">
+                <div className="nav-window-container bg-body border-light rounded soft-shadow">
                     <NavWindow componentToShow={this.getContent()} />
                 </div>
             </div>

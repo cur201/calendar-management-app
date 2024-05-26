@@ -1,39 +1,49 @@
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px; 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
     padding: 20px;
 }
 
 .grid-item {
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    padding: 20px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: .75rem;
+    position: relative;
 }
 
 .grid-item h3 {
-    font-weight: bold;
-    color: blue; 
-    font-size: 1.2em;
-    margin: 0 0 10px 0;
-}
-
-.grid-item-details {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 0.9em; 
+    font-weight: 600;
+    margin: 0 0 5px 0;
 }
 
 .grid-item .duration {
-    text-align: left;
+    display: flex;
+    justify-self: end;
+    right: 5px;
+    top: 5px;
+    vertical-align: middle;
+    font-size: 0.8rem;
+    background-color: var(--button-primary  );
+    color: var(--main-light );
+    padding: 5px;
+    padding-right: 10px;
+    width: 75px;
+    height: 1rem;
+    margin-top: -0.75rem;
+    margin-right: -.75rem;
+    border-top-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    line-height: 1rem;
 }
 
+/* .grid-item .duration .fa-clock{
+    height: 1rem;
+} */
+
 .grid-item .location {
-    text-align: right;
+    text-align: left;
+    color: var(--main-greyed);
 }
 
 .grid-item p {
@@ -44,12 +54,12 @@
 
 .pagination-controls {
     display: flex;
-    justify-content: center; 
-    margin-top: 20px; 
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .pagination-controls button {
-    margin: 0 10px; 
+    margin: 0 10px;
     padding: 10px 20px;
     border: none;
     background-color: #007bff;

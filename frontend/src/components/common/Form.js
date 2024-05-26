@@ -1,40 +1,53 @@
-import React from 'react';
-import './Form.css'
+import React from "react";
+import "./Form.css";
 
-export const FormInput = ({ displayName, name, type = "text" }) => {
-    return (
-        <div className='form-input'>
-            {/* <label htmlFor={name}>{displayName}</label> */}
-            <input placeholder={displayName} type={type} name={name}></input>
-        </div>
-    )
-}
-
+export const FormInput = ({
+  displayName,
+  name,
+  type = "text",
+  value,
+  onChange,
+}) => {
+  return (
+    <div className="form-input">
+      <input
+        placeholder={displayName}
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+      />
+    </div>
+  );
+};
 
 export class Form extends React.Component {
-    constructor(props, name, content) {
-        super(props);
-        this.name = name
-        this.content = content
-    }
+  constructor(props, name) {
+    super(props);
+    this.name = name;
+  }
 
-    onSubmit = (e) => { };
+  onChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
-    _onSubmit = (e) => {
-        e.preventDefault();
-        this.onSubmit(e);
-    };
+  onSubmit = (e) => {};
 
-    render() {
-        return (
-            <div className='form-container'>
-                <h1>{this.name}</h1>
-                <div className='line-break'></div>
-                <form onSubmit={this.onSubmit}>
-                    {this.content}
-                </form>
-            </div>
+  _onSubmit = (e) => {
+    e.preventDefault();
+    this.onSubmit(e);
+  };
 
-        )
-    }
+  render() {
+    console.log(this.content)
+    return (
+      <div className="form-container bg-body border-light soft-shadow">
+        <h1>{this.props.name}</h1>
+        <div className="line-break"></div>
+        <form onSubmit={this._onSubmit}>
+          {this.content}
+        </form>
+      </div>
+    );
+  }
 }

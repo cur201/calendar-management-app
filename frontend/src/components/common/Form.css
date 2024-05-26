@@ -7,10 +7,7 @@
     width: 500px;
     transform: translate(-50%, -200px);
 
-    background-color: #fff5;
     backdrop-filter: blur(20px);
-
-    color: white;
 
     border-radius: 10px;
 

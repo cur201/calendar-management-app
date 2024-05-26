@@ -9,9 +9,9 @@ export const getAuthToken = () => {
 
 export const setAuthToken = (token) => {
     if (token !== null) {
-        window.localStorage.setItem("auth_token", token);
+        window.localStorage.setItem("userToken", token);
     } else {
-        window.localStorage.removeItem("auth_token");
+        window.localStorage.removeItem("userToken");
     }
 }
 
