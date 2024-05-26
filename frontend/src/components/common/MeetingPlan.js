@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { request, setAuthToken } from '../../axios_helper';
 import "./MeetingPlan.css"
 
 export default class MeetingPlan extends React.Component{
@@ -10,44 +9,6 @@ export default class MeetingPlan extends React.Component{
             currentPage: 0
         };
     };
-
-    componentDidMount() {
-        const userRole = localStorage.getItem('userRole');
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('userToken');
-
-        if (userRole === 'STUDENT') {
-            request(
-                "GET",
-                `/student/get-meeting-plan-by-student-id/${userId}`,
-                null,
-                { Authorization: `Bearer ${token}` }
-            ).then((response) => {
-                this.setState({data: response.data})
-            }).catch((error) => {
-                if (error.response.status === 401) {
-                    setAuthToken(null);
-                } else {
-                    this.setState({data: error.response.code})
-                }
-            });
-        } else if (userRole === 'TEACHER') {
-            request(
-                "GET",
-                "/teacher/get-plans",
-                null,
-                { Authorization: `Bearer ${token}` }
-            ).then((response) => {
-                this.setState({data: response.data})
-            }).catch((error) => {
-                if (error.response.status === 401) {
-                    setAuthToken(null);
-                } else {
-                    this.setState({data: error.response.code})
-                }
-            });
-        }
-    }
 
     renderMeetingPlans() {
         const { data, currentPage } = this.state;

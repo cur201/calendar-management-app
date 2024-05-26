@@ -4,11 +4,11 @@ import { NavBar } from './NavBar';
 import NavWindow from './NavWindow';
 
 
-export default class Dashboard extends React.Component {
+export default class    Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            componentToShow: props.componentToShow || "meetingplan"
+            componentToShow: props.componentToShow
         };
     }
 
@@ -18,12 +18,17 @@ export default class Dashboard extends React.Component {
         }
     }
 
+    getNavItems() {}
+
+    getContent() {}
+
     render() {
+        console.log(this.getContent())
         return (
             <div className="nav-container">
-                <NavBar items={this.props.items} />
-                <div className="nav-window-container acrylic">
-                    <NavWindow componentToShow={this.state.componentToShow} />
+                <NavBar items={this.getNavItems()} />
+                <div className="nav-window-container bg-body">
+                    <NavWindow componentToShow={this.getContent()} />
                 </div>
             </div>
         );

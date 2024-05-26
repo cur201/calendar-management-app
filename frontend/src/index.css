@@ -3,6 +3,10 @@
 
 :root {
   font-size: 20px;
+  --main: #2c333c;
+  --border-light: #dddddd;
+  --bg-body: #fdfdfd;
+  --bg-light: #f2f2f2;
 }
 
 * {
@@ -34,6 +38,8 @@ html {
 
 body {
   background-color: none;
+  margin: 0;
+  color: var(--main);
 }
 
 .line-break{
@@ -60,4 +66,16 @@ input, button{
   backdrop-filter: blur(20px);
 
   color: white;
+}
+
+.bg-body {
+  background-color: var(--bg-body);
+}
+
+.bg-light {
+  background-color: var(--bg-light);
+}
+
+.clickable {
+  cursor: pointer;
 }

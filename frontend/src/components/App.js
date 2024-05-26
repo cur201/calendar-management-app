@@ -4,17 +4,30 @@ import  { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-
 import LoginModal from './unauthenticated/LoginModal';
 import SignupModal from './unauthenticated/SignupModal';
 import TeacherDashboard from './teacher_view/Dashboard';
+import StudentDashboard from './student_view/Dashboard';
 
 
 function App() {
+    const userRole = localStorage.getItem("userRole")
+
+    const ProtectedRoute = ({ children }) => {
+      return localStorage.getItem("userRole") ? children : <Navigate to="/login" />;
+    };
+
     return (
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<LoginModal />} />
+          <Route path="/login" element={
+            userRole ? <Navigate to="/dashboard" /> : <LoginModal />
+          } />
           <Route path="/signup" element={<SignupModal />} />
           <Route path="/dashboard" element={<Navigate to="/dashboard/meeting-plans" />} />
-          <Route path="/dashboard/meeting-plans" element={<TeacherDashboard />} />
+          <Route path="/dashboard/meeting-plans" element={
+            <ProtectedRoute>
+              {userRole === "TEACHER" ? <TeacherDashboard componentToShow="meeting-plan"/> : <StudentDashboard componentToShow="meeting-plans"/>}
+            </ProtectedRoute>
+          } />
           <Route path="/dashboard/events" element={<TeacherDashboard componentToShow="scheduled-event"/>} />
           <Route path="/dashboard/students" element={<TeacherDashboard componentToShow="students" />} />
           <Route path="/dashboard/notifications" element={<TeacherDashboard componentToShow="notifications" />} />

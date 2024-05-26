@@ -5,10 +5,14 @@
     height: 100vh;
 }
 
+.nav-container > * {
+    height: 100vh;
+}
+
 .nav-container .nav-item{
     color: white;
 }
 
-.nav-container > .nav-window-container{
-    border-radius: 10px;
+.nav-window {
+    padding-top: 2.5rem;
 }
