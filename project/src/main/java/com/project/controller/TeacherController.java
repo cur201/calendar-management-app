@@ -62,6 +62,13 @@ public class TeacherController {
         }
     }
 
+    @GetMapping("/search-meeting-plan-teacher")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<MeetingPlan>> searchMeetingPlans(@RequestParam String query, @RequestParam Long ownerUserId) {
+        List<MeetingPlan> meetingPlans = meetingPlanService.searchMeeting(query, ownerUserId);
+        return ResponseEntity.ok(meetingPlans);
+    }
+
     @PostMapping("/add-meeting-plan")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> addMeetingPlan(@RequestBody MeetingPlanDto meetingPlanDto){

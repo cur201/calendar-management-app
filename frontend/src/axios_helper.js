@@ -19,7 +19,7 @@ export const request = (method, url, data) => {
     let headers = {};
     let token = getAuthToken()
     if (token) {
-        headers = {'Authorization': `Bearer ${getAuthToken()}`};
+        headers = { 'Authorization': `Bearer ${token}` };
     }
     console.log(headers)
     return axios({

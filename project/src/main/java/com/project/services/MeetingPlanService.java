@@ -41,6 +41,10 @@ public class MeetingPlanService {
                              .orElseThrow(() -> new UserNotFoundException("Meeting plan not found with id " + meetingPlanId));
     }   
 
+    public List<MeetingPlan> searchMeeting(String query, Long ownerUserId) {
+        return meetingPlansRepository.searchMeetingPlansTeacher(query, ownerUserId);
+    }
+
     public MeetingPlanDto addMeetingPlan(MeetingPlanDto meetingPlanDto)
     {
         MeetingPlan newPlan = meetingPlanMapper.toMeetingPlan(meetingPlanDto);
