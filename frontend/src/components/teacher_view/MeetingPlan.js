@@ -3,7 +3,7 @@ import { request, setAuthToken } from '../../axios_helper';
 import MeetingPlan from '../common/MeetingPlan';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faPlus 
+    faPlus, faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
 import MeetingPlanPopupForm from './MeetingPlanPopupForm';
@@ -49,7 +49,7 @@ export default class TeacherMeetingPlan extends MeetingPlan{
         const { searchTerm } = this.state;
         const ownerUserId = localStorage.getItem("userId");
         console.log("Searching for:", searchTerm, "with ownerUserId:", ownerUserId);
-    
+
         request(
             "GET",
             `/teacher/search-meeting-plan-teacher?query=${searchTerm}&ownerUserId=${ownerUserId}`,
@@ -84,17 +84,19 @@ export default class TeacherMeetingPlan extends MeetingPlan{
         return (
             <div>
                 <div className="top-controls">
+                    <h1>Meeting plans</h1>
+                    <div className='spacing'></div>
                     <div className="search-container">
-                        <input 
-                            type="text" 
-                            placeholder="Search..." 
-                            value={searchTerm} 
-                            onChange={this.handleSearchChange} 
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={this.handleSearchChange}
                         />
-                        <button onClick={this.handleSearchSubmit}>Search</button>
+                        <button onClick={this.handleSearchSubmit} className='circle-button'><FontAwesomeIcon icon={faSearch} /></button>
                     </div>
-                    <button className="create-button" onClick={this.handleCreateNew}>
-                        <FontAwesomeIcon icon={faPlus} /> Create New
+                    <button className="create-button circle-button" onClick={this.handleCreateNew}>
+                        <FontAwesomeIcon icon={faPlus} />
                     </button>
                     {showPopup && <MeetingPlanPopupForm onClose={this.closePopup} onSuccess={this.handleSuccess} />}
                 </div>

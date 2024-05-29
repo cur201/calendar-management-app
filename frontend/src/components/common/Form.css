@@ -18,12 +18,6 @@
     text-align: center;
 }
 
-h1 {
-    font-size: 2rem;
-    font-weight: 400;
-    margin: 0;
-}
-
 .form-container * {
     box-sizing: border-box;
 }

@@ -13,6 +13,12 @@
 }
 
 .nav-window-container {
+    position: relative;
     overflow: hidden;
     height: calc(100vh - 16px);
+}
+
+.nav-window {
+    padding: 0 50px;
+    background: linear-gradient(0deg, rgba(255,255,255,0) 96%, rgba(207,207,207,.4) 100%);
 }

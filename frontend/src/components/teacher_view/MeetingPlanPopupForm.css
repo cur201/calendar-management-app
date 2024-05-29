@@ -1,6 +1,6 @@
 /* PopupForm.css */
 .popup-form {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -13,41 +13,24 @@
 }
 
 .popup-inner {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    background: var(--bg-body);
+    padding: 1rem 1.5rem;
     max-width: 500px;
     width: 100%;
 }
 
-.popup-inner input,
 .popup-inner textarea {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    height: 5rem;
+    min-height: 2.5rem;
+    resize: vertical;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 
 .popup-inner .button-container {
     display: flex;
     justify-content: space-between;
-}
-
-.popup-inner button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.popup-inner .add-button {
-    background: #007bff;
-    color: white;
-}
-
-.popup-inner .cancel-button {
-    background: #dc3545;
-    color: white;
 }

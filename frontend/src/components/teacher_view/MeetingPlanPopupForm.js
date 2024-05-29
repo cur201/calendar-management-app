@@ -74,12 +74,14 @@ class MeetingPlanPopupForm extends React.Component {
         const { onClose } = this.props;
         return (
             <div className="popup-form">
-                <div className="popup-inner">
-                    <h2>Create New Meeting Plan</h2>
+                <div className="popup-inner rounded soft-shadow">
+                    <h2>Create plan</h2>
+                    <div className='spacing'></div>
                     <input type="text" name="name" placeholder="Name" onChange={this.handleChange} />
                     <input type="text" name="duration" placeholder="Duration" onChange={this.handleChange} />
                     <input type="text" name="location" placeholder="Location" onChange={this.handleChange} />
                     <textarea name="description" placeholder="Description" onChange={this.handleChange} />
+                    <div className='spacing'></div>
                     <Select
                         isMulti
                         name="weekdays"
@@ -91,8 +93,9 @@ class MeetingPlanPopupForm extends React.Component {
                     <input type="text" name="startTimes" placeholder="Start Times (comma separated)" onChange={this.handleArrayChange} />
                     <input type="text" name="endTimes" placeholder="End Times (comma separated)" onChange={this.handleArrayChange} />
                     <input type="text" name="repetitionCount" placeholder="Repetition Count (comma separated)" onChange={this.handleRepetitionCountChange} />
+                    <div className='spacing'></div>
                     <div className="button-container">
-                        <button className="add-button" onClick={this.handleSubmit}>Add</button>
+                        <button className="add-button primary-button" onClick={this.handleSubmit}>Add</button>
                         <button className="cancel-button" onClick={onClose}>Cancel</button>
                     </div>
                 </div>
