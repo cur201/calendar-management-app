@@ -25,7 +25,7 @@ export default class MeetingPlan extends React.Component{
         const selectedItems = data.slice(startIndex, startIndex + itemsPerPage);
 
         const gridItems = selectedItems.map((item, index) => (
-            <div className="grid-item rounded-more clickable shadow" key={index}>
+            <div className="grid-item rounded-more clickable shadow" key={index} onClick={() => this.handleItemClick(item)}>
                 <h3>{item.name}</h3>
                 <div className="duration">
                     {clockIcon} <div className="spacing"></div> {item.duration}
