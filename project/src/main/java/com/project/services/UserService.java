@@ -87,11 +87,11 @@ public class UserService {
             throw new RuntimeException("Teacher not found with id: " + teacherId);
         }
 
-        List<MeetingPlan> meetingPlans = meetingPlansRepository.findByOwnerUserId(teacherId);
+        List<MeetingPlan> meetingPlans = meetingPlansRepository.findByOwnerUserIdAndVisible(teacherId, 1);
         List<StudentMeetingPlanDto> results = new ArrayList<>();
 
         for (MeetingPlan meetingPlan : meetingPlans) {
-            List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanId(meetingPlan.getId());
+            List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlan.getId(), 1);
 
             for (GroupTbl group : groups) {
                 List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(group.getId());

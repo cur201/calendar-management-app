@@ -14,6 +14,6 @@ public class TimeSlotService {
 
     public List<TimeSlot> findTimeSlotByMeetingPlanId(Long meetingPlanId)
     {
-        return timeSlotRepository.findByMeetingPlanId(meetingPlanId);
+        return timeSlotRepository.findByMeetingPlanIdAndVisible(meetingPlanId, 1);
     }
 }

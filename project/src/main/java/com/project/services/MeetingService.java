@@ -21,11 +21,11 @@ public class MeetingService {
     private final GroupUserRepository groupUserRepository;
 
     public List<Meeting> findMeetingByOwnerUserId(Long userId) {
-        return meetingRepository.findMeetingByOwnerUserId(userId);
+        return meetingRepository.findMeetingByOwnerUserIdAndVisible(userId, 1);
     }
 
     public List<Meeting> findMeetingByGroupId(Long groupId) {
-        return meetingRepository.findMeetingByGroupId(groupId);
+        return meetingRepository.findMeetingByGroupIdAndVisible(groupId, 1);
     }
 
     public Meeting addMeeting(MeetingDto meetingDto) {

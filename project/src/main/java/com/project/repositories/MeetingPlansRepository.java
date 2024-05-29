@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MeetingPlansRepository extends JpaRepository<MeetingPlan, Long> {
-    List<MeetingPlan> findByOwnerUserId(Long ownerUserId);
+    List<MeetingPlan> findByOwnerUserIdAndVisible(Long ownerUserId, int visible);
     Optional<MeetingPlan> findById(Long id);
 
     @Query("SELECT mp FROM MeetingPlan mp JOIN GroupTbl gt ON mp.id = gt.meetingPlanId JOIN GroupUser gu ON gt.id = gu.groupId WHERE gu.userId = :userId")
@@ -17,7 +17,8 @@ public interface MeetingPlansRepository extends JpaRepository<MeetingPlan, Long>
 
     @Query("SELECT mp FROM MeetingPlan mp WHERE " +
         "(mp.name LIKE CONCAT('%',:query, '%') OR mp.location LIKE CONCAT('%', :query, '%')) " +
-        "AND mp.ownerUserId = :ownerUserId")
+        "AND mp.ownerUserId = :ownerUserId " +
+        "AND mp.visible = 1")
     List<MeetingPlan> searchMeetingPlansTeacher(@Param("query") String query, @Param("ownerUserId") Long ownerUserId);
 
 }

@@ -24,7 +24,7 @@ public class GroupUserService {
     }
 
     public List<GroupUser> getGroupUsersByMeetingPlanId(Long meetingPlanId) {
-        List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanId(meetingPlanId);
+        List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlanId, 1);
         for(GroupTbl g: groups)
         {
             System.out.println(g);

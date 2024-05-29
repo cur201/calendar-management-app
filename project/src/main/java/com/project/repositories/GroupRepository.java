@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<GroupTbl, Long> {
 
-    @Query("SELECT g FROM GroupTbl g WHERE g.meetingPlanId IN (SELECT mp.id FROM MeetingPlan mp WHERE mp.ownerUserId = :userId)")
+    @Query("SELECT g FROM GroupTbl g WHERE g.meetingPlanId IN (SELECT mp.id FROM MeetingPlan mp WHERE mp.ownerUserId = :userId) and g.visible = 1")
     List<GroupTbl> findGroupsByMeetingPlanId_OwnerUserId(Long userId);
 
-    List<GroupTbl> findGroupByMeetingPlanId(Long meetingPlanId);
+    List<GroupTbl> findGroupByMeetingPlanIdAndVisible(Long meetingPlanId, int visible);
 }

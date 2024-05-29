@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
-    List<TimeSlot> findByMeetingPlanId(Long meetingPlanId);
+    List<TimeSlot> findByMeetingPlanIdAndVisible(Long meetingPlanId, int visible);
 
     @Query("SELECT ts FROM TimeSlot ts WHERE ts.timeSlotDate = :date AND " +
             "((:startTime BETWEEN ts.startTime AND ts.endTime) OR " +

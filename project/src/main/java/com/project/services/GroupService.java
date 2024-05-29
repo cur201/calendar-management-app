@@ -23,7 +23,7 @@ public class GroupService {
     }
 
     public List<GroupTbl> getGroupByMeetingPlanId(Long meetingPlanId){
-        return groupRepository.findGroupByMeetingPlanId(meetingPlanId);
+        return groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlanId, 1);
     }
 
     public GroupDto addGroup(GroupDto groupDto)

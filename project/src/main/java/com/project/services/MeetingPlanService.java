@@ -28,7 +28,7 @@ public class MeetingPlanService {
 
     public List<MeetingPlan> findMeetingPlanByOwnerUserId(Long userId)
     {
-        return meetingPlansRepository.findByOwnerUserId(userId);
+        return meetingPlansRepository.findByOwnerUserIdAndVisible(userId, 1);
     }
 
     public List<MeetingPlan> findMeetingPlanByUserId(Long userId)

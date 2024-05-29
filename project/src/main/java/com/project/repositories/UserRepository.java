@@ -13,13 +13,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN GroupUser gu ON u.id = gu.userId " +
             "JOIN GroupTbl gt ON gu.groupId = gt.id " +
-            "WHERE gt.meetingPlanId = :meetingPlanId")
+            "WHERE gt.meetingPlanId = :meetingPlanId " +
+            "AND u.visible = 1")
     List<User> findUsersByMeetingPlanId(Long meetingPlanId);
 
     boolean existsByUsername(String username);
 
     List<User> findByRole(String role);
 
-    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role = :role")
+    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role = :role AND u.visible = 1")
     User findByIdAndRole(@Param("id") Long id, @Param("role") String role);
 }

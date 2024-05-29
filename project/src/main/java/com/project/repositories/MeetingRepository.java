@@ -12,9 +12,9 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "JOIN GroupTbl g ON m.groupId = g.id " +
             "JOIN MeetingPlan mp ON g.meetingPlanId = mp.id " +
             "WHERE mp.ownerUserId = ?1")
-    List<Meeting> findMeetingByOwnerUserId(Long userId);
+    List<Meeting> findMeetingByOwnerUserIdAndVisible(Long userId, int visible);
 
-    List<Meeting> findMeetingByGroupId(Long groupId);
+    List<Meeting> findMeetingByGroupIdAndVisible(Long groupId, int visible);
 
     List<Meeting> findMeetingByGroupIdIn(List<Long> groupIds);
 }

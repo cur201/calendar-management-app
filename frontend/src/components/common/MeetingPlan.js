@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faClock
   } from "@fortawesome/free-solid-svg-icons";
-import "./MeetingPlan.css"
-import MeetingPlanDetailPopup from './MeetinPlanDetailPopup';
+import "./MeetingPlan.css";
+import MeetingPlanDetailPopup from './MeetingPlanDetailPopup';
 
 const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
@@ -91,5 +91,4 @@ export default class MeetingPlan extends React.Component{
             </div>
         );
     }
-
 }
