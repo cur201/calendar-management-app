@@ -3,11 +3,12 @@ import { request, setAuthToken } from '../../axios_helper';
 import MeetingPlan from '../common/MeetingPlan';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faPlus
+    faPlus 
 } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
 import MeetingPlanPopupForm from './MeetingPlanPopupForm';
 import { ToastContainer } from 'react-toastify';
+
 
 export default class TeacherMeetingPlan extends MeetingPlan{
 

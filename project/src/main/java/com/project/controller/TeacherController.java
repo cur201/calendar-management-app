@@ -31,11 +31,12 @@ public class TeacherController {
     private final MeetingService meetingService;
     private final UserService userService;
     private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
+    private final TimeSlotService timeSlotService;
 
     @Autowired
     public TeacherController(MeetingPlanService meetingPlanService, MeetingPlanMapper meetingPlanMapper,
                              GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
-                             MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper) {
+                             MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper, TimeSlotService timeSlotService) {
         this.meetingPlanService = meetingPlanService;
         this.meetingPlanMapper = meetingPlanMapper;
         this.groupService = groupService;
@@ -44,6 +45,7 @@ public class TeacherController {
         this.meetingService = meetingService;
         this.userService = userService;
         this.userDtoUserDetailsMapper = userDtoUserDetailsMapper;
+        this.timeSlotService = timeSlotService;
     }
 
     ///-----------------------------------------------Meeting Plan API------------------------------------///
@@ -118,6 +120,13 @@ public class TeacherController {
         }
     }
 
+    ///--------------------------------------Timeslot API------------------------------------------///
+    @GetMapping("/get-timeslot-by-meetingplan-id")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByMeetingPlanId(@RequestParam Long meetingPlanId){
+        List<TimeSlot> timeSlotList = timeSlotService.findTimeSlotByMeetingPlanId(meetingPlanId);
+        return ResponseEntity.ok(timeSlotList);
+    }
 
     ///------------------------------------------Group API-----------------------------------------///
 

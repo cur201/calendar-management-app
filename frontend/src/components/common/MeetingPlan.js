@@ -4,6 +4,7 @@ import {
     faClock
   } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css"
+import MeetingPlanDetailPopup from './MeetinPlanDetailPopup';
 
 const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
@@ -12,7 +13,8 @@ export default class MeetingPlan extends React.Component{
         super(props);
         this.state = {
             data : [],
-            currentPage: 0
+            currentPage: 0,
+            selectedMeetingPlan: null,
         };
     };
 
@@ -23,7 +25,7 @@ export default class MeetingPlan extends React.Component{
         const selectedItems = data.slice(startIndex, startIndex + itemsPerPage);
 
         const gridItems = selectedItems.map((item, index) => (
-            <div className="grid-item rounded-more border-light clickable" key={index}>
+            <div className="grid-item rounded-more border-light clickable" key={index} onClick={() => this.handleItemClick(item)}>
                 <h3>{item.name}</h3>
                 <div className="duration">
                     {clockIcon} <div className="spacing"></div> {item.duration}
@@ -56,8 +58,16 @@ export default class MeetingPlan extends React.Component{
         }));
     };
 
+    handleItemClick = (meetingPlan) => {
+        this.setState({ selectedMeetingPlan: meetingPlan });
+    };
+
+    closeDetailPopup = () => {
+        this.setState({ selectedMeetingPlan: null });
+    };
+
     render() {
-        const { data, currentPage } = this.state;
+        const { data, currentPage, selectedMeetingPlan } = this.state;
         const itemsPerPage = 12;
         const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -72,6 +82,12 @@ export default class MeetingPlan extends React.Component{
                         Next
                     </button>
                 </div>
+                {selectedMeetingPlan && 
+                    <MeetingPlanDetailPopup 
+                        meetingPlan={selectedMeetingPlan} 
+                        onClose={this.closeDetailPopup} 
+                    />
+                }
             </div>
         );
     }
