@@ -5,12 +5,14 @@ import withNavigate from "../common/Utils";
 import { request, setAuthToken } from "../../axios_helper";
 import useErrorToast from "../common/useErrorToast";
 
-class _LoginModal extends Form {
+class _SignupModal extends Form {
     constructor(props) {
         super(props, "Sign up");
         this.state = {
+            name: "",
             username: "",
             password: "",
+            role: "STUDENT", // default value
         };
     }
 
@@ -36,14 +38,14 @@ class _LoginModal extends Form {
                 />
                 <div>
                     <b>Select role:</b>
-                    <input type="radio" name="role" value="student" id="r-student"/>
+                    <input type="radio" name="role" value="STUDENT" id="r-student" onChange={this.onChange} defaultChecked/>
                     <label for="r-student">Student</label>
-                    <input type="radio" name="role" value="teacher" id="r-teacher"/>
+                    <input type="radio" name="role" value="TEACHER" id="r-teacher" onChange={this.onChange}/>
                     <label for="r-teacher">Teacher</label>
                 </div>
                 <div className="line-break"></div>
                 <div className="line-break"></div>
-                <button type="submit" className="primary-button">
+                <button type="submit" className="primary-button" onClick={this.onSubmit}>
                     Sign up
                 </button>
                 <div className="line-break"></div>
@@ -55,12 +57,17 @@ class _LoginModal extends Form {
         );
     }
 
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    };
+
     onSubmit = (e) => {
-        const { username, password } = this.state;
+        e.preventDefault();
+        const { name, username, password, role } = this.state;
 
         console.log({ username, password });
 
-        request("POST", `/login`, { username, password })
+        request("POST", `/register`, { name, username, password, role })
             .then((response) => {
                 console.log(response.data);
                 const { id, name, token, role } = response.data;
@@ -73,11 +80,25 @@ class _LoginModal extends Form {
             })
             .catch((error) => {
                 setAuthToken(null);
-                this.props.showErrorToast("Invalid username or password.");
+                this.props.showErrorToast("This account already exist.");
             });
     };
 }
 
-const SignupModal = withNavigate(_LoginModal);
+const SignupModalwithNavigate = withNavigate(_SignupModal);
+
+const SignupModal = (props) => {
+    const [showErrorToast, ErrorToastComponent] = useErrorToast();
+
+    return (
+        <div>
+            <SignupModalwithNavigate
+                showErrorToast={showErrorToast}
+                {...props}
+            />
+            <ErrorToastComponent /> {/* Include Toast component */}
+        </div>
+    );
+};
 
 export default SignupModal;
