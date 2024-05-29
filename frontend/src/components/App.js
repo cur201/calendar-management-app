@@ -66,6 +66,21 @@ function App() {
                     }
                 />
 
+                <Route path="/signup" element={<SignupModal />} />
+
+                <Route path="/logout" element={<Logout />} />
+
+                <Route
+                    path="/dashboard"
+                    element={
+                        userRole ? (
+                            <Navigate to="/dashboard/meeting-plans" replace />
+                        ) : (
+                            <LoginModal />
+                        )
+                    }
+                />
+
                 <Route
                     path="/dashboard/meeting-plans"
                     element={

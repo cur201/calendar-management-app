@@ -32,7 +32,7 @@
     margin: 5px 0;
 }
 
-.form-input > input {
+.form-input > input:not([type=checkbox]):not([type=radio]) {
     width: 100%;
 }
 

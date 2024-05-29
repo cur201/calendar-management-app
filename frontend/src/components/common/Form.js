@@ -42,7 +42,7 @@ export class Form extends React.Component {
     console.log(this.content)
     return (
       <div className="form-container bg-body border-light soft-shadow">
-        <h1>{this.props.name}</h1>
+        <h2>{this.name}</h2>
         <div className="line-break"></div>
         <form onSubmit={this._onSubmit}>
           {this.content}
