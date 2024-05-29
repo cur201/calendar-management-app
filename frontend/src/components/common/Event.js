@@ -1,6 +1,16 @@
 import * as React from 'react';
 import { request, setAuthToken } from '../../axios_helper';
 import "./Event.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faPencil,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+
+const viewIcon = <FontAwesomeIcon icon={faEye} />;
+const editIcon = <FontAwesomeIcon icon={faPencil} />;
+const deleteIcon = <FontAwesomeIcon icon={faTrash} />;
 
 export default class Event extends React.Component {
     constructor(props) {
@@ -67,6 +77,7 @@ export default class Event extends React.Component {
 
         return (
             <div>
+                <h1>Scheduled Events</h1>
                 <div className="tabs">
                     {tabs.map(tab => (
                         <button
@@ -88,7 +99,7 @@ export default class Event extends React.Component {
                         const endTime = Array.isArray(meeting.endTime) ? meeting.endTime.join(':') : '';
 
                         return (
-                            <div key={meeting.id} className="meeting">
+                            <div key={meeting.id} className="meeting rounded-more shadow">
                                 <div className="meeting-time">
                                     <strong>{`start: ${startTime} - end: ${endTime}`}</strong>
                                 </div>
@@ -99,9 +110,9 @@ export default class Event extends React.Component {
                                     {leader.name || 'No leader'}
                                 </div>
                                 <div className="options">
-                                    <button onClick={() => alert(meeting.report)}>View Report</button>
-                                    <button>Edit</button>
-                                    <button>Delete</button>
+                                    <button onClick={() => alert(meeting.report)}>{viewIcon}</button>
+                                    <button>{editIcon}</button>
+                                    <button>{deleteIcon}</button>
                                 </div>
                             </div>
                         );

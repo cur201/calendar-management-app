@@ -29,7 +29,7 @@ class Student extends React.Component {
 
     processStudentData(studentsData) {
         const studentMap = new Map();
-        
+
         studentsData.forEach(student => {
             if (studentMap.has(student.studentId)) {
                 const existingStudent = studentMap.get(student.studentId);
@@ -48,9 +48,9 @@ class Student extends React.Component {
 
     render() {
         return (
-            <div className="student-container">
+            <div>
                 <h1>Student List</h1>
-                <table className="student-table">
+                <table className="student-table rounded-more">
                     <thead>
                         <tr>
                             <th>ID</th>
