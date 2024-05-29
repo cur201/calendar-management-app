@@ -19,7 +19,6 @@ const App = () => {
         const handleStorageChange = () => {
             setUserRole(localStorage.getItem("userRole"));
         };
-
         window.addEventListener("storage", handleStorageChange);
 
         return () => {
@@ -60,7 +59,7 @@ const App = () => {
                         userRole ? (
                             <Navigate to="/dashboard" replace />
                         ) : (
-                            <LoginModal />
+                            <LoginModal roleSetter={setUserRole}/>
                         )
                     }
                 />
@@ -72,7 +71,7 @@ const App = () => {
                         userRole ? (
                             <Navigate to="/dashboard/meeting-plans" replace />
                         ) : (
-                            <LoginModal />
+                            <Navigate to="/login" replace />
                         )
                     }
                 />

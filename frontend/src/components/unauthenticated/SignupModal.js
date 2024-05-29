@@ -39,9 +39,9 @@ class _SignupModal extends Form {
                 <div>
                     <b>Select role:</b>
                     <input type="radio" name="role" value="STUDENT" id="r-student" onChange={this.onChange} defaultChecked/>
-                    <label for="r-student">Student</label>
+                    <label htmlFor="r-student">Student</label>
                     <input type="radio" name="role" value="TEACHER" id="r-teacher" onChange={this.onChange}/>
-                    <label for="r-teacher">Teacher</label>
+                    <label htmlFor="r-teacher">Teacher</label>
                 </div>
                 <div className="line-break"></div>
                 <div className="line-break"></div>

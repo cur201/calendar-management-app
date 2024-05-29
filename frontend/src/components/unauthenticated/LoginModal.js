@@ -55,7 +55,7 @@ class _LoginModal extends Form {
                 localStorage.setItem("userId", id);
                 localStorage.setItem("userName", name);
                 localStorage.setItem("userToken", token);
-                localStorage.setItem("userRole", role);
+                this.props.roleSetter(role);
                 this.props.navigate("/dashboard", { replace: true });
             })
             .catch((error) => {
