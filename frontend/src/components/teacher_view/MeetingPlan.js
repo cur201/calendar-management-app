@@ -1,3 +1,4 @@
+import React from 'react';
 import { request, setAuthToken } from '../../axios_helper';
 import MeetingPlan from '../common/MeetingPlan';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -5,6 +6,8 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
+import MeetingPlanPopupForm from './MeetingPlanPopupForm';
+import { ToastContainer } from 'react-toastify';
 
 export default class TeacherMeetingPlan extends MeetingPlan{
 
@@ -13,10 +16,15 @@ export default class TeacherMeetingPlan extends MeetingPlan{
         this.state = {
             ...this.state,
             searchTerm: '',
+            showPopup: false,
         };
     }
 
     componentDidMount() {
+        this.fetchMeetingPlans();
+    }
+
+    fetchMeetingPlans = () => {
         request(
             "GET",
             `/teacher/get-plans`,
@@ -58,10 +66,19 @@ export default class TeacherMeetingPlan extends MeetingPlan{
 
     handleCreateNew = () => {
         console.log("Create new meeting plan");
+        this.setState({ showPopup: true });
+    }
+
+    closePopup = () => {
+        this.setState({ showPopup: false });
+    }
+
+    handleSuccess = () => {
+        this.fetchMeetingPlans();
     }
 
     render() {
-        const { searchTerm } = this.state;
+        const { searchTerm, showPopup } = this.state;
 
         return (
             <div>
@@ -78,8 +95,10 @@ export default class TeacherMeetingPlan extends MeetingPlan{
                     <button className="create-button" onClick={this.handleCreateNew}>
                         <FontAwesomeIcon icon={faPlus} /> Create New
                     </button>
+                    {showPopup && <MeetingPlanPopupForm onClose={this.closePopup} onSuccess={this.handleSuccess} />}
                 </div>
                 {super.render()}
+                <ToastContainer />
             </div>
         );
     }
