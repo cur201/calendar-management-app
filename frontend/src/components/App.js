@@ -1,7 +1,5 @@
 import "./common/App.css";
-
 import React, { useState, useEffect } from "react";
-
 import {
     BrowserRouter as Router,
     Routes,
@@ -10,25 +8,18 @@ import {
 } from "react-router-dom";
 
 import LoginModal from "./unauthenticated/LoginModal";
-
 import SignupModal from "./unauthenticated/SignupModal";
-
 import TeacherDashboard from "./teacher_view/Dashboard";
-
 import StudentDashboard from "./student_view/Dashboard";
 
-function App() {
+const App = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("userRole"));
 
-    const handleStorageChange = () => {
-        setUserRole(localStorage.getItem("userRole"));
-    };
-
     useEffect(() => {
-        setUserRole(localStorage.getItem("userRole"));
         const handleStorageChange = () => {
             setUserRole(localStorage.getItem("userRole"));
         };
+
         window.addEventListener("storage", handleStorageChange);
 
         return () => {
@@ -43,33 +34,38 @@ function App() {
     const Logout = () => {
         useEffect(() => {
             localStorage.clear();
-
             setUserRole(null);
         }, []);
 
         return <Navigate to="/login" replace />;
     };
 
+    const DashboardRoute = ({ componentToShow }) => (
+        <ProtectedRoute>
+            {userRole === "TEACHER" ? (
+                <TeacherDashboard componentToShow={componentToShow} />
+            ) : (
+                <StudentDashboard componentToShow={componentToShow} />
+            )}
+        </ProtectedRoute>
+    );
+
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to="/login" replace />} />
-
                 <Route
                     path="/login"
                     element={
                         userRole ? (
-                            <Navigate to="/dashboard/meeting-plans" replace />
+                            <Navigate to="/dashboard" replace />
                         ) : (
                             <LoginModal />
                         )
                     }
                 />
-
                 <Route path="/signup" element={<SignupModal />} />
-
                 <Route path="/logout" element={<Logout />} />
-
                 <Route
                     path="/dashboard"
                     element={
@@ -80,35 +76,16 @@ function App() {
                         )
                     }
                 />
-
                 <Route
                     path="/dashboard/meeting-plans"
-                    element={
-                        <ProtectedRoute>
-                            {userRole === "TEACHER" ? (
-                                <TeacherDashboard componentToShow="meeting-plans" />
-                            ) : (
-                                <StudentDashboard componentToShow="meeting-plans" />
-                            )}
-                        </ProtectedRoute>
-                    }
+                    element={<DashboardRoute componentToShow="meeting-plans" />}
                 />
                 <Route
                     path="/dashboard/events"
                     element={
-                        <ProtectedRoute>
-                            {userRole === "TEACHER" ? (
-                                <TeacherDashboard componentToShow="scheduled-event" />
-                            ) : (
-                                <StudentDashboard componentToShow="scheduled-event" />
-                            )}
-                        </ProtectedRoute>
+                        <DashboardRoute componentToShow="scheduled-event" />
                     }
                 />
-                {/* <Route
-          path="/dashboard/students"
-          element={<TeacherDashboard componentToShow="students" />}
-        /> */}
                 <Route
                     path="/dashboard/students"
                     element={
@@ -128,6 +105,6 @@ function App() {
             </Routes>
         </Router>
     );
-}
+};
 
 export default App;
