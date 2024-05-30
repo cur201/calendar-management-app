@@ -330,8 +330,8 @@ public class TeacherController {
                 newUserDto = userService.findByLogin(studentEmail);
             }
 
-            //Check if account already in one group
-            boolean isInGroup = groupUserService.isUserInAnyGroup(newUserDto.getId());
+            //Check if account already in one group in that meeting plan
+            boolean isInGroup = groupUserService.isUserInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId);
             if (!isInGroup) {
                 // Add new group
                 GroupDto newGroupDto = new GroupDto();

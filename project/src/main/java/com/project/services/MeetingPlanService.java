@@ -10,7 +10,10 @@ import com.project.mappers.MeetingPlanMapper;
 import com.project.repositories.MeetingPlansRepository;
 import com.project.repositories.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -71,7 +74,8 @@ public class MeetingPlanService {
                 List<TimeSlot> conflictingSlots = timeSlotRepository.findConflictingTimeSlots(nextDate, startTime, endTime);
                 if (!conflictingSlots.isEmpty()) {
                     String conflictMessage = "Time slot has been conflict in " + nextDate + " from " + startTime + " to " + endTime;
-                    throw new RuntimeException(conflictMessage);
+                    meetingPlansRepository.delete(savedMeetingPlan);
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, conflictMessage);
                 }
 
                 TimeSlot timeSlot = new TimeSlot();

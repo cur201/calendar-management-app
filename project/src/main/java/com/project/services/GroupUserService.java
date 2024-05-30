@@ -39,6 +39,11 @@ public class GroupUserService {
         return !groupUsers.isEmpty();
     }
 
+    public boolean isUserInAnyGroupInMeetingPlan(Long userId, Long meetingPlanId) {
+        List<GroupUser> groupUsers = groupUserRepository.findByUserIdAndMeetingPlanId(userId, meetingPlanId);
+        return !groupUsers.isEmpty();
+    }
+
     public void saveGroupUser(GroupUser groupUser) {
         groupUserRepository.save(groupUser);
     }

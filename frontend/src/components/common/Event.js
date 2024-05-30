@@ -7,6 +7,7 @@ import {
   faPencil,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import Modal from 'react-modal';
 
 const viewIcon = <FontAwesomeIcon icon={faEye} />;
 const editIcon = <FontAwesomeIcon icon={faPencil} />;
@@ -21,7 +22,9 @@ export default class Event extends React.Component {
             currentTab: 'Wait for approve',
             groupInfo: {},
             userInfo: {},
-            meetingPlanInfo: {}
+            meetingPlanInfo: {},
+            isModalOpen: false,
+            modalContent: '',
         };
     }
 
@@ -38,9 +41,9 @@ export default class Event extends React.Component {
                     }));
 
                     const leaderId = response.data.leaderId;
-                    console.log("Leader ID: " + leaderId);
+                    // console.log("Leader ID: " + leaderId);
                     const meetingPlanId = response.data.meetingPlanId;
-                    console.log("Meeting plan ID: " + meetingPlanId);
+                    // console.log("Meeting plan ID: " + meetingPlanId);
 
                     request("GET", `/common/get-user/${leaderId}`)
                         .then(response => {
@@ -69,8 +72,22 @@ export default class Event extends React.Component {
         this.setState({ currentTab: tab });
     };
 
+    openModal = (content) => {
+        this.setState({
+            isModalOpen: true,
+            modalContent: content
+        });
+    };
+
+    closeModal = () => {
+        this.setState({
+            isModalOpen: false,
+            modalContent: ''
+        });
+    };
+
     render() {
-        const { data, currentTab, groupInfo, userInfo, meetingPlanInfo } = this.state;
+        const { data, currentTab, groupInfo, userInfo, meetingPlanInfo, isModalOpen, modalContent } = this.state;
 
         const tabs = ["Wait for approve", "Accepted", "Canceled", "Finished"];
         const filteredMeetings = data.filter(meeting => meeting.state === currentTab);
@@ -110,7 +127,7 @@ export default class Event extends React.Component {
                                     {leader.name || 'No leader'}
                                 </div>
                                 <div className="options">
-                                    <button onClick={() => alert(meeting.report)}>{viewIcon}</button>
+                                    <button onClick={() => this.openModal(meeting.report)}>{viewIcon}</button>
                                     <button>{editIcon}</button>
                                     <button>{deleteIcon}</button>
                                 </div>
@@ -118,6 +135,15 @@ export default class Event extends React.Component {
                         );
                     })}
                 </div>
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={this.closeModal}
+                    contentLabel="Meeting Report"
+                >
+                    <h2>Meeting Report</h2>
+                    <div>{modalContent}</div>
+                    <button onClick={this.closeModal}>Close</button>
+                </Modal>
             </div>
         );
     }

@@ -1,10 +1,13 @@
 import React from 'react';
 import './Student.css';
 import { request, setAuthToken } from '../../axios_helper';
+import Modal from 'react-modal';
+import AddStudentModal from './AddStudentModal';
 
 class Student extends React.Component {
     state = {
-        students: []
+        students: [],
+        isModalOpen: false,
     };
 
     componentDidMount() {
@@ -46,10 +49,20 @@ class Student extends React.Component {
         return Array.from(studentMap.values());
     }
 
+    openModal = () => {
+        this.setState({ isModalOpen: true });
+    }
+
+    closeModal = () => {
+        this.setState({ isModalOpen: false });
+        this.componentDidMount(); // Refresh the page
+    }
+
     render() {
         return (
             <div>
                 <h1>Student List</h1>
+                <button onClick={this.openModal}>Add Student</button>
                 <table className="student-table rounded-more">
                     <thead>
                         <tr>
@@ -68,6 +81,13 @@ class Student extends React.Component {
                         ))}
                     </tbody>
                 </table>
+                <Modal
+                    isOpen={this.state.isModalOpen}
+                    onRequestClose={this.closeModal}
+                    contentLabel="Add Student"
+                >
+                    <AddStudentModal closeModal={this.closeModal} />
+                </Modal>
             </div>
         );
     }
