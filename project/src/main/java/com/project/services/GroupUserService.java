@@ -39,8 +39,8 @@ public class GroupUserService {
         return !groupUsers.isEmpty();
     }
 
-    public boolean isUserInAnyGroupInMeetingPlan(Long userId, Long meetingPlanId) {
-        List<GroupUser> groupUsers = groupUserRepository.findByUserIdAndMeetingPlanId(userId, meetingPlanId);
+    public boolean isUserWithClassIdInAnyGroupInMeetingPlan(Long userId, Long meetingPlanId, Long classId) {
+        List<GroupUser> groupUsers = groupUserRepository.findByUserIdAndMeetingPlanIdAndClassId(userId, meetingPlanId, classId);
         return !groupUsers.isEmpty();
     }
 

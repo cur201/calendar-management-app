@@ -318,6 +318,7 @@ public class TeacherController {
             UserDto newUserDto = new UserDto();
             String studentEmail = studentInfo.getStudentEmail();
             String studentName = studentInfo.getStudentName();
+            Long classId = studentInfo.getClassId();
 
             boolean checkExistEmail = userService.checkExistUsername(studentEmail);
 
@@ -331,12 +332,16 @@ public class TeacherController {
             }
 
             //Check if account already in one group in that meeting plan
-            boolean isInGroup = groupUserService.isUserInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId);
+            boolean isInGroup = groupUserService.isUserWithClassIdInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId, classId);
             if (!isInGroup) {
                 // Add new group
                 GroupDto newGroupDto = new GroupDto();
                 newGroupDto.setMeetingPlanId(meetingPlanId);
                 newGroupDto.setLeaderId(newUserDto.getId());
+                newGroupDto.setClassId(classId);
+                newGroupDto.setCourseId(studentInfo.getCourseId());
+                newGroupDto.setCourseName(studentInfo.getCourseName());
+                newGroupDto.setProjectName(studentInfo.getProjectName());
                 newGroupDto.setVisible(1L);
                 GroupDto newGroup = groupService.addGroup(newGroupDto);
 
@@ -344,13 +349,14 @@ public class TeacherController {
                 GroupUser groupUser = new GroupUser();
                 groupUser.setUserId(newUserDto.getId());
                 groupUser.setGroupId(newGroup.getId());
+                groupUser.setStudentId(studentInfo.getStudentId());
                 groupUserService.saveGroupUser(groupUser);
 
                 User newMeetingPlanUser = new User(null, newUserDto.getName(), newUserDto.getUsername(),
                         newUserDto.getPassword(), newUserDto.getRole(), 1L);
                 results.add("Added " + newMeetingPlanUser + " to the meeting plan " + meetingPlanId + ".");
             }else{
-                results.add("Account already exists for email: " + studentEmail);
+                results.add("User with this classID already exists for email: " + studentEmail);
             }
         }
         return ResponseEntity.ok(results);

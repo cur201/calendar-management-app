@@ -20,6 +20,6 @@ public interface GroupUserRepository extends JpaRepository<GroupUser, Long> {
     @Transactional
     void deleteByUserIdAndGroupId(Long userId, Long groupId);
 
-    @Query("SELECT gu FROM GroupUser gu JOIN GroupTbl g ON gu.groupId = g.id WHERE gu.userId = :userId AND g.meetingPlanId = :meetingPlanId")
-    List<GroupUser> findByUserIdAndMeetingPlanId(@Param("userId") Long userId, @Param("meetingPlanId") Long meetingPlanId);
+    @Query("SELECT gu FROM GroupUser gu JOIN GroupTbl g ON gu.groupId = g.id WHERE gu.userId = :userId AND g.meetingPlanId = :meetingPlanId AND g.classId = :classId")
+    List<GroupUser> findByUserIdAndMeetingPlanIdAndClassId(@Param("userId") Long userId, @Param("meetingPlanId") Long meetingPlanId, Long classId);
 }

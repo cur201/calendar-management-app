@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class StudentInfoDto {
     private String studentEmail;
     private String studentName;
+    private Long classId;
+    private String courseId;
+    private String courseName;
+    private Long studentId;
+    private String projectName;
 }
