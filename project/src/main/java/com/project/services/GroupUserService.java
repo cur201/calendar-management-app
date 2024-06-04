@@ -51,14 +51,14 @@ public class GroupUserService {
     public GroupUserDto addGroupUser(GroupUserDto groupUserDto)
     {
         GroupUser newGroupUser = groupUserMapper.toGroupUser(groupUserDto);
-        GroupUser savedGroupUser = groupUserRepository.save(newGroupUser);
+        groupUserRepository.save(newGroupUser);
 
         return groupUserMapper.toGroupUserDto(newGroupUser);
     }
 
     public GroupUserDto updateGroupUser(GroupUserDto groupUserDto) {
         GroupUser updateGroupUser = groupUserMapper.toGroupUser(groupUserDto);
-        GroupUser savedGroupUser = groupUserRepository.save(updateGroupUser);
+        groupUserRepository.save(updateGroupUser);
         return groupUserMapper.toGroupUserDto(updateGroupUser);
     }
 

@@ -52,7 +52,7 @@ public class MeetingService {
             updatedMeeting.setId(existingMeeting.getId());
             return meetingRepository.save(updatedMeeting);
         }
-        return null;
+        return null; 
     }
 
     public boolean deleteMeeting(Long meetingId) {

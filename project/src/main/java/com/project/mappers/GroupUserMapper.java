@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface GroupUserMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "groupId", target = "groupId")
+    @Mapping(source = "studentId", target = "studentId")
     GroupUserDto toGroupUserDto(GroupUser groupUser);
     GroupUser toGroupUser(GroupUserDto groupUserDto);
 }

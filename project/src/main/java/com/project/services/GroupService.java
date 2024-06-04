@@ -31,7 +31,7 @@ public class GroupService {
         GroupTbl newGroupTbl = groupMapper.toGroup(groupDto);
         System.out.println(groupDto);
         System.out.println(newGroupTbl);
-        GroupTbl savedGroupTbl = groupRepository.save(newGroupTbl);
+        groupRepository.save(newGroupTbl);
 
         return groupMapper.toGroupDto(newGroupTbl);
     }
@@ -46,7 +46,7 @@ public class GroupService {
         if (!optionalGroup.isPresent()) {
             throw new IllegalArgumentException("Meeting plan with ID " + updateGroupId + " does not exist");
         }
-        GroupTbl savedGroupTbl = groupRepository.save(updateGroupTbl);
+        groupRepository.save(updateGroupTbl);
 
         return groupMapper.toGroupDto(updateGroupTbl);
     }
