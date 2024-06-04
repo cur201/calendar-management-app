@@ -15,6 +15,6 @@ public class StudentInfoDto {
     private Long classId;
     private String courseId;
     private String courseName;
-    private Long studentId;
+    private String studentId;
     private String projectName;
 }

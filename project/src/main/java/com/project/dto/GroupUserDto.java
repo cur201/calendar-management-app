@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class GroupUserDto {
     private Long userId;
-    private Long studentId;
+    private String studentId;
     private Long groupId;
 }
