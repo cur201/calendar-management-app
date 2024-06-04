@@ -6,7 +6,7 @@ import {
     faPlus, faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
-import MeetingPlanPopupForm from './MeetingPlanPopupForm';
+import CreatePlanModal from './CreatePlanModal';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -98,7 +98,7 @@ export default class TeacherMeetingPlan extends MeetingPlan{
                     <button className="create-button circle-button" onClick={this.handleCreateNew}>
                         <FontAwesomeIcon icon={faPlus} />
                     </button>
-                    {showPopup && <MeetingPlanPopupForm onClose={this.closePopup} onSuccess={this.handleSuccess} />}
+                    {showPopup && <CreatePlanModal onClose={this.closePopup} onSuccess={this.handleSuccess} />}
                 </div>
                 {super.render()}
                 <ToastContainer />

@@ -1,4 +1,3 @@
-/* PopupForm.css */
 .popup-form {
     position: absolute;
     top: 0;
@@ -13,6 +12,7 @@
 }
 
 .popup-inner {
+    position: relative;
     display: flex;
     gap: 1rem;
     flex-direction: column;
@@ -20,6 +20,7 @@
     padding: 1rem 1.5rem;
     max-width: 500px;
     width: 100%;
+    overflow: hidden;
 }
 
 .popup-inner textarea {
@@ -33,4 +34,21 @@
 .popup-inner .button-container {
     display: flex;
     justify-content: space-between;
+}
+
+.popup-close-button {
+    box-sizing: content-box;
+    display: block;
+    position: absolute;
+    background-color: var(--bg-accent-red);
+    color: var(--main-lighter);
+    right: 0;
+    top: 0;
+    /* transform: translate(50%, -50%); */
+    padding: 5px;
+    font-size: 0.8rem;
+    height: 1rem;
+    width: 2rem;
+    border-radius: 0;
+    border-bottom-left-radius: var(--rounded-more-radius);
 }

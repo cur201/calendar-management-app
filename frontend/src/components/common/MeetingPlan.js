@@ -72,7 +72,7 @@ export default class MeetingPlan extends React.Component{
         const totalPages = Math.ceil(data.length / itemsPerPage);
 
         return (
-            <div>
+            <div className='view-container rounded-more'>
                 {this.renderMeetingPlans()}
                 <div className="pagination-controls">
                     <button onClick={this.handlePrevPage} disabled={currentPage === 0}>

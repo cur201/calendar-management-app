@@ -26,9 +26,3 @@
     background-color: var(--bg-accent);
     color: var(--main-lighter);
 }
-
-.circle-button {
-    width: 2.5rem;
-    padding: 0;
-    border-radius: 1.25rem;
-}

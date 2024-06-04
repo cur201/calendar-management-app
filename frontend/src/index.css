@@ -13,9 +13,12 @@
   --bg-light: #f2f2f2;
   --button-primary: #226fce;
   --bg-accent: #31b522;
+  --bg-accent-red: #ef4a3a;
   --hover: #2c333c3f;
   --soft-shadow: #47474795 0 10px 30px;
   --shadow: #63636389 0 2px 8px;
+  --rounded-radius: 10px;
+  --rounded-more-radius: 14px;
 }
 
 * {
@@ -132,4 +135,10 @@ h2 {
   font-family: "Poppins", sans-serif;
   font-weight: 500;
   margin: 0;
+}
+
+.circle-button {
+  width: 2.5rem;
+  padding: 0;
+  border-radius: 1.25rem;
 }
