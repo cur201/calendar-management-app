@@ -12,7 +12,7 @@ const AddMeetingModal = ({ closeModal }) => {
 
     useEffect(() => {
         // Fetch meeting plans
-        request("GET", `http://localhost:8081/teacher/get-plans`, null)
+        request("GET", `/teacher/get-plans`, null)
             .then(response => {
                 setMeetingPlans(response.data);
             })
@@ -24,9 +24,19 @@ const AddMeetingModal = ({ closeModal }) => {
     useEffect(() => {
         if (selectedMeetingPlan) {
             // Fetch groups by meeting plan id
-            request("GET", `http://localhost:8081/teacher/get-group-by-meeting-plan-id/${selectedMeetingPlan.id}`, null)
+            request("GET", `/teacher/get-group-by-meeting-plan-id/${selectedMeetingPlan}`, null)
                 .then(response => { 
-                    setGroups(response.data);
+                    const groupsWithLeaderName = response.data.map(async group => {
+                        const leaderName = await getUserById(group.leaderId);
+                        return { ...group, leaderName };
+                    });
+                    Promise.all(groupsWithLeaderName)
+                        .then(groups => {
+                            setGroups(groups);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching leader names:', error);
+                        });
                 })
                 .catch(error => {
                     console.error('Error fetching groups:', error);
@@ -34,12 +44,27 @@ const AddMeetingModal = ({ closeModal }) => {
         }
     }, [selectedMeetingPlan]);
 
+    const getUserById = (leaderId) => {
+        return request("GET", `/common/get-user/${leaderId}`, null)
+            .then(response => {
+                return response.data.name; 
+            })
+            .catch(error => {
+                console.error('Error fetching user:', error);
+                return ''; 
+            });
+    };    
+
     const handleSubmit = () => {
         if (selectedGroup && startTime && endTime) {
+
+            const meetingDate = startTime.split('T')[0];
+
             const requestBody = {
                 groupId: selectedGroup.id,
                 startTime: startTime,
                 endTime: endTime,
+                meetingDate: meetingDate,
                 state: 'Wait for approve',
                 report: 'none',
                 visible: 1
@@ -56,13 +81,13 @@ const AddMeetingModal = ({ closeModal }) => {
                 });
         }
     };
-
+    
     return (
         <div>
             <h1>Add Meeting</h1>
             <div>
                 <label>Select Meeting Plan:</label>
-                <select onChange={e => setSelectedMeetingPlan(JSON.parse(e.target.value))}>
+                <select onChange={e => setSelectedMeetingPlan(e.target.value)}>
                     <option value="">Select Meeting Plan</option>
                     {meetingPlans.map(plan => (
                         <option key={plan.id} value={plan.id}>{plan.name}</option>
@@ -72,14 +97,19 @@ const AddMeetingModal = ({ closeModal }) => {
             {selectedMeetingPlan && (
                 <div>
                     <label>Select Group:</label>
-                    <select onChange={e => setSelectedGroup(JSON.parse(e.target.value))}>
+                    <select onChange={async (e) => {
+                        const leaderId = e.target.value; 
+                        const leaderName = await getUserById(leaderId);
+                        setSelectedGroup({ id: leaderId, name: leaderName });
+                    }}>
                         <option value="">Select Group</option>
                         {groups.map(group => (
-                            <option key={group.id} value={JSON.stringify(group)}>{group.name}</option>
+                            <option key={group.id} value={group.id}>{group.id} - {group.leaderName}</option>
                         ))}
                     </select>
                 </div>
             )}
+
             {selectedGroup && (
                 <div>
                     <label>Start Time:</label>
