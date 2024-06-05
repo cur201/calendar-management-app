@@ -4,7 +4,6 @@ import com.project.dto.MeetingPlanDto;
 import com.project.dto.UpdateMeetingPlanDto;
 import com.project.entities.MeetingPlan;
 import com.project.entities.TimeSlot;
-import com.project.entities.User;
 import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.MeetingPlanMapper;
 import com.project.repositories.MeetingPlansRepository;
@@ -104,7 +103,7 @@ public class MeetingPlanService {
         if (!optionalMeetingPlan.isPresent()) {
             throw new IllegalArgumentException("Meeting plan with ID " + updatePlanId + " does not exist");
         }
-        MeetingPlan savedMeetingPlan = meetingPlansRepository.save(updatePlan);
+        meetingPlansRepository.save(updatePlan);
 
         return meetingPlanMapper.toUpdateMeetingPlanDto(updatePlan);
     }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -33,9 +34,12 @@ public class Meeting {
     @Column(name = "state", nullable = false)
     private String state;
 
-    @Column(name = "report", nullable = false)
+    @Column(name = "report", nullable = true)
     private String report;
 
     @Column(name = "visible", nullable = false)
     private Long visible;
+
+    @Column(name = "meeting_date", nullable = true)
+    private LocalDate meetingDate;
 }

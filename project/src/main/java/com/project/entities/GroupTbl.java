@@ -45,6 +45,4 @@ public class GroupTbl {
 
     @Column(name = "project_name", nullable = true)
     private String projectName;
-
-    
 }
