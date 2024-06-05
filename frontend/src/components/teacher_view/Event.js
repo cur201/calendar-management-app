@@ -6,7 +6,7 @@ import AddMeetingModal from './AddMeetingModal';
 export default class TeacherEvent extends Event {    
     state = {
         ...this.state,
-        isModalOpen: false,
+        isAddMeetingModalOpen: false,
     };
 
     componentDidMount() {
@@ -25,25 +25,25 @@ export default class TeacherEvent extends Event {
         });
     }
 
-    openModal = () => {
-        this.setState({ isModalOpen: true });
+    openAddMeetingModal = () => {
+        this.setState({ isAddMeetingModalOpen: true });
     }
 
-    closeModal = () => {
-        this.setState({ isModalOpen: false });
+    closeAddMeetingModal = () => {
+        this.setState({ isAddMeetingModalOpen: false });
         this.componentDidMount(); // Refresh the page
     }
 
     render() {
         return (
             <div>
-                <button onClick={this.openModal}>Add Meeting</button>
+                <button onClick={this.openAddMeetingModal}>Add Meeting</button>
                 <Modal
-                    isOpen={this.state.isModalOpen}
-                    onRequestClose={this.closeModal}
+                    isOpen={this.state.isAddMeetingModalOpen}
+                    onRequestClose={this.closeAddMeetingModal}
                     contentLabel="Add Meeting"
                 >
-                    <AddMeetingModal closeModal={this.closeModal} />
+                    <AddMeetingModal closeModal={this.closeAddMeetingModal} />
                 </Modal>
                 {super.render()}
             </div>
