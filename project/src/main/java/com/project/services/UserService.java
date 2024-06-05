@@ -95,6 +95,8 @@ public class UserService {
 
             for (GroupTbl group : groups) {
                 List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(group.getId());
+                String courseName = group.getCourseName();
+                System.out.println(courseName);
 
                 for (GroupUser groupUser : groupUsers) {
                     User student = userRepository.findByIdAndRole(groupUser.getUserId(), "STUDENT");
@@ -105,6 +107,7 @@ public class UserService {
                         dto.setMeetingPlanId(meetingPlan.getId());
                         dto.setMeetingPlanName(meetingPlan.getName());
                         dto.setGroupId(group.getId());
+                        dto.setCourseName(courseName);
 
                         results.add(dto);
                     }

@@ -36,7 +36,12 @@ const AddStudentModal = ({ closeModal }) => {
         closeModal();
     };
 
+    // const isValidStudent = (student) => {
+    //     return student.Email && student.studentname && student.classid && student.courseid && student.row && student.StudentID && student["Tên đề tài"];
+    // };
+
     const isValidStudent = (student) => {
+        // Kiểm tra tính hợp lệ của một hàng sinh viên
         return student.Email && student.studentname && student.classid && student.courseid && student.StudentID;
     };
 
@@ -46,9 +51,11 @@ const AddStudentModal = ({ closeModal }) => {
             studentname: row.studentname ? row.studentname.trim() : "",
             classid: row.classid ? row.classid.trim() : "",
             courseid: row.courseid ? row.courseid.trim() : "",
-            StudentID: row.StudentID ? row.StudentID.trim() : ""
+            StudentID: row.StudentID ? row.StudentID.trim() : "",
+            name: row.name ? row.name.trim() : "",
+            projectName: row["Tên đề tài"] ? row["Tên đề tài"].trim() : ""
         })).filter(row => {
-            return row.Email || row.studentname || row.classid || row.courseid || row.StudentID;
+            return row.Email || row.studentname || row.classid || row.courseid || row.StudentID || row.name || row["Tên đề tài"];
         });
     };
 
@@ -81,7 +88,7 @@ const AddStudentModal = ({ closeModal }) => {
 
     const handleImportCsv = async () => {
         if (csvData.length === 0) return;
-
+    
         const requestBody = csvData.map(row => ({
             studentEmail: row.Email,
             studentName: row.studentname,
@@ -89,9 +96,9 @@ const AddStudentModal = ({ closeModal }) => {
             courseId: row.courseid,
             courseName: row.name,
             studentId: row.StudentID,
-            projectName: row["Tên đề tài"] || "No Project Name"
+            projectName: row.projectName
         }));
-
+    
         await request("POST", `/teacher/add-user-to-meeting-plan?meetingPlanId=${selectedMeetingPlan}`, requestBody);
         closeModal();
     };

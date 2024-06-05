@@ -15,4 +15,5 @@ public class StudentMeetingPlanDto {
     private Long meetingPlanId;
     private String meetingPlanName;
     private Long groupId;
+    private String courseName;
 }

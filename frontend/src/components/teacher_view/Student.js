@@ -41,7 +41,8 @@ class Student extends React.Component {
                 studentMap.set(student.studentId, {
                     id: student.studentId,
                     name: student.studentName,
-                    meetingPlans: student.meetingPlanName
+                    meetingPlans: student.meetingPlanName,
+                    courseName: student.courseName
                 });
             }
         });
@@ -69,6 +70,7 @@ class Student extends React.Component {
                             <th>ID</th>
                             <th>Name</th>
                             <th>Meeting Plan</th>
+                            <th>Course Name</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,6 +79,7 @@ class Student extends React.Component {
                                 <td>{student.id}</td>
                                 <td>{student.name}</td>
                                 <td>{student.meetingPlans}</td>
+                                <td>{student.courseName}</td>
                             </tr>
                         ))}
                     </tbody>
