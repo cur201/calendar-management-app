@@ -41,9 +41,7 @@ export default class Event extends React.Component {
                     }));
 
                     const leaderId = response.data.leaderId;
-                    // console.log("Leader ID: " + leaderId);
                     const meetingPlanId = response.data.meetingPlanId;
-                    // console.log("Meeting plan ID: " + meetingPlanId);
 
                     request("GET", `/common/get-user/${leaderId}`)
                         .then(response => {
@@ -66,6 +64,16 @@ export default class Event extends React.Component {
                         });
                 });
         });
+    }
+
+    deleteMeeting = (meetingId) => {
+        request("DELETE", `/teacher/delete-meeting/${meetingId}`)
+            .then(() => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error("Error deleting meeting:", error);
+            });
     }
 
     handleTabChange = (tab) => {
@@ -110,7 +118,7 @@ export default class Event extends React.Component {
                     {filteredMeetings.map(meeting => {
                         const group = groupInfo[meeting.groupId] || {};
                         const leader = userInfo[group.leaderId] || {};
-                        const meetingPlan = meetingPlanInfo[group.meetingPlanId] || {};
+                        // const meetingPlan = meetingPlanInfo[group.meetingPlanId] || {};
 
                         const startTime = Array.isArray(meeting.startTime) ? meeting.startTime.join(':') : '';
                         const endTime = Array.isArray(meeting.endTime) ? meeting.endTime.join(':') : '';
@@ -120,8 +128,11 @@ export default class Event extends React.Component {
                                 <div className="meeting-time">
                                     <strong>{`start: ${startTime} - end: ${endTime}`}</strong>
                                 </div>
-                                <div className="meeting-plan">
+                                {/* <div className="meeting-plan">
                                     {meetingPlan.name || 'No meeting plan'}
+                                </div> */}
+                                <div className="course-name">
+                                    {group.courseName || 'No course name'}
                                 </div>
                                 <div className="leader-name">
                                     {leader.name || 'No leader'}
@@ -129,7 +140,7 @@ export default class Event extends React.Component {
                                 <div className="options">
                                     <button onClick={() => this.openModal(meeting.report)}>{viewIcon}</button>
                                     <button>{editIcon}</button>
-                                    <button>{deleteIcon}</button>
+                                    <button onClick={() => this.deleteMeeting(meeting.id)}>{deleteIcon}</button>
                                 </div>
                             </div>
                         );
