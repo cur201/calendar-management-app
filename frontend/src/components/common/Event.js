@@ -8,6 +8,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from 'react-modal';
+import EventDetailPopup from './EventDetailPopup';
 
 const viewIcon = <FontAwesomeIcon icon={faEye} />;
 const editIcon = <FontAwesomeIcon icon={faPencil} />;
@@ -25,6 +26,7 @@ export default class Event extends React.Component {
             meetingPlanInfo: {},
             isModalOpen: false,
             modalContent: '',
+            selectedEvent: null,
         };
     }
 
@@ -33,15 +35,16 @@ export default class Event extends React.Component {
         data.forEach(meeting => {
             request("GET", `/common/get-group/${meeting.groupId}`)
                 .then(response => {
+                    const group = response.data;
                     this.setState(prevState => ({
                         groupInfo: {
                             ...prevState.groupInfo,
-                            [meeting.groupId]: response.data
+                            [meeting.groupId]: group
                         }
                     }));
 
-                    const leaderId = response.data.leaderId;
-                    const meetingPlanId = response.data.meetingPlanId;
+                    const leaderId = group.leaderId;
+                    const meetingPlanId = group.meetingPlanId;
 
                     request("GET", `/common/get-user/${leaderId}`)
                         .then(response => {
@@ -66,15 +69,15 @@ export default class Event extends React.Component {
         });
     }
 
-    deleteMeeting = (meetingId) => {
-        request("DELETE", `/teacher/delete-meeting/${meetingId}`)
-            .then(() => {
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.error("Error deleting meeting:", error);
-            });
-    }
+    handleItemClick = (meeting) => {
+        const group = this.state.groupInfo[meeting.groupId];
+        const leader = this.state.userInfo[group.leaderId];
+        this.setState({ selectedEvent: { ...meeting, group, leader } });
+    };
+
+    closeDetailPopup = () => {
+        this.setState({ selectedEvent: null });
+    };
 
     handleTabChange = (tab) => {
         this.setState({ currentTab: tab });
@@ -95,7 +98,7 @@ export default class Event extends React.Component {
     };
 
     render() {
-        const { data, currentTab, groupInfo, userInfo, meetingPlanInfo, isModalOpen, modalContent } = this.state;
+        const { data, currentTab, groupInfo, userInfo, isModalOpen, modalContent, selectedEvent } = this.state;
 
         const tabs = ["Wait for approve", "Accepted", "Canceled", "Finished"];
         const filteredMeetings = data.filter(meeting => meeting.state === currentTab);
@@ -131,6 +134,9 @@ export default class Event extends React.Component {
                                 {/* <div className="meeting-plan">
                                     {meetingPlan.name || 'No meeting plan'}
                                 </div> */}
+                                <div className="meeting-date">
+                                    {meeting.meetingDate || 'No meeting date'}
+                                </div>
                                 <div className="course-name">
                                     {group.courseName || 'No course name'}
                                 </div>
@@ -139,8 +145,10 @@ export default class Event extends React.Component {
                                 </div>
                                 <div className="options">
                                     <button onClick={() => this.openModal(meeting.report)}>{viewIcon}</button>
-                                    <button>{editIcon}</button>
-                                    <button onClick={() => this.deleteMeeting(meeting.id)}>{deleteIcon}</button>
+                                    <button onClick={() => this.handleItemClick(meeting)}>{editIcon}</button>
+                                    {this.deleteMeeting && (
+                                        <button onClick={() => this.deleteMeeting(meeting.id)}>{deleteIcon}</button>
+                                    )}
                                 </div>
                             </div>
                         );
@@ -155,6 +163,12 @@ export default class Event extends React.Component {
                     <div>{modalContent}</div>
                     <button onClick={this.closeModal}>Close</button>
                 </Modal>
+                {selectedEvent &&
+                    <EventDetailPopup
+                        event={selectedEvent}
+                        onClose={this.closeDetailPopup}
+                    />
+                }
             </div>
         );
     }

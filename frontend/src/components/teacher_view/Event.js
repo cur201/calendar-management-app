@@ -25,6 +25,16 @@ export default class TeacherEvent extends Event {
         });
     }
 
+    deleteMeeting = (meetingId) => {
+        request("DELETE", `/teacher/delete-meeting/${meetingId}`)
+            .then(() => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error("Error deleting meeting:", error);
+            });
+    }
+
     openAddMeetingModal = () => {
         this.setState({ isAddMeetingModalOpen: true });
     }
