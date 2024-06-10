@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StudentMeetingPlan from "./MeetingPlan";
 import Event from "./Event";
-import Student from "./Student";
+import Group from "./Group";
 
 const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />;
 const eventIcon = <FontAwesomeIcon icon={faCalendarCheck} />;
@@ -43,8 +43,8 @@ export default class StudentDashboard extends Dashboard {
             />,
             <NavItem
             icon={studentIcon}
-            title={"Students"}
-            href="/dashboard/students"
+            title={"Group"}
+            href="/dashboard/groups"
             />,
             <NavItem
             icon={notiIcon}
@@ -56,22 +56,15 @@ export default class StudentDashboard extends Dashboard {
     }
 
     getContent() {
-    console.log("SHOW CONTENT");
     switch (this.props.componentToShow) {
         case "meeting-plans":
         return <StudentMeetingPlan />;
         case "scheduled-event":
         return <Event />;
-        case "students":
-        return <Student />
+        case "groups":
+        return <Group />
 
         default:
         return <div>Select a component to show</div>;
-    }
-
-    // render () {
-    //     return (
-    //         <Dashboard items={this.items} componentToShow={this.state.componentToShow} />
-    //     );
-    // };
-}}
+    }}
+}

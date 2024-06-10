@@ -2,14 +2,18 @@ package com.project.services;
 
 import com.project.dto.GroupDto;
 import com.project.entities.GroupTbl;
+import com.project.entities.GroupUser;
 import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.GroupMapper;
 import com.project.repositories.GroupRepository;
+import com.project.repositories.GroupUserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -17,6 +21,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
+    private final GroupUserRepository groupUserRepository;
 
     public List<GroupTbl> getGroupByOwnerUserId(Long userId) {
         return groupRepository.findGroupsByMeetingPlanId_OwnerUserId(userId);
@@ -24,6 +29,16 @@ public class GroupService {
 
     public List<GroupTbl> getGroupByMeetingPlanId(Long meetingPlanId){
         return groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlanId, 1);
+    }
+
+    public List<GroupTbl> getGroupsByUserId(Long userId) {
+    List<GroupUser> groupUsers = groupUserRepository.findByUserId(userId);
+    
+    List<Long> groupIds = groupUsers.stream()
+                                        .map(GroupUser::getGroupId)
+                                        .collect(Collectors.toList());
+
+    return groupRepository.findByIdIn(groupIds);
     }
 
     public GroupDto addGroup(GroupDto groupDto)

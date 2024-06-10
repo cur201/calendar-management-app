@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.project.dto.MeetingDto;
+import com.project.entities.GroupTbl;
 import com.project.entities.Meeting;
 import com.project.entities.MeetingPlan;
 import com.project.services.GroupService;
@@ -64,6 +65,13 @@ public class StudentController {
     public ResponseEntity<List<MeetingPlan>> getMeetingPlanByStudentId(@PathVariable("studentId") Long studentId) {
         List<MeetingPlan> meetingPlans = meetingPlanService.findMeetingPlanByUserId(studentId);
         return ResponseEntity.ok(meetingPlans);
+    }
+
+    @GetMapping("/get-group-by-student-id/{studentId}")
+    @PreAuthorize("hasAuthority('STUDENT')")
+    public ResponseEntity<List<GroupTbl>> getGroupByStudentId(@PathVariable("studentId") Long studentId) {
+        List<GroupTbl> groups = groupService.getGroupsByUserId(studentId);
+        return ResponseEntity.ok(groups);
     }
 
     //TODO::Add API for group action(Consider later)

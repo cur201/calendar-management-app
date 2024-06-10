@@ -12,4 +12,6 @@ public interface GroupRepository extends JpaRepository<GroupTbl, Long> {
     List<GroupTbl> findGroupsByMeetingPlanId_OwnerUserId(Long userId);
 
     List<GroupTbl> findGroupByMeetingPlanIdAndVisible(Long meetingPlanId, int visible);
+
+    List<GroupTbl> findByIdIn(List<Long> ids);
 }

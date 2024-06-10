@@ -6,7 +6,7 @@ import com.project.mappers.GroupMapper;
 import com.project.mappers.MeetingPlanMapper;
 import com.project.mappers.UserDtoUserDetailsMapper;
 import com.project.services.*;
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +34,6 @@ public class TeacherController {
     private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
     private final TimeSlotService timeSlotService;
 
-    @Autowired
     public TeacherController(MeetingPlanService meetingPlanService, MeetingPlanMapper meetingPlanMapper,
                              GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
                              MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper, TimeSlotService timeSlotService) {

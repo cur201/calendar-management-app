@@ -5,7 +5,7 @@ import com.project.dto.UserDto;
 import com.project.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.context.annotation.ComponentScan;
+// import org.springframework.context.annotation.ComponentScan;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
