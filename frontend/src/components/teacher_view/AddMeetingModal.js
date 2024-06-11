@@ -1,126 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import 'react-tabs/style/react-tabs.css';
-import { request } from '../../axios_helper';
+import "react-tabs/style/react-tabs.css";
+import { request } from "../../axios_helper";
+import PopUpModal from "../common/PopUpModal";
 
-const AddMeetingModal = ({ closeModal }) => {
-    const [meetingPlans, setMeetingPlans] = useState([]);
-    const [selectedMeetingPlan, setSelectedMeetingPlan] = useState(null);
-    const [groups, setGroups] = useState([]);
-    const [selectedGroup, setSelectedGroup] = useState(null);
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+class AddMeetingModal extends PopUpModal {
+    constructor(props) {
+        super(props);
+        this.state = {
+            meetingPlans: [],
+            selectedMeetingPlan: null,
+            groups: [],
+            selectedGroup: null,
+            startTime: "",
+            endTime: "",
+        };
+        this.getUserById = this.getUserById.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleMeetingPlanChange = this.handleMeetingPlanChange.bind(this);
+        this.handleGroupChange = this.handleGroupChange.bind(this);
+        this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
+        this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
+    }
 
-    useEffect(() => {
+    componentDidMount() {
         // Fetch meeting plans
         request("GET", `/teacher/get-plans`, null)
-            .then(response => {
-                setMeetingPlans(response.data);
+            .then((response) => {
+                this.setState({ meetingPlans: response.data });
             })
-            .catch(error => {
-                console.error('Error fetching meeting plans:', error);
+            .catch((error) => {
+                console.error("Error fetching meeting plans:", error);
             });
-    }, []);
+    }
 
-    useEffect(() => {
-        if (selectedMeetingPlan) {
-            // Fetch groups by meeting plan id
-            request("GET", `/teacher/get-group-by-meeting-plan-id/${selectedMeetingPlan}`, null)
-                .then(response => { 
-                    const groupsWithLeaderName = response.data.map(async group => {
-                        const leaderName = await getUserById(group.leaderId);
-                        return { ...group, leaderName };
-                    });
-                    Promise.all(groupsWithLeaderName)
-                        .then(groups => {
-                            setGroups(groups);
-                        })
-                        .catch(error => {
-                            console.error('Error fetching leader names:', error);
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.selectedMeetingPlan !== this.state.selectedMeetingPlan) {
+            if (this.state.selectedMeetingPlan) {
+                // Fetch groups by meeting plan id
+                request("GET", `/teacher/get-group-by-meeting-plan-id/${this.state.selectedMeetingPlan}`, null)
+                    .then((response) => {
+                        const groupsWithLeaderName = response.data.map(async (group) => {
+                            const leaderName = await this.getUserById(group.leaderId);
+                            return { ...group, leaderName };
                         });
-                })
-                .catch(error => {
-                    console.error('Error fetching groups:', error);
-                });
+                        Promise.all(groupsWithLeaderName)
+                            .then((groups) => {
+                                this.setState({ groups });
+                            })
+                            .catch((error) => {
+                                console.error("Error fetching leader names:", error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching groups:", error);
+                    });
+            }
         }
-    }, [selectedMeetingPlan]);
+    }
 
-    const getUserById = (leaderId) => {
+    getUserById(leaderId) {
         return request("GET", `/common/get-user/${leaderId}`, null)
-            .then(response => {
-                return response.data.name; 
+            .then((response) => {
+                return response.data.name;
             })
-            .catch(error => {
-                console.error('Error fetching user:', error);
-                return ''; 
+            .catch((error) => {
+                console.error("Error fetching user:", error);
+                return "";
             });
-    };    
+    }
 
-    const handleSubmit = () => {
+    handleSubmit() {
+        const { selectedGroup, startTime, endTime } = this.state;
+
         if (selectedGroup && startTime && endTime) {
-
-            const meetingDate = startTime.split('T')[0];
+            const meetingDate = startTime.split("T")[0];
 
             const requestBody = {
                 groupId: selectedGroup.id,
                 startTime: startTime,
                 endTime: endTime,
                 meetingDate: meetingDate,
-                state: 'Wait for approve',
-                report: 'none',
-                visible: 1
+                state: "Wait for approve",
+                report: "none",
+                visible: 1,
             };
 
             // Send POST request to add meeting
-            request("POST", '/teacher/add-meeting', requestBody)
-                .then(response => {
+            request("POST", "/teacher/add-meeting", requestBody)
+                .then((response) => {
                     // Refresh page on success
                     window.location.reload();
                 })
-                .catch(error => {
-                    console.error('Error adding meeting:', error);
+                .catch((error) => {
+                    console.error("Error adding meeting:", error);
                 });
         }
-    };
-    
-    return (
-        <div>
-            <h1>Add Meeting</h1>
-            <div>
-                <label>Select Meeting Plan:</label>
-                <select onChange={e => setSelectedMeetingPlan(e.target.value)}>
-                    <option value="">Select Meeting Plan</option>
-                    {meetingPlans.map(plan => (
-                        <option key={plan.id} value={plan.id}>{plan.name}</option>
-                    ))}
-                </select>
-            </div>
-            {selectedMeetingPlan && (
+    }
+
+    handleMeetingPlanChange(e) {
+        this.setState({ selectedMeetingPlan: e.target.value });
+    }
+
+    async handleGroupChange(e) {
+        const leaderId = e.target.value;
+        const leaderName = await this.getUserById(leaderId);
+        this.setState({ selectedGroup: { id: leaderId, name: leaderName } });
+    }
+
+    handleStartTimeChange(e) {
+        this.setState({ startTime: e.target.value });
+    }
+
+    handleEndTimeChange(e) {
+        this.setState({ endTime: e.target.value });
+    }
+
+    render() {
+        const { meetingPlans, selectedMeetingPlan, groups, selectedGroup, startTime, endTime } = this.state;
+
+        return (
+            <PopUpModal title="Add Meeting" onClose={this.props.onClose}>
                 <div>
-                    <label>Select Group:</label>
-                    <select onChange={async (e) => {
-                        const leaderId = e.target.value; 
-                        const leaderName = await getUserById(leaderId);
-                        setSelectedGroup({ id: leaderId, name: leaderName });
-                    }}>
-                        <option value="">Select Group</option>
-                        {groups.map(group => (
-                            <option key={group.id} value={group.id}>{group.id} - {group.leaderName}</option>
+                    <label>Select Meeting Plan:</label>
+                    <select onChange={this.handleMeetingPlanChange}>
+                        <option value="">Select Meeting Plan</option>
+                        {meetingPlans.map((plan) => (
+                            <option key={plan.id} value={plan.id}>
+                                {plan.name}
+                            </option>
                         ))}
                     </select>
                 </div>
-            )}
+                {selectedMeetingPlan && (
+                    <div>
+                        <label>Select Group:</label>
+                        <select onChange={this.handleGroupChange}>
+                            <option value="">Select Group</option>
+                            {groups.map((group) => (
+                                <option key={group.id} value={group.id}>
+                                    {group.id} - {group.leaderName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
-            {selectedGroup && (
-                <div>
-                    <label>Start Time:</label>
-                    <input type="datetime-local" value={startTime} onChange={e => setStartTime(e.target.value)} />
-                    <label>End Time:</label>
-                    <input type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} />
-                </div>
-            )}
-            <button onClick={handleSubmit}>Submit</button>
-        </div>
-    );
-};
+                {selectedGroup && (
+                    <div>
+                        <label>Start Time:</label>
+                        <input type="datetime-local" value={startTime} onChange={this.handleStartTimeChange} />
+                        <label>End Time:</label>
+                        <input type="datetime-local" value={endTime} onChange={this.handleEndTimeChange} />
+                    </div>
+                )}
+                <button onClick={this.handleSubmit}>Submit</button>
+            </PopUpModal>
+        );
+    }
+}
 
 export default AddMeetingModal;
