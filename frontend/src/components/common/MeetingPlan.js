@@ -1,51 +1,52 @@
-import * as React from 'react';
+import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faClock
-  } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
-import MeetingPlanDetailPopup from './MeetingPlanDetailPopup';
+import MeetingPlanDetailPopup from "./MeetingPlanDetailPopup";
 
 const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
-export default class MeetingPlan extends React.Component{
+export default class MeetingPlan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data : [],
+            data: [],
+            searchTerm: "",
             currentPage: 0,
             selectedMeetingPlan: null,
+            showPlans: [],
         };
-    };
+    }
 
-    renderMeetingPlans() {
+    componentDidMount() {
+        this.fetchMeetingPlans();
+    }
+
+    fetchMeetingPlans() {}
+
+    updateShowPlans() {
+        console.log("This:");
+        console.log(this);
+        console.log("Render plans");
         const { data, currentPage } = this.state;
         const itemsPerPage = 12; //max item per page
         const startIndex = currentPage * itemsPerPage;
         const selectedItems = data.slice(startIndex, startIndex + itemsPerPage);
-
-        const gridItems = selectedItems.map((item, index) => (
-            <div className="grid-item rounded-more clickable shadow" key={index} onClick={() => this.handleItemClick(item)}>
-                <h3>{item.name}</h3>
-                <div className="duration">
-                    {clockIcon} <div className="spacing"></div> {item.duration}
-                </div>
-                <div className="location"><b>Location:</b> {item.location}</div>
-                {/* <p>{item.description}</p> */}
-            </div>
-        ));
-
-        return (
-            <div className="grid-container">
-                {gridItems}
-            </div>
-        );
+        console.log(data);
+        console.log(selectedItems);
+        this.setState({ showPlans: selectedItems }, () => {
+            console.log(this.state);
+            this.forceUpdate();
+        });
     }
 
     handlePrevPage = () => {
-        this.setState((prevState) => ({
-            currentPage: Math.max(prevState.currentPage - 1, 0)
-        }));
+        this.setState(
+            (prevState) => ({
+                currentPage: Math.max(prevState.currentPage - 1, 0),
+            }),
+            this.updateShowPlans
+        );
     };
 
     handleNextPage = () => {
@@ -53,9 +54,12 @@ export default class MeetingPlan extends React.Component{
         const itemsPerPage = 12;
         const totalPages = Math.ceil(data.length / itemsPerPage);
 
-        this.setState((prevState) => ({
-            currentPage: Math.min(prevState.currentPage + 1, totalPages - 1)
-        }));
+        this.setState(
+            (prevState) => ({
+                currentPage: Math.min(prevState.currentPage + 1, totalPages - 1),
+            }),
+            this.updateShowPlans
+        );
     };
 
     handleItemClick = (meetingPlan) => {
@@ -66,28 +70,80 @@ export default class MeetingPlan extends React.Component{
         this.setState({ selectedMeetingPlan: null });
     };
 
+    handleSearchChange(event) {}
+
+    handleSearchSubmit() {}
+
+    content() {}
+
     render() {
-        const { data, currentPage, selectedMeetingPlan } = this.state;
+        console.log(this);
+        const { data, currentPage, selectedMeetingPlan, searchTerm, showPlans } = this.state;
         const itemsPerPage = 12;
         const totalPages = Math.ceil(data.length / itemsPerPage);
-
+        console.log("re-render");
+        console.log(showPlans);
+        console.log(data);
         return (
-            <div className='view-container rounded-more'>
-                {this.renderMeetingPlans()}
-                <div className="pagination-controls">
-                    <button onClick={this.handlePrevPage} disabled={currentPage === 0}>
-                        Previous
-                    </button>
-                    <button onClick={this.handleNextPage} disabled={currentPage === totalPages - 1}>
-                        Next
-                    </button>
+            <div className="view-container">
+                <div className="top-controls">
+                    <h1>Meeting plans</h1>
+                    <div className="spacing"></div>
+                    {this.searchable ? (
+                        <div className="search-container">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={searchTerm}
+                                onChange={this.handleSearchChange}
+                            />
+                            <button onClick={this.handleSearchSubmit} className="circle-button">
+                                <FontAwesomeIcon icon={faSearch} />
+                            </button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                    {this.readOnly ? (
+                        ""
+                    ) : (
+                        <button className="create-button circle-button" onClick={this.handleCreateNew}>
+                            <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                    )}
                 </div>
-                {selectedMeetingPlan &&
-                    <MeetingPlanDetailPopup
-                        meetingPlan={selectedMeetingPlan}
-                        onClose={this.closeDetailPopup}
-                    />
-                }
+                <div>
+                    <div className="grid-container">
+                        {showPlans.map((item, index) => (
+                            <div
+                                className="grid-item rounded-more clickable shadow"
+                                key={index}
+                                onClick={() => this.handleItemClick(item)}
+                            >
+                                <h3>{item.name}</h3>
+                                <div className="duration">
+                                    {clockIcon} <div className="spacing"></div> {item.duration}
+                                </div>
+                                <div className="location">
+                                    <b>Location:</b> {item.location}
+                                </div>
+                                {/* <p>{item.description}</p> */}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="pagination-controls">
+                        <button onClick={this.handlePrevPage} disabled={currentPage === 0}>
+                            Previous
+                        </button>
+                        <button onClick={this.handleNextPage} disabled={currentPage === totalPages - 1}>
+                            Next
+                        </button>
+                    </div>
+                    {selectedMeetingPlan && (
+                        <MeetingPlanDetailPopup meetingPlan={selectedMeetingPlan} onClose={this.closeDetailPopup} readOnly={this.readOnly}/>
+                    )}
+                </div>
+                {this.content()}
             </div>
         );
     }

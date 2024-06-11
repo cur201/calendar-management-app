@@ -17,7 +17,7 @@ class EventDetailPopup extends PopUpModal {
 
     formatTime(timeArray) {
         if (Array.isArray(timeArray) && timeArray.length === 2) {
-            const [hours, minutes] = timeArray.map(num => String(num).padStart(2, '0'));
+            const [hours, minutes] = timeArray.map((num) => String(num).padStart(2, "0"));
             return `${hours}:${minutes}`;
         }
         return "";
@@ -26,7 +26,7 @@ class EventDetailPopup extends PopUpModal {
     formatDate(dateArray) {
         if (Array.isArray(dateArray) && dateArray.length === 3) {
             const [year, month, day] = dateArray;
-            return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         }
         return "";
     }
@@ -48,16 +48,16 @@ class EventDetailPopup extends PopUpModal {
             meetingDate: meetingDate,
             state: event.state,
             report: report,
-            visible: 1
+            visible: 1,
         };
 
         request("POST", "/teacher/update-meeting", updatedEvent)
-            .then(response => {
+            .then((response) => {
                 // Handle the response accordingly
                 console.log("Event details updated successfully", response.data);
                 window.location.reload();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error updating event details", error);
             });
     };
@@ -65,68 +65,62 @@ class EventDetailPopup extends PopUpModal {
     render() {
         const { event, onClose } = this.props;
         const { startTime, endTime, report, meetingDate } = this.state;
-        const isEditable = event.state === 'Wait for approve';
-        const isReportEditable = event.state === 'Accepted' || event.state === 'Finished';
+        const isEditable = event.state === "Wait for approve";
+        const isReportEditable = event.state === "Accepted" || event.state === "Finished";
 
         return (
-            <PopUpModal onClose={onClose}>
-                <div>
-                    <h1>Meeting Popup</h1>
-                    <div>
-                        <label>Start Time: </label>
-                        <input
-                            type="time"
-                            name="startTime"
-                            value={startTime}
-                            onChange={this.handleChange}
-                            disabled={!isEditable}
-                        />
-                    </div>
-                    <div>
-                        <label>End Time: </label>
-                        <input
-                            type="time"
-                            name="endTime"
-                            value={endTime}
-                            onChange={this.handleChange}
-                            disabled={!isEditable}
-                        />
-                    </div>
-                    <div>
-                        <label>Meeting Date: </label>
-                        <input
-                            type="date"
-                            name="meetingDate"
-                            value={meetingDate}
-                            onChange={this.handleChange}
-                            disabled={!isEditable}
-                        />
-                    </div>
-                    <div>
-                        <label>Course Name: </label>
-                        <span>{event.group?.courseName || 'No course name'}</span>
-                    </div>
-                    <div>
-                        <label>Leader Name: </label>
-                        <span>{event.leader?.name || 'No leader'}</span>
-                    </div>
-                    <div>
-                        <label>Status: </label>
-                        <span>{event.state}</span>
-                    </div>
-                    <div>
-                        <label>Report: </label>
-                        <textarea
-                            name="report"
-                            value={report}
-                            onChange={this.handleChange}
-                            disabled={!isReportEditable}
-                        />
-                    </div>
-                    <div>
-                        <button onClick={this.handleSave} disabled={event.status === 'Canceled'}>Save</button>
-                        <button onClick={onClose}>Cancel</button>
-                    </div>
+            <PopUpModal onClose={onClose} title="Details">
+                <div className="input-group">
+                    <label>Start Time</label>
+                    <input
+                        type="time"
+                        name="startTime"
+                        value={startTime}
+                        onChange={this.handleChange}
+                        disabled={!isEditable}
+                    />
+                </div>
+                <div className="input-group">
+                    <label>End Time</label>
+                    <input
+                        type="time"
+                        name="endTime"
+                        value={endTime}
+                        onChange={this.handleChange}
+                        disabled={!isEditable}
+                    />
+                </div>
+                <div className="input-group">
+                    <label>Meeting Date</label>
+                    <input
+                        type="date"
+                        name="meetingDate"
+                        value={meetingDate}
+                        onChange={this.handleChange}
+                        disabled={!isEditable}
+                    />
+                </div>
+                <div className="input-group">
+                    <label>Course Name</label>
+                    <span className="uneditable">{event.group?.courseName || "No course name"}</span>
+                </div>
+                <div className="input-group">
+                    <label>Leader Name</label>
+                    <span className="uneditable">{event.leader?.name || "No leader"}</span>
+                </div>
+                <div className="input-group">
+                    <label>Status</label>
+                    <span className="uneditable">{event.state}</span>
+                </div>
+                <div className="input-group">
+                    <label>Report</label>
+                    <textarea name="report" value={report} onChange={this.handleChange} disabled={!isReportEditable} />
+                </div>
+                <div className="button-container">
+                    <button onClick={this.handleSave} disabled={event.status === "Canceled"}>
+                        Save
+                    </button>
+                    <button onClick={onClose}>Cancel</button>
                 </div>
             </PopUpModal>
         );

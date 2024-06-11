@@ -12,11 +12,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
     componentDidMount() {
         const { meetingPlan } = this.props;
         if (meetingPlan) {
-            request(
-                "GET",
-                `/teacher/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`,
-                null
-            )
+            request("GET", `/teacher/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`, null)
                 .then((response) => {
                     this.setState({ timeSlots: response.data });
                 })
@@ -32,11 +28,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
 
     handleDelete = () => {
         const { meetingPlan, onClose } = this.props;
-        request(
-            "DELETE",
-            `/teacher/delete-meeting-plan/${meetingPlan.id}`,
-            null
-        )
+        request("DELETE", `/teacher/delete-meeting-plan/${meetingPlan.id}`, null)
             .then(() => {
                 onClose(true);
                 window.location.reload();
@@ -74,11 +66,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
         const { onClose } = this.props;
 
         if (isModified) {
-            if (
-                window.confirm(
-                    "You have unsaved changes. Are you sure you want to close?"
-                )
-            ) {
+            if (window.confirm("You have unsaved changes. Are you sure you want to close?")) {
                 onClose();
             }
         } else {
@@ -88,16 +76,12 @@ class MeetingPlanDetailPopup extends PopUpModal {
 
     render() {
         const { meetingPlan, onClose } = this.props;
-        const { editable, editedMeetingPlan, timeSlots, isModified } =
-            this.state;
+        const { editable, editedMeetingPlan, timeSlots, isModified } = this.state;
 
         if (!meetingPlan) return null;
 
         return (
-            <PopUpModal
-                title={editable ? "Edit Meeting Plan" : meetingPlan.name}
-                onClose={onClose}
-            >
+            <PopUpModal title={editable ? "Edit Meeting Plan" : meetingPlan.name} onClose={onClose}>
                 {editable ? (
                     <>
                         <p>
@@ -133,10 +117,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
                             value={editedMeetingPlan.ownerUserId}
                             onChange={this.handleInputChange}
                         />
-                        <button
-                            onClick={this.handleSave}
-                            disabled={!isModified}
-                        >
+                        <button onClick={this.handleSave} disabled={!isModified}>
                             Save
                         </button>
                     </>
@@ -159,25 +140,27 @@ class MeetingPlanDetailPopup extends PopUpModal {
                         </p>
                     </>
                 )}
-                <div>
-                    <button onClick={this.handleEdit}>Edit</button>
-                    <button onClick={this.handleDelete}>Delete</button>
-                </div>
+                {this.props.readOnly ? (
+                    ""
+                ) : (
+                    <div>
+                        <button onClick={this.handleEdit}>Edit</button>
+                        <button onClick={this.handleDelete}>Delete</button>
+                    </div>
+                )}
+
                 <h3>Time Slots</h3>
                 <div className="timeslot-list">
                     {timeSlots.map((slot) => (
                         <div key={slot.id} className="timeslot-item">
                             <p>
-                                <b>Date:</b>{" "}
-                                {`${slot.timeSlotDate[2]}/${slot.timeSlotDate[1]}/${slot.timeSlotDate[0]}`}
+                                <b>Date:</b> {`${slot.timeSlotDate[2]}/${slot.timeSlotDate[1]}/${slot.timeSlotDate[0]}`}
                             </p>
                             <p>
-                                <b>Start Time:</b>{" "}
-                                {`${slot.startTime[0]}:${slot.startTime[1]}`}
+                                <b>Start Time:</b> {`${slot.startTime[0]}:${slot.startTime[1]}`}
                             </p>
                             <p>
-                                <b>End Time:</b>{" "}
-                                {`${slot.endTime[0]}:${slot.endTime[1]}`}
+                                <b>End Time:</b> {`${slot.endTime[0]}:${slot.endTime[1]}`}
                             </p>
                         </div>
                     ))}

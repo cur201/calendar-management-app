@@ -1,144 +1,160 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Quicksand:wght@300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Quicksand:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
-  font-size: 16px;
-  --main: #2c333c;
-  --main-greyed:#353e4ac2;
-  --main-light: #dbe1e8;
-  --main-lighter: #f0f3f7;
-  --border-light: #dddddd;
-  --bg-body: #fdfdfd;
-  --bg-light: #f2f2f2;
-  --button-primary: #226fce;
-  --bg-accent: #31b522;
-  --bg-accent-red: #ef4a3a;
-  --hover: #2c333c3f;
-  --soft-shadow: #47474795 0 10px 30px;
-  --shadow: #63636389 0 2px 8px;
-  --rounded-radius: 10px;
-  --rounded-more-radius: 14px;
+    font-size: 16px;
+    --main: #2c333c;
+    --main-greyed: #353e4ac2;
+    --main-light: #dbe1e8;
+    --main-lighter: #f0f3f7;
+    --border-light: #dddddd;
+    --bg-body: #fdfdfd;
+    --bg-light: #f2f2f2;
+    --button-primary: #226fce;
+    --bg-accent: #31b522;
+    --bg-accent-red: #ef4a3a;
+    --hover: #2c333c3f;
+    --soft-shadow: #47474795 0 10px 30px;
+    --shadow: #63636389 0 2px 8px;
+    --rounded-radius: 10px;
+    --rounded-more-radius: 14px;
 }
 
 * {
-  font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-variation-settings:
-    "slnt" 0;
-  font-size: 1rem;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+    font-size: 1rem;
 }
 
-
-
 input {
-  font-size: 1rem;
+    font-size: 1rem;
 }
 
 html {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background-image: url("./background.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-image: url("./background.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 body {
-  background-color: none;
-  margin: 0;
-  color: var(--main);
+    background-color: none;
+    margin: 0;
+    color: var(--main);
 }
 
-.line-break{
-  height: 1rem;
-  width: 100%;
+.line-break {
+    height: 1rem;
+    width: 100%;
 }
 
-input, button, textarea{
-  color: var(--main);
-  height: 2.5rem;
-  border: none;
-  border-radius: 10px;
-  padding: 0 1rem;
+input,
+button,
+textarea {
+    color: var(--main);
+    height: 2.5rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0 .75rem;
 }
 
-input, textarea {
-  background-color: var(--main-lighter);
+input,
+textarea {
+    background-color: var(--main-lighter);
 }
 
 .primary-button {
-  color: var(--main-light);
-  background-color: var(--button-primary);
+    color: var(--main-light);
+    background-color: var(--button-primary);
 }
 
 .acrylic {
-  background-color: #fffb;
-  backdrop-filter: blur(20px);
+    background-color: #fffb;
+    backdrop-filter: blur(20px);
 
-  color: white;
+    color: white;
 }
 
 .bg-body {
-  background-color: var(--bg-body);
+    background-color: var(--bg-body);
 }
 
 .bg-light {
-  background-color: var(--bg-light);
+    background-color: var(--bg-light);
 }
 
-.clickable, button{
-  cursor: pointer;
+.clickable,
+button {
+    cursor: pointer;
 }
 
 .border-light {
-  border: 1px var(--border-light) solid;
+    border: 1px var(--border-light) solid;
 }
 
 .soft-shadow {
-  box-shadow: #aaaaaaaa 0 10px 30px;
+    box-shadow: #aaaaaaaa 0 10px 30px;
 }
 
 .shadow {
-  box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
 }
 
 .rounded {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 
 .rounded-more {
-  border-radius: 14px;
+    border-radius: 14px;
 }
 
-
 b {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 h3 {
-  font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 h1 {
-  font-size: 3rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
+    font-size: 3rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
 }
 
 h2 {
-  font-size: 2rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  margin: 0;
+    font-size: 2rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    margin: 0;
 }
 
 .circle-button {
-  width: 2.5rem;
-  padding: 0;
-  border-radius: 1.25rem;
+    width: 2.5rem;
+    padding: 0;
+    border-radius: 1.25rem;
+}
+
+.line-separator {
+    font-weight: bold;
+    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    opacity: 0.5;
+}
+
+.line-separator::after {
+    content: "";
+    height: 1px;
+    width: 100%;
+    background-color: var(--main);
+    opacity: 0.8;
 }

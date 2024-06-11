@@ -14,7 +14,7 @@
 
 .nav-window-container {
     position: relative;
-    overflow: hidden;
+    overflow: hidden scroll;
     height: calc(100vh - 16px);
     background: linear-gradient(0deg, var(--bg-body) 96%, #efefef 100%);
 }
