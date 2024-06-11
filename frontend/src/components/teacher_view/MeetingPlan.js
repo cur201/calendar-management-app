@@ -17,18 +17,17 @@ export default class TeacherMeetingPlan extends MeetingPlan {
     }
 
     fetchMeetingPlans() {
-        var self = this
         request("GET", `/teacher/get-plans`, null)
             .then((response) => {
                 console.log(response.data)
-                self.setState({ data: response.data }, self.updateShowPlans);
+                this.setState({ data: response.data }, this.updateShowPlans);
             })
             .catch((error) => {
                 console.log(error)
                 if (error.response.status === 401) {
                     setAuthToken(null);
                 } else {
-                    self.setState({ data: error.response.code });
+                    this.setState({ data: error.response.code });
                 }
             });
     };
@@ -46,11 +45,11 @@ export default class TeacherMeetingPlan extends MeetingPlan {
         this.fetchMeetingPlans();
     };
 
-    handleSearchChange(event) {
+    handleSearchChange = (event) => {
         this.setState({ searchTerm: event.target.value });
     };
 
-    handleSearchSubmit() {
+    handleSearchSubmit = () => {
         const { searchTerm } = this.state;
         const ownerUserId = localStorage.getItem("userId");
         console.log("Searching for:", searchTerm, "with ownerUserId:", ownerUserId);
