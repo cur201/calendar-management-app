@@ -1,6 +1,7 @@
 import "react-tabs/style/react-tabs.css";
 import { request } from "../../axios_helper";
 import PopUpModal from "../common/PopUpModal";
+import Select from "../common/input/Select";
 
 class AddMeetingModal extends PopUpModal {
     constructor(props) {
@@ -97,11 +98,11 @@ class AddMeetingModal extends PopUpModal {
     }
 
     handleMeetingPlanChange(e) {
-        this.setState({ selectedMeetingPlan: e.target.value });
+        this.setState({ selectedMeetingPlan: e.value });
     }
 
     async handleGroupChange(e) {
-        const leaderId = e.target.value;
+        const leaderId = e.value;
         const leaderName = await this.getUserById(leaderId);
         this.setState({ selectedGroup: { id: leaderId, name: leaderName } });
     }
@@ -119,39 +120,44 @@ class AddMeetingModal extends PopUpModal {
 
         return (
             <PopUpModal title="Add Meeting" onClose={this.props.onClose}>
-                <div>
-                    <label>Select Meeting Plan:</label>
-                    <select onChange={this.handleMeetingPlanChange}>
-                        <option value="">Select Meeting Plan</option>
+                <div className="input-group">
+                    <label>Select Meeting Plan</label>
+                    <Select onChange={this.handleMeetingPlanChange}>
                         {meetingPlans.map((plan) => (
                             <option key={plan.id} value={plan.id}>
                                 {plan.name}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 </div>
-                {selectedMeetingPlan && (
-                    <div>
-                        <label>Select Group:</label>
-                        <select onChange={this.handleGroupChange}>
-                            <option value="">Select Group</option>
-                            {groups.map((group) => (
-                                <option key={group.id} value={group.id}>
-                                    {group.id} - {group.leaderName}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
-
-                {selectedGroup && (
-                    <div>
-                        <label>Start Time:</label>
-                        <input type="datetime-local" value={startTime} onChange={this.handleStartTimeChange} />
-                        <label>End Time:</label>
-                        <input type="datetime-local" value={endTime} onChange={this.handleEndTimeChange} />
-                    </div>
-                )}
+                <div className="input-group">
+                    <label>Select Group:</label>
+                    <Select onChange={this.handleGroupChange} disabled={!selectedMeetingPlan}>
+                        {groups.map((group) => (
+                            <option key={group.id} value={group.id}>
+                                {group.id} - {group.leaderName}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
+                <div className="input-group">
+                    <label>Start Time:</label>
+                    <input
+                        type="datetime-local"
+                        value={startTime}
+                        onChange={this.handleStartTimeChange}
+                        disabled={!selectedGroup}
+                    />
+                </div>
+                <div className="input-group">
+                    <label>End Time:</label>
+                    <input
+                        type="datetime-local"
+                        value={endTime}
+                        onChange={this.handleEndTimeChange}
+                        disabled={!selectedGroup}
+                    />
+                </div>
                 <button onClick={this.handleSubmit}>Submit</button>
             </PopUpModal>
         );

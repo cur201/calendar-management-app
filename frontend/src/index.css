@@ -161,6 +161,11 @@ input:focus {
     box-shadow: 0 0 0 2px var(--button-primary);
 }
 
+input:disabled {
+    background-color: var(--main-light);
+    color: var(--main-greyed);
+}
+
 .primary-button {
     color: var(--main-light);
     background-color: var(--button-primary);
