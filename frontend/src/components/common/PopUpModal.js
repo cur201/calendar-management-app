@@ -16,8 +16,8 @@ class PopUpModal extends React.Component {
                 <div className="popup-inner rounded-more soft-shadow">
                     <div className="popup-titlebar">
                         <h2>{this.props.title}</h2>
-                        <button className="popup-close-button">
-                            <FontAwesomeIcon icon={faXmark} onClick={onClose} />
+                        <button className="popup-close-button" onClick={onClose} >
+                            <FontAwesomeIcon icon={faXmark}/>
                         </button>
                     </div>
                     {this.props.children}

@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPlus, faSearch
 } from "@fortawesome/free-solid-svg-icons";
-import "./MeetingPlan.css";
 import { ToastContainer } from 'react-toastify';
 
 export default class StudentMeetingPlan extends MeetingPlan{
@@ -15,10 +14,7 @@ export default class StudentMeetingPlan extends MeetingPlan{
             ...this.state,
             searchTerm: '',
         };
-    }
-
-    componentDidMount() {
-        this.fetchMeetingPlans();
+        this.readOnly = true;
     }
 
     fetchMeetingPlans = () => {
@@ -28,7 +24,7 @@ export default class StudentMeetingPlan extends MeetingPlan{
             `/student/get-meeting-plan-by-student-id/${studentId}`,
             null,
         ).then((response) => {
-            this.setState({data: response.data})
+            this.setState({data: response.data}, this.updateShowPlans)
         }).catch((error) => {
             if (error.response.status === 401) {
                 setAuthToken(null);
@@ -38,29 +34,4 @@ export default class StudentMeetingPlan extends MeetingPlan{
         });
     }
 
-    render() {
-        return (
-            <div>
-                <div className="top-controls">
-                    <h1>Meeting plans</h1>
-                    <div className='spacing'></div>
-                    {/* // <div className="search-container">
-                    //     <input
-                    //         type="text"
-                    //         placeholder="Search..."
-                    //         value={searchTerm}
-                    //         onChange={this.handleSearchChange}
-                    //     />
-                    //     <button onClick={this.handleSearchSubmit} className='circle-button'><FontAwesomeIcon icon={faSearch} /></button>
-                    // </div> */}
-                    {/* <button className="create-button circle-button" onClick={this.handleCreateNew}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </button>
-                    {showPopup && <CreatePlanModal onClose={this.closePopup} onSuccess={this.handleSuccess} />} */}
-                </div>
-                {super.render()}
-                <ToastContainer />
-            </div>
-        );
-    }
 }
