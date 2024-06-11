@@ -1,19 +1,24 @@
 package com.project.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.entities.GroupTbl;
 import com.project.entities.MeetingPlan;
+import com.project.entities.TimeSlot;
 import com.project.entities.User;
 import com.project.exceptions.UserNotFoundException;
 import com.project.services.GroupService;
 import com.project.services.MeetingPlanService;
+import com.project.services.TimeSlotService;
 import com.project.services.UserService;
 
 @RestController
@@ -22,12 +27,14 @@ public class CommonController {
     private final MeetingPlanService meetingPlanService;
     private final UserService userService;
     private final GroupService groupService;
+    private final TimeSlotService timeSlotService;
 
-    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService)
+    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService)
     {
         this.meetingPlanService = meetingPlanService;
         this.userService = userService;
         this.groupService = groupService;
+        this.timeSlotService = timeSlotService;
     }
 
     @GetMapping("/get-user/{id}")
@@ -67,5 +74,13 @@ public class CommonController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
+    }
+
+    ///--------------------------------------Timeslot API------------------------------------------///
+    @GetMapping("/get-timeslot-by-meetingplan-id")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByMeetingPlanId(@RequestParam Long meetingPlanId){
+        List<TimeSlot> timeSlotList = timeSlotService.findTimeSlotByMeetingPlanId(meetingPlanId);
+        return ResponseEntity.ok(timeSlotList);
     }
 }

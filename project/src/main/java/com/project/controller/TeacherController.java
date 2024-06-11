@@ -120,13 +120,6 @@ public class TeacherController {
         }
     }
 
-    ///--------------------------------------Timeslot API------------------------------------------///
-    @GetMapping("/get-timeslot-by-meetingplan-id")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<TimeSlot>> getTimeSlotByMeetingPlanId(@RequestParam Long meetingPlanId){
-        List<TimeSlot> timeSlotList = timeSlotService.findTimeSlotByMeetingPlanId(meetingPlanId);
-        return ResponseEntity.ok(timeSlotList);
-    }
 
     ///------------------------------------------Group API-----------------------------------------///
 

@@ -14,7 +14,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
         if (meetingPlan) {
             request(
                 "GET",
-                `/teacher/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`,
+                `/common/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`,
                 null
             )
                 .then((response) => {
