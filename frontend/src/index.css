@@ -55,26 +55,6 @@ body {
     width: 100%;
 }
 
-input,
-button,
-textarea {
-    color: var(--main);
-    height: 2.5rem;
-    border: none;
-    border-radius: 10px;
-    padding: 0 .75rem;
-}
-
-input,
-textarea {
-    background-color: var(--main-lighter);
-}
-
-.primary-button {
-    color: var(--main-light);
-    background-color: var(--button-primary);
-}
-
 .acrylic {
     background-color: #fffb;
     backdrop-filter: blur(20px);
@@ -157,4 +137,31 @@ h2 {
     width: 100%;
     background-color: var(--main);
     opacity: 0.8;
+}
+
+input,
+button,
+textarea,
+select {
+    color: var(--main);
+    height: 2.5rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0 0.75rem;
+}
+
+input,
+textarea,
+select {
+    background-color: var(--main-lighter);
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--button-primary);
+}
+
+.primary-button {
+    color: var(--main-light);
+    background-color: var(--button-primary);
 }

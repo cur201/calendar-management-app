@@ -1,8 +1,6 @@
 import React from "react";
 import { request, setAuthToken } from "../../axios_helper";
 import MeetingPlan from "../common/MeetingPlan";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
 import CreatePlanModal from "./CreatePlanModal";
 import { ToastContainer } from "react-toastify";
