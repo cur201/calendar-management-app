@@ -1,0 +1,74 @@
+/* Main control container */
+.custom-select__control {
+    background-color: var(--main-lighter);
+    color: var(--main);
+    height: 2.5rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0 .75rem;
+    transition: none !important;
+}
+
+.custom-select__control--menu-is-open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.custom-select__control input:focus{
+    box-shadow: none;
+}
+
+.custom-select__control--is-focused {
+    /* outline: var(--button-primary) solid 2px; */
+    box-shadow: 0 0 0 2px var(--button-primary);
+}
+
+/* Container that holds the selected value */
+/* .custom-select__value-container {
+    height: 40px;
+    padding: 0 6px;
+} */
+
+/* Input element */
+.custom-select__input {
+    margin: 0px;
+}
+
+/* Separator between the indicators */
+.custom-select__indicator-separator {
+    display: none;
+}
+
+/* Container that holds the dropdown indicators */
+/* .custom-select__indicators-container {
+    height: 40px;
+} */
+
+/* Selected value */
+/* .custom-select__single-value {
+    color: blue;
+} */
+
+.custom-select__menu {
+    overflow-y: scroll;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Dropdown options */
+.custom-select__option {
+    background-color: var(--main-lighter);
+    color: var(--main);
+    line-height: 2.5rem;
+    padding: 0 .75rem;
+}
+
+.custom-select__option--is-selected {
+    color: var(--main-light);
+    background-color: var(--button-primary);
+}
+
+.custom-select__option--is-focused {
+    background-color: var(--main-light);
+    color: var(--main);
+}

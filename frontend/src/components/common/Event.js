@@ -2,7 +2,7 @@ import * as React from "react";
 import { request } from "../../axios_helper";
 import "./Event.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencil, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EventDetailPopup from "./EventDetailPopup";
 
 const editIcon = <FontAwesomeIcon icon={faPencil} />;

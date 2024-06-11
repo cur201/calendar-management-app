@@ -1,8 +1,11 @@
-import React from 'react';
-import './Student.css';
-import { request, setAuthToken } from '../../axios_helper';
-import Modal from 'react-modal';
-import AddStudentModal from './AddStudentModal';
+import React from "react";
+import "./Student.css";
+import { request, setAuthToken } from "../../axios_helper";
+import Modal from "react-modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+import AddStudentModal from "./AddStudentModal";
 
 class Student extends React.Component {
     state = {
@@ -16,27 +19,25 @@ class Student extends React.Component {
     componentDidMount() {
         const teacherID = localStorage.getItem("userId");
         console.log(teacherID);
-        request(
-            "GET",
-            `/teacher/get-all-student/${teacherID}`,
-            null,
-        ).then((response) => {
-            const studentsData = response.data;
-            const processedData = this.processStudentData(studentsData);
-            this.setState({ students: processedData });
-        }).catch((error) => {
-            if (error.response.status === 401) {
-                setAuthToken(null);
-            } else {
-                this.setState({ data: error.response.code });
-            }
-        });
+        request("GET", `/teacher/get-all-student/${teacherID}`, null)
+            .then((response) => {
+                const studentsData = response.data;
+                const processedData = this.processStudentData(studentsData);
+                this.setState({ students: processedData });
+            })
+            .catch((error) => {
+                if (error.response.status === 401) {
+                    setAuthToken(null);
+                } else {
+                    this.setState({ data: error.response.code });
+                }
+            });
     }
 
     processStudentData(studentsData) {
         const studentMap = new Map();
 
-        studentsData.forEach(student => {
+        studentsData.forEach((student) => {
             if (studentMap.has(student.studentId)) {
                 const existingStudent = studentMap.get(student.studentId);
                 existingStudent.meetingPlans += `; ${student.meetingPlanName}`;
@@ -45,7 +46,7 @@ class Student extends React.Component {
                     id: student.studentId,
                     name: student.studentName,
                     meetingPlans: student.meetingPlanName,
-                    courseName: student.courseName
+                    courseName: student.courseName,
                 });
             }
         });
@@ -54,43 +55,48 @@ class Student extends React.Component {
     }
 
     openAddStudentModal = () => {
+        console.log("Show")
         this.setState({ isAddStudentModalOpen: true });
-    }
+    };
 
     closeAddStudentModal = () => {
         this.setState({ isAddStudentModalOpen: false });
         this.componentDidMount(); // Refresh the page
-    }
+    };
 
     openMeetingModal = (studentId, studentName) => {
-        request(
-            "GET",
-            `/teacher/get-meeting-by-student-id/${studentId}`,
-            null,
-        ).then((response) => {
-            this.setState({
-                selectedStudentMeetings: response.data,
-                selectedStudentName: studentName,
-                isMeetingModalOpen: true
+        request("GET", `/teacher/get-meeting-by-student-id/${studentId}`, null)
+            .then((response) => {
+                this.setState({
+                    selectedStudentMeetings: response.data,
+                    selectedStudentName: studentName,
+                    isMeetingModalOpen: true,
+                });
+            })
+            .catch((error) => {
+                if (error.response.status === 401) {
+                    setAuthToken(null);
+                } else {
+                    console.error("Error fetching meetings", error);
+                }
             });
-        }).catch((error) => {
-            if (error.response.status === 401) {
-                setAuthToken(null);
-            } else {
-                console.error("Error fetching meetings", error);
-            }
-        });
-    }
+    };
 
     closeMeetingModal = () => {
         this.setState({ isMeetingModalOpen: false });
-    }
+    };
 
     render() {
+        const { isAddStudentModalOpen } = this.state;
         return (
-            <div>
-                <h1>Student List</h1>
-                <button onClick={this.openAddStudentModal}>Add Student</button>
+            <div className="view-container">
+                <div className="top-controls">
+                    <h1>Student List</h1>
+                    <div className="spacing" />
+                    <button className="create-button circle-button" onClick={this.openAddStudentModal}>
+                        <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                </div>
                 <table className="student-table rounded-more">
                     <thead>
                         <tr>
@@ -101,8 +107,12 @@ class Student extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.students.map(student => (
-                            <tr key={student.id} onClick={() => this.openMeetingModal(student.id, student.name)} style={{ cursor: 'pointer' }}>
+                        {this.state.students.map((student) => (
+                            <tr
+                                key={student.id}
+                                onClick={() => this.openMeetingModal(student.id, student.name)}
+                                style={{ cursor: "pointer" }}
+                            >
                                 <td>{student.id}</td>
                                 <td>{student.name}</td>
                                 <td>{student.meetingPlans}</td>
@@ -129,7 +139,7 @@ class Student extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.selectedStudentMeetings.map(meeting => (
+                            {this.state.selectedStudentMeetings.map((meeting) => (
                                 <tr key={meeting.id}>
                                     <td>{meeting.id}</td>
                                     <td>{meeting.startTime}</td>
@@ -144,13 +154,7 @@ class Student extends React.Component {
                     <button onClick={this.closeMeetingModal}>Close</button>
                 </Modal>
 
-                <Modal
-                    isOpen={this.state.isAddStudentModalOpen}
-                    onRequestClose={this.closeAddStudentModal}
-                    contentLabel="Add Student"
-                >
-                    <AddStudentModal closeModal={this.closeAddStudentModal} />
-                </Modal>
+                {isAddStudentModalOpen && <AddStudentModal onClose={this.closeAddStudentModal} />}
             </div>
         );
     }
