@@ -12,6 +12,7 @@ class EventDetailPopup extends PopUpModal {
             endTime: this.formatTime(event.endTime),
             report: event.report,
             meetingDate: this.formatDate(event.meetingDate),
+            meetingState: event.state,
         };
     }
 
@@ -37,7 +38,7 @@ class EventDetailPopup extends PopUpModal {
     };
 
     handleSave = () => {
-        const { startTime, endTime, report, meetingDate } = this.state;
+        const { startTime, endTime, report, meetingDate, meetingState } = this.state;
         const { event } = this.props;
 
         const updatedEvent = {
@@ -46,7 +47,7 @@ class EventDetailPopup extends PopUpModal {
             startTime: startTime,
             endTime: endTime,
             meetingDate: meetingDate,
-            state: event.state,
+            state: meetingState,
             report: report,
             visible: 1,
         };
@@ -64,9 +65,10 @@ class EventDetailPopup extends PopUpModal {
 
     render() {
         const { event, onClose } = this.props;
-        const { startTime, endTime, report, meetingDate } = this.state;
+        const { startTime, endTime, report, meetingDate, meetingState } = this.state;
         const isEditable = event.state === "Wait for approve";
         const isReportEditable = event.state === "Accepted" || event.state === "Finished";
+        const statusOptions = ["Wait for approve", "Accepted", "Canceled"];
 
         return (
             <PopUpModal onClose={onClose} title="Details">
@@ -110,7 +112,23 @@ class EventDetailPopup extends PopUpModal {
                 </div>
                 <div className="input-group">
                     <label>Status</label>
-                    <span className="uneditable">{event.state}</span>
+                    {event.state === "Wait for approve" || event.state === "Accepted" ? (
+                        <select name="meetingState" value={meetingState} onChange={this.handleChange}>
+                            {statusOptions.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                        <input
+                            type="text"
+                            name="meetingState"
+                            value={event.state}
+                            onChange={this.handleChange}
+                            disabled
+                        />
+                    )}
                 </div>
                 <div className="input-group">
                     <label>Report</label>

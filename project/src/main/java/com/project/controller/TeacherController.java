@@ -265,18 +265,30 @@ public class TeacherController {
     @PostMapping("/add-meeting")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<Meeting> addMeeting(@RequestBody MeetingDto meetingDto) {
-        Meeting newMeeting = meetingService.addMeeting(meetingDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newMeeting);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long userId = userDto.getId();
+            Meeting newMeeting = meetingService.addMeeting(meetingDto, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newMeeting);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/update-meeting")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {
-        Meeting updatedMeeting = meetingService.updateMeeting(meetingDto);
-        if (updatedMeeting != null) {
-            return ResponseEntity.ok(updatedMeeting);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long userId = userDto.getId();
+            Meeting updatedMeeting = meetingService.updateMeeting(meetingDto, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedMeeting);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

@@ -3,21 +3,25 @@ package com.project.services;
 import com.project.dto.MeetingDto;
 import com.project.entities.GroupUser;
 import com.project.entities.Meeting;
+import com.project.exceptions.AppException;
 import com.project.mappers.MeetingMapper;
 import com.project.repositories.GroupUserRepository;
 import com.project.repositories.MeetingRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.http.HttpStatus;
+// import org.slf4j.LoggerFactory;
+// import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+// import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
+// import org.slf4j.Logger;
 
 @RequiredArgsConstructor
 @Service
@@ -34,8 +38,21 @@ public class MeetingService {
         return meetingRepository.findMeetingByGroupIdAndVisible(groupId, 1);
     }
 
-    public Meeting addMeeting(MeetingDto meetingDto) {
+    public Long getOwnerUserIdByGroupId(Long groupId) {
+        return meetingRepository.findOwnerUserIdByMeetingGroupId(groupId);
+    }
+
+    public Meeting addMeeting(MeetingDto meetingDto, Long teacherId) {
         Meeting newMeeting = meetingMapper.toMeeting(meetingDto);
+        String meetingState = newMeeting.getState();
+        if ("Accepted".equals(meetingState)) {
+            boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId());
+            if (isConflict) {
+                throw new AppException("Conflict meeting with userID " + teacherId, HttpStatus.BAD_REQUEST);
+            } else {
+                return meetingRepository.save(newMeeting);
+            }
+        }
         return meetingRepository.save(newMeeting);
     }
 
@@ -50,15 +67,25 @@ public class MeetingService {
         return meetingRepository.findMeetingByGroupIdIn(groupIds);
     }
 
-    public Meeting updateMeeting(MeetingDto meetingDto) {
+    public Meeting updateMeeting(MeetingDto meetingDto, Long teacherId) {
         Optional<Meeting> existingMeetingOptional = meetingRepository.findById(meetingDto.getId());
         if (existingMeetingOptional.isPresent()) {
             Meeting existingMeeting = existingMeetingOptional.get();
             Meeting updatedMeeting = meetingMapper.toMeeting(meetingDto);
+            String meetingState = updatedMeeting.getState();
             updatedMeeting.setId(existingMeeting.getId());
-            return meetingRepository.save(updatedMeeting);
+            if ("Accepted".equals(meetingState)) {
+                boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId());
+                if (isConflict) {
+                    throw new AppException("Conflict meeting with userID " + teacherId, HttpStatus.BAD_REQUEST);
+                } else {
+                    return meetingRepository.save(updatedMeeting);
+                }
+            } else {
+                return meetingRepository.save(updatedMeeting);
+            }
         }
-        return null; 
+        return null;
     }
 
     public boolean deleteMeeting(Long meetingId) {
@@ -69,6 +96,19 @@ public class MeetingService {
             meetingRepository.save(existingMeeting);
             return true;
         }
+        return false;
+    }
+
+    public boolean isConflictMeeting(LocalTime startTime, LocalTime endTime, LocalDate meetingDate, Long teacherId, Long groupId) {
+        List<Meeting> isConflictMeetingWithTeacher = meetingRepository.findConflictMeetingByOwnerUserId(teacherId, startTime, endTime, meetingDate);
+        if (!isConflictMeetingWithTeacher.isEmpty()) return true;
+
+        List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(groupId);
+        for (GroupUser groupUser : groupUsers) {
+            List<Meeting> isConflictMeetingWithStudent = meetingRepository.findConflictMeetingByStudentId(groupUser.getUserId(), startTime, endTime, meetingDate);
+            if (!isConflictMeetingWithStudent.isEmpty()) return true;
+        }
+
         return false;
     }
 }

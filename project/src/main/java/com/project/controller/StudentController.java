@@ -31,14 +31,16 @@ public class StudentController {
     @PostMapping("/add-meeting-student")
     @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<Meeting> addMeeting(@RequestBody MeetingDto meetingDto) {
-        Meeting newMeeting = meetingService.addMeeting(meetingDto);
+        Long teacherId = meetingService.getOwnerUserIdByGroupId(meetingDto.getGroupId());
+        Meeting newMeeting = meetingService.addMeeting(meetingDto, teacherId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMeeting);
     }
 
     @PostMapping("/update-meeting-student")
     @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {
-        Meeting updatedMeeting = meetingService.updateMeeting(meetingDto);
+        Long teacherId = meetingService.getOwnerUserIdByGroupId(meetingDto.getGroupId());
+        Meeting updatedMeeting = meetingService.updateMeeting(meetingDto, teacherId);
         if (updatedMeeting != null) {
             return ResponseEntity.ok(updatedMeeting);
         } else {

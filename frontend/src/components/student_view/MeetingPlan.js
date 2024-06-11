@@ -1,11 +1,6 @@
-import React from 'react';
+// import React from 'react';
 import { request, setAuthToken } from '../../axios_helper';
 import MeetingPlan from '../common/MeetingPlan';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faPlus, faSearch
-} from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer } from 'react-toastify';
 
 export default class StudentMeetingPlan extends MeetingPlan{
     constructor(props) {
