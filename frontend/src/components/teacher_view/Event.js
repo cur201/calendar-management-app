@@ -1,28 +1,26 @@
-import { request, setAuthToken } from '../../axios_helper';
-import Event from '../common/Event';
-import Modal from 'react-modal';
-import AddMeetingModal from './AddMeetingModal';
+import { request, setAuthToken } from "../../axios_helper";
+import Event from "../common/Event";
+import Modal from "react-modal";
+import AddMeetingModal from "./AddMeetingModal";
 
-export default class TeacherEvent extends Event {    
+export default class TeacherEvent extends Event {
     state = {
         ...this.state,
         isAddMeetingModalOpen: false,
     };
 
     componentDidMount() {
-        request(
-            "GET",
-            `/teacher/get-meeting-by-owner-user-id`,
-            null,
-        ).then((response) => {
-            this.setState({ data: response.data }, this.fetchAdditionalData);
-        }).catch((error) => {
-            if (error.response.status === 401) {
-                setAuthToken(null);
-            } else {
-                this.setState({ data: error.response.code });
-            }
-        });
+        request("GET", `/teacher/get-meeting-by-owner-user-id`, null)
+            .then((response) => {
+                this.setState({ data: response.data }, this.fetchAdditionalData);
+            })
+            .catch((error) => {
+                if (error.response.status === 401) {
+                    setAuthToken(null);
+                } else {
+                    this.setState({ data: error.response.code });
+                }
+            });
     }
 
     deleteMeeting = (meetingId) => {
@@ -33,30 +31,23 @@ export default class TeacherEvent extends Event {
             .catch((error) => {
                 console.error("Error deleting meeting:", error);
             });
-    }
+    };
 
-    openAddMeetingModal = () => {
-        this.setState({ isAddMeetingModalOpen: true });
-    }
+    handleCreateNew = () => {
+        this.setState({ showAddMeetingModal: true });
+    };
 
     closeAddMeetingModal = () => {
-        this.setState({ isAddMeetingModalOpen: false });
-        this.componentDidMount(); // Refresh the page
-    }
+        this.setState({ showAddMeetingModal: false });
+        // this.componentDidMount(); // Refresh the page
+    };
 
-    render() {
+    content() {
+        const { showAddMeetingModal } = this.state
         return (
-            <div>
-                <button onClick={this.openAddMeetingModal}>Add Meeting</button>
-                <Modal
-                    isOpen={this.state.isAddMeetingModalOpen}
-                    onRequestClose={this.closeAddMeetingModal}
-                    contentLabel="Add Meeting"
-                >
-                    <AddMeetingModal closeModal={this.closeAddMeetingModal} />
-                </Modal>
-                {super.render()}
-            </div>
+            <>
+                {showAddMeetingModal && <AddMeetingModal onClose={this.closeAddMeetingModal} />}
+            </>
         );
     }
 }
