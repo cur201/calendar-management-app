@@ -73,9 +73,11 @@ public class MeetingService {
             Meeting existingMeeting = existingMeetingOptional.get();
             Meeting updatedMeeting = meetingMapper.toMeeting(meetingDto);
             String meetingState = updatedMeeting.getState();
+            System.out.println("Meeting State: " + meetingState);
             updatedMeeting.setId(existingMeeting.getId());
             if ("Accepted".equals(meetingState)) {
                 boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId());
+                System.out.println("isConflict: " + isConflict);
                 if (isConflict) {
                     throw new AppException("Conflict meeting with userID " + teacherId, HttpStatus.BAD_REQUEST);
                 } else {
@@ -105,7 +107,11 @@ public class MeetingService {
 
         List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(groupId);
         for (GroupUser groupUser : groupUsers) {
+            System.out.println("Student Id: " + groupUser.getUserId());
+            System.out.println("Start time: " + startTime);
+            System.out.println("End time: " + endTime);
             List<Meeting> isConflictMeetingWithStudent = meetingRepository.findConflictMeetingByStudentId(groupUser.getUserId(), startTime, endTime, meetingDate);
+            System.out.println("Conflict meeting with student: " + isConflictMeetingWithStudent);
             if (!isConflictMeetingWithStudent.isEmpty()) return true;
         }
 
