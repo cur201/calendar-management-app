@@ -25,15 +25,11 @@ export default class MeetingPlan extends React.Component {
     fetchMeetingPlans() {}
 
     updateShowPlans() {
-        console.log("This:");
-        console.log(this);
-        console.log("Render plans");
         const { data, currentPage } = this.state;
         const itemsPerPage = 12; //max item per page
         const startIndex = currentPage * itemsPerPage;
         const selectedItems = data.slice(startIndex, startIndex + itemsPerPage);
-        console.log(data);
-        console.log(selectedItems);
+
         this.setState({ showPlans: selectedItems }, () => {
             console.log(this.state);
             this.forceUpdate();
@@ -77,13 +73,9 @@ export default class MeetingPlan extends React.Component {
     content() {}
 
     render() {
-        console.log(this);
         const { data, currentPage, selectedMeetingPlan, searchTerm, showPlans } = this.state;
         const itemsPerPage = 12;
         const totalPages = Math.ceil(data.length / itemsPerPage);
-        console.log("re-render");
-        console.log(showPlans);
-        console.log(data);
         return (
             <div className="view-container">
                 <div className="top-controls">
