@@ -17,4 +17,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findMeetingByGroupIdAndVisible(Long groupId, int visible);
 
     List<Meeting> findMeetingByGroupIdIn(List<Long> groupIds);
+
+    List<Meeting> findMeetingByState(String state);
 }

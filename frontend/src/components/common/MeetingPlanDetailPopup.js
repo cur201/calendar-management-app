@@ -12,15 +12,11 @@ class MeetingPlanDetailPopup extends PopUpModal {
     componentDidMount() {
         const { meetingPlan } = this.props;
         if (meetingPlan) {
-<<<<<<< HEAD
             request(
                 "GET",
                 `/common/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`,
                 null
             )
-=======
-            request("GET", `/teacher/get-timeslot-by-meetingplan-id?meetingPlanId=${meetingPlan.id}`, null)
->>>>>>> 1dc2423b8f87efa043e46e4a946d84db25f25e1a
                 .then((response) => {
                     this.setState({ timeSlots: response.data });
                 })
