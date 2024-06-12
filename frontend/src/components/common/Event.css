@@ -30,11 +30,13 @@
 }
 
 .meeting {
-    height: 2.5rem;
+    min-height: 2.5rem;
     display: flex;
     align-items: center;
     background-color: var(--bg-body);
     gap: 1rem;
+    flex-wrap: wrap;
+    padding: .75rem;
 }
 
 .meeting-time {

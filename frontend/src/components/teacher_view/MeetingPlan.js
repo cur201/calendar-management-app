@@ -45,7 +45,7 @@ class _TeacherMeetingPlan extends MeetingPlan {
     };
 
     handleItemClick = (meetingPlan) => {
-        this.props.navigate(`./${meetingPlan.id}`, { replace: true });
+        this.props.navigate(`./${meetingPlan.id}`);
     }
 
     handleSearchChange = (event) => {
@@ -59,7 +59,7 @@ class _TeacherMeetingPlan extends MeetingPlan {
 
         request("GET", `/teacher/search-meeting-plan-teacher?query=${searchTerm}&ownerUserId=${ownerUserId}`, null)
             .then((response) => {
-                this.setState({ data: response.data });
+                this.setState({ data: response.data }, this.updateShowPlans);
             })
             .catch((error) => {
                 if (error.response.status === 401) {
