@@ -1,0 +1,64 @@
+.timeslot-picker {
+    position: relative;
+    padding: .75rem;
+    overflow: hidden;
+}
+
+.timeslot-picker label{
+    font-size: .8rem;
+}
+
+.timeslot-weekdays input[type="radio"] {
+    /* Hide original inputs */
+    visibility: hidden;
+    position: absolute;
+}
+
+.timeslot-weekdays input[type="radio"] + label:before {
+    position: absolute;
+    left: 0;
+    height: 2rem;
+    width: 2rem;
+    content: " ";
+    display: inline-block;
+    background-color: var(--main-lighter);
+    border-radius: 50%;
+    vertical-align: baseline;
+    z-index: -1;
+}
+
+.timeslot-weekdays input[type="radio"] + label {
+    cursor: pointer;
+    z-index: 10;
+    position: relative;
+    line-height: 2rem;
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+    margin-right: .5rem;
+}
+
+.timeslot-weekdays input[type="radio"]:checked + label {
+    color: var(--main-lighter);
+}
+
+.timeslot-weekdays input[type="radio"]:checked + label:before {
+    background: var(--button-primary);
+}
+
+
+.timeslot-picker .remove-button {
+    box-sizing: content-box;
+    display: block;
+    position: absolute;
+    background-color: var(--main-light);
+    right: 0;
+    top: 0;
+    /* transform: translate(50%, -50%); */
+    padding: 5px;
+    font-size: 0.8rem;
+    height: 1rem;
+    width: 2rem;
+    border-radius: 0;
+    border-bottom-left-radius: var(--rounded-more-radius);
+}
