@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
 import MeetingPlanDetailPopup from "./MeetingPlanDetailPopup";
-import MediaQuery from "react-responsive";
+import { Mobile, Desktop } from "../common/media";
 
 const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
@@ -82,7 +82,7 @@ export default class MeetingPlan extends React.Component {
                 <div className="top-controls">
                     <h1>Meeting plans</h1>
                     <div className="spacing"></div>
-                    <MediaQuery maxWidth={1224}>
+                    <Mobile>
                         {this.readOnly ? (
                             ""
                         ) : (
@@ -90,7 +90,7 @@ export default class MeetingPlan extends React.Component {
                                 <FontAwesomeIcon icon={faPlus} />
                             </button>
                         )}
-                    </MediaQuery>
+                    </Mobile>
                     {this.searchable ? (
                         <div className="search-container">
                             <input
@@ -106,7 +106,7 @@ export default class MeetingPlan extends React.Component {
                     ) : (
                         ""
                     )}
-                    <MediaQuery minWidth={1224}>
+                    <Desktop>
                         {this.readOnly ? (
                             ""
                         ) : (
@@ -114,7 +114,7 @@ export default class MeetingPlan extends React.Component {
                                 <FontAwesomeIcon icon={faPlus} />
                             </button>
                         )}
-                    </MediaQuery>
+                    </Desktop>
                 </div>
                 <div>
                     <div className="grid-container">
@@ -126,7 +126,11 @@ export default class MeetingPlan extends React.Component {
                             >
                                 <h4>{item.name}</h4>
                                 <div className="duration">
-                                    {clockIcon} <div className="spacing"></div> {item.duration}
+                                    {clockIcon}
+                                    <Desktop>
+                                        <div className="spacing"></div>
+                                    </Desktop>
+                                    {item.duration}
                                 </div>
                                 <div className="location">
                                     <b>Location:</b> {item.location}

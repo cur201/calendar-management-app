@@ -1,10 +1,10 @@
 .nav-container {
     display: grid;
     height: 100vh;
-    gap: 10px;
+    gap: var(--gap);
     padding: var(--gap);
     box-sizing: border-box;
-    grid-template-columns: 50px auto;
+    grid-template-columns: 35px auto;
 }
 
 .nav-container > * {
@@ -16,20 +16,11 @@
     position: relative;
     overflow: hidden scroll;
     background: linear-gradient(0deg, var(--bg-body) 96%, #efefef 100%);
-    padding: 10px;
+    padding: calc(var(--gap) * 3);
 }
 
-.nav-window {
-    /* padding: 0 50px; */
-}
-
-
-@media (min-width: 1224px){
+@media (min-width: 768px){
     .nav-container {
         grid-template-columns: 300px auto;
-    }
-
-    .nav-window-container {
-        padding: 50px;
     }
 }

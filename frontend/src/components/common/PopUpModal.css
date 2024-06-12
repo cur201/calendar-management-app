@@ -8,7 +8,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10;
+    padding: var(--gap);
 }
 
 .popup-inner {
@@ -70,4 +71,20 @@
     display: block;
     line-height: 2.5rem;
     padding: 0 .75rem;
+}
+
+
+@media (max-width: 768px){
+    .popup-form {
+        padding: var(--gap);
+        box-sizing: border-box;
+    }
+
+    .popup-inner {
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        max-width: none;
+        overflow-y: scroll;
+    }
 }
