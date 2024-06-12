@@ -99,6 +99,12 @@ const App = () => {
                     }
                 />
                 <Route
+                    path="/dashboard/groups"
+                    element={
+                        <DashboardRoute componentToShow="groups"/>
+                    }
+                />
+                <Route
                     path="/dashboard/notifications"
                     element={
                         <ProtectedRoute>
