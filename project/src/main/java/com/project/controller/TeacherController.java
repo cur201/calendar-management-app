@@ -75,6 +75,7 @@ public class TeacherController {
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> addMeetingPlan(@RequestBody MeetingPlanDto meetingPlanDto){
 
+        System.out.println("Meeting plan dto: " + meetingPlanDto);
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {

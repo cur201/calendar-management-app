@@ -63,7 +63,7 @@ class CreatePlanModal extends React.Component {
             location,
             description,
             visible,
-            timeSlots: timeSlotsData,
+            timeslot: timeSlotsData,
         };
         request("POST", `/teacher/add-meeting-plan`, requestBody, null)
             .then((response) => {

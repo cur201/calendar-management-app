@@ -1,6 +1,7 @@
 package com.project.services;
 
 import com.project.dto.MeetingPlanDto;
+import com.project.dto.TimeSlotDto;
 import com.project.dto.UpdateMeetingPlanDto;
 import com.project.entities.MeetingPlan;
 import com.project.entities.TimeSlot;
@@ -52,35 +53,33 @@ public class MeetingPlanService {
         MeetingPlan newPlan = meetingPlanMapper.toMeetingPlan(meetingPlanDto);
         MeetingPlan savedMeetingPlan = meetingPlansRepository.save(newPlan);
 
-        List<DayOfWeek> weekdays = meetingPlanDto.getWeekdays();
-        List<LocalTime> startTimes = meetingPlanDto.getStartTimes();
-        List<LocalTime> endTimes = meetingPlanDto.getEndTimes();
-        List<Integer> repetitionCounts = meetingPlanDto.getRepetitionCount();
+        System.out.println("New meeting plan ID: " + savedMeetingPlan.getId());
+
+        List<TimeSlotDto> timeSlotDTOs = meetingPlanDto.getTimeslot();
+
+        System.out.println("timeSlotDtos: " + timeSlotDTOs);
 
         LocalDate currentDate = LocalDate.now();
 
         List<TimeSlot> timeSlots = new ArrayList<>();
 
-        for (int i = 0; i < weekdays.size(); i++) {
-            DayOfWeek weekday = weekdays.get(i);
-            LocalTime startTime = startTimes.get(i);
-            LocalTime endTime = endTimes.get(i);
-            Integer repetitionCount = repetitionCounts.get(i);
-
-            for (int j = 0; j < repetitionCount; j++) {
-                LocalDate nextDate = currentDate.plusWeeks(j).with(weekday);
-
-                List<TimeSlot> conflictingSlots = timeSlotRepository.findConflictingTimeSlots(nextDate, startTime, endTime);
+        for(TimeSlotDto timeSDto: timeSlotDTOs){
+            DayOfWeek weekday = timeSDto.getWeekday();
+            LocalTime sTime = timeSDto.getStartTime();
+            LocalTime eTime = timeSDto.getEndTime();
+            Integer repetitionCount = timeSDto.getRepetitionCount();
+            for(int i = 0; i < repetitionCount; i++) {
+                LocalDate nextDate = currentDate.plusWeeks(i).with(weekday);
+                List<TimeSlot> conflictingSlots = timeSlotRepository.findConflictingTimeSlots(nextDate, sTime, eTime, meetingPlanDto.getOwnerUserId());
                 if (!conflictingSlots.isEmpty()) {
-                    String conflictMessage = "Time slot has been conflict in " + nextDate + " from " + startTime + " to " + endTime;
+                    String conflictMessage = "Time slot has been conflict in " + nextDate + " from " + sTime + " to " + eTime;
                     meetingPlansRepository.delete(savedMeetingPlan);
                     throw new ResponseStatusException(HttpStatus.CONFLICT, conflictMessage);
                 }
-
                 TimeSlot timeSlot = new TimeSlot();
                 timeSlot.setMeetingPlanId(savedMeetingPlan.getId());
-                timeSlot.setStartTime(startTime);
-                timeSlot.setEndTime(endTime);
+                timeSlot.setStartTime(sTime);
+                timeSlot.setEndTime(eTime);
                 timeSlot.setTimeSlotDate(nextDate);
                 timeSlot.setVisible(1L);
 

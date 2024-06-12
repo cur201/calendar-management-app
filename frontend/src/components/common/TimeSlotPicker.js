@@ -10,7 +10,7 @@ class TimeSlotPicker extends React.Component {
             weekday: this.props.timeSlot.weekday,
             startTime: this.props.timeSlot.startTime,
             endTime: this.props.timeSlot.endTime,
-            repetition: this.props.timeSlot.repeat || 1,
+            repetitionCount: this.props.timeSlot.repeat || 1,
         };
         this.slotId = this.props.slotId;
         this.updateValue = (values) => {this.props.onUpdate(this.slotId, values)};
@@ -29,7 +29,8 @@ class TimeSlotPicker extends React.Component {
     };
 
     handleRepeatTimesChange = (event) => {
-        this.setState({ repetition: event.target.value }, () => this.updateValue(this.state));
+        const repetitionCount = parseInt(event.target.value);
+        this.setState({ repetitionCount: repetitionCount }, () => this.updateValue(this.state));
     };
 
     render() {

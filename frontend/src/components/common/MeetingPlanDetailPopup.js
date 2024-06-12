@@ -5,7 +5,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
     state = {
         editable: false,
         editedMeetingPlan: { ...this.props.meetingPlan },
-        timeSlots: [],
+        timeSlotDTOs: [],
         isModified: false,
     };
 
@@ -18,7 +18,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
                 null
             )
                 .then((response) => {
-                    this.setState({ timeSlots: response.data });
+                    this.setState({ timeSlotDTOs: response.data });
                 })
                 .catch((error) => {
                     console.error("Error fetching time slots:", error);
@@ -80,7 +80,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
 
     render() {
         const { meetingPlan, onClose } = this.props;
-        const { editable, editedMeetingPlan, timeSlots, isModified } = this.state;
+        const { editable, editedMeetingPlan, timeSlotDTOs, isModified } = this.state;
 
         if (!meetingPlan) return null;
 
@@ -157,7 +157,7 @@ class MeetingPlanDetailPopup extends PopUpModal {
 
                 <h3>Time Slots</h3>
                 <div className="timeslot-list">
-                    {timeSlots.map((slot) => (
+                    {timeSlotDTOs.map((slot) => (
                         <div key={slot.id} className="timeslot-item">
                             <p>
                                 <b>Date:</b> {`${slot.timeSlotDate[2]}/${slot.timeSlotDate[1]}/${slot.timeSlotDate[0]}`}

@@ -34,6 +34,10 @@ public class GroupUserService {
                 .collect(Collectors.toList());
     }
 
+    public GroupUser getSpecificGroupUser(Long groupId, Long userId){
+        return groupUserRepository.findByUserIdAndGroupId(groupId, userId);
+    }
+
     public boolean isUserInAnyGroup(Long userId) {
         List<GroupUser> groupUsers = groupUserRepository.findByUserId(userId);
         return !groupUsers.isEmpty();

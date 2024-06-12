@@ -103,6 +103,13 @@ public class CommonController {
         return ResponseEntity.ok(groupUsers);
     }
 
+    @GetMapping("/get-specific-group-user/{userId}/{groupId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<GroupUser> getSpecificGroupUser(@PathVariable Long userId, @PathVariable Long groupId) {
+        GroupUser returnedGroupUser = groupUserService.getSpecificGroupUser(groupId, userId);
+        return ResponseEntity.ok(returnedGroupUser);
+    } 
+
     @PostMapping("/update-group-user")
     @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
     public ResponseEntity<GroupUserDto> updateGroupUser(@RequestBody GroupUserDto groupUserDto) {
