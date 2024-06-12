@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.entities.GroupTbl;
+import com.project.entities.GroupUser;
 import com.project.entities.MeetingPlan;
 import com.project.entities.TimeSlot;
 import com.project.entities.User;
 import com.project.exceptions.UserNotFoundException;
 import com.project.services.GroupService;
+import com.project.services.GroupUserService;
 import com.project.services.MeetingPlanService;
 import com.project.services.TimeSlotService;
 import com.project.services.UserService;
@@ -28,13 +30,15 @@ public class CommonController {
     private final UserService userService;
     private final GroupService groupService;
     private final TimeSlotService timeSlotService;
+    private final GroupUserService groupUserService;
 
-    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService)
+    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService, GroupUserService groupUserService)
     {
         this.meetingPlanService = meetingPlanService;
         this.userService = userService;
         this.groupService = groupService;
         this.timeSlotService = timeSlotService;
+        this.groupUserService = groupUserService;
     }
 
     @GetMapping("/get-user/{id}")
@@ -76,11 +80,19 @@ public class CommonController {
         }
     }
 
-    ///--------------------------------------Timeslot API------------------------------------------///
+
+
     @GetMapping("/get-timeslot-by-meetingplan-id")
-    @PreAuthorize("hasAuthority('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
     public ResponseEntity<List<TimeSlot>> getTimeSlotByMeetingPlanId(@RequestParam Long meetingPlanId){
         List<TimeSlot> timeSlotList = timeSlotService.findTimeSlotByMeetingPlanId(meetingPlanId);
         return ResponseEntity.ok(timeSlotList);
+    }
+
+    @GetMapping("/get-group-user-in-group/{groupId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<List<GroupUser>> getGroupUsersByGroupId(@PathVariable Long groupId) {
+        List<GroupUser> groupUsers = groupUserService.getGroupUserByGroupId(groupId);
+        return ResponseEntity.ok(groupUsers);
     }
 }

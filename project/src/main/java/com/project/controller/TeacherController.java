@@ -190,13 +190,6 @@ public class TeacherController {
     }
 
     ///-------------------------------------Group User API------------------------------------------///
-    @GetMapping("/get-group-user-in-group/{groupId}")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<GroupUser>> getGroupUsersByGroupId(@PathVariable Long groupId) {
-        List<GroupUser> groupUsers = groupUserService.getGroupUserByGroupId(groupId);
-        return ResponseEntity.ok(groupUsers);
-    }
-
     @GetMapping("/get-group-user-in-meeting-plan/{meetingPlanId}")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<List<GroupUser>> getGroupUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
