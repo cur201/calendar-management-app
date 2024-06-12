@@ -10,10 +10,10 @@ class _MeetingPlanDetails extends React.Component {
             location: null,
             description: null,
             timeSlots: [],
-            isEditing: false, 
+            isEditing: false,
             editedMeetingPlan: {
                 id: this.props.planId,
-                name: "", 
+                name: "",
                 duration: "",
                 location: "",
                 description: "",
@@ -33,9 +33,9 @@ class _MeetingPlanDetails extends React.Component {
         request("GET", `/common/get-meeting-plan/${planId}`, null)
             .then((response) => {
                 const { duration, location, description, name, ownerUserId } = response.data;
-                this.setState({ 
-                    duration, 
-                    location, 
+                this.setState({
+                    duration,
+                    location,
                     description,
                     editedMeetingPlan: {
                         ...this.state.editedMeetingPlan,
@@ -83,7 +83,7 @@ class _MeetingPlanDetails extends React.Component {
         const { planId, history } = this.props;
         request("DELETE", `/teacher/delete-meeting-plan/${planId}`, null)
             .then(() => {
-                this.props.navigate("/dashboard/meeting-plans", { replace: true }); 
+                this.props.navigate("/dashboard/meeting-plans", { replace: true });
             })
             .catch((error) => {
                 console.error("There was an error deleting the meeting plan!", error);
@@ -117,7 +117,7 @@ class _MeetingPlanDetails extends React.Component {
 
         return (
             <div>
-                <h2>Meeting Plan Details</h2>
+                <h1>Meeting Plan Details</h1>
                 {isEditing ? (
                     <div>
                         <p>
