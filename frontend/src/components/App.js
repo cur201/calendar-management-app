@@ -96,9 +96,10 @@ const App = () => {
                 <Route
                     path="/dashboard/groups"
                     element={
-                        <ProtectedRoute>
-                            <StudentDashboard componentToShow="groups" />
-                        </ProtectedRoute>
+                        // <ProtectedRoute>
+                        //     <StudentDashboard componentToShow="groups" />
+                        // </ProtectedRoute>
+                        <DashboardRoute componentToShow="groups"/>
                     }
                 />
                 <Route
