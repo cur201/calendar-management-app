@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/notifications").permitAll()
                         .requestMatchers("/teacher/**").hasAnyAuthority("TEACHER")
                         .requestMatchers("/student/**").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()
