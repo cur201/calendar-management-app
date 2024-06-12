@@ -45,7 +45,7 @@ class _TeacherMeetingPlan extends MeetingPlan {
     };
 
     handleItemClick = (meetingPlan) => {
-        this.props.navigate(`./${meetingPlan.id}`, { replace: true });
+        this.props.navigate(`./${meetingPlan.id}`);
     }
 
     handleSearchChange = (event) => {
