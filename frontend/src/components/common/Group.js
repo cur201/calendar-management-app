@@ -1,8 +1,9 @@
 // src/components/common/Group.js
 
-import React from 'react';
-import { request, setAuthToken } from '../../axios_helper';
+import React from "react";
+import { request, setAuthToken } from "../../axios_helper";
 import Modal from "react-modal";
+import GroupDetailsModal from "./modal/GroupDetailsModal";
 import "../teacher_view/Student.css";
 
 class Group extends React.Component {
@@ -15,44 +16,28 @@ class Group extends React.Component {
     };
 
     async processGroupData(groupData) {
-        const processedData = await Promise.all(groupData.map(async (group) => {
-            const leaderResponse = await request("GET", `/common/get-user/${group.leaderId}`);
-            const meetingPlanResponse = await request("GET", `/common/get-meeting-plan/${group.meetingPlanId}`);
+        const processedData = await Promise.all(
+            groupData.map(async (group) => {
+                const leaderResponse = await request("GET", `/common/get-user/${group.leaderId}`);
+                const meetingPlanResponse = await request("GET", `/common/get-meeting-plan/${group.meetingPlanId}`);
 
-            return {
-                id: group.id,
-                meetingPlanName: meetingPlanResponse.data.name,
-                leaderName: leaderResponse.data.name,
-                leaderId: group.leaderId,
-                classId: group.classId,
-                courseName: group.courseName,
-                projectName: group.projectName,
-            };
-        }));
+                return {
+                    id: group.id,
+                    meetingPlanName: meetingPlanResponse.data.name,
+                    leaderName: leaderResponse.data.name,
+                    leaderId: group.leaderId,
+                    classId: group.classId,
+                    courseName: group.courseName,
+                    projectName: group.projectName,
+                };
+            })
+        );
 
         this.setState({ groupData: processedData });
     }
 
     async openGroupDetailModal(groupId) {
-        const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${groupId}`);
-        const groupUsers = groupUsersResponse.data;
-
-        const groupUsersWithNames = await Promise.all(groupUsers.map(async (groupUser) => {
-            const userResponse = await request("GET", `/common/get-user/${groupUser.userId}`);
-            return {
-                ...groupUser,
-                userName: userResponse.data.name,
-                role: groupUser.userId === this.state.groupData.find(group => group.id === groupId).leaderId ? 'Leader' : 'Member'
-            };
-        }));
-
-        // Placeholder for the group meetings response
-        const groupMeetingsResponse = await this.fetchGroupMeetings(groupId);
-        const groupMeetings = groupMeetingsResponse.data;
-
         this.setState({
-            selectedGroupUsers: groupUsersWithNames,
-            selectedGroupMeetings: groupMeetings,
             selectedGroupId: groupId,
             isGroupDetailModalOpen: true,
         });
@@ -65,9 +50,10 @@ class Group extends React.Component {
 
     closeGroupDetailModal = () => {
         this.setState({ isGroupDetailModalOpen: false });
-    }
+    };
 
     render() {
+        const { isGroupDetailModalOpen, selectedGroupId, groupData } = this.state;
         return (
             <div className="view-container">
                 <div className="top-controls">
@@ -84,7 +70,7 @@ class Group extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.groupData.map(group => (
+                        {this.state.groupData.map((group) => (
                             <tr key={group.id} onClick={() => this.openGroupDetailModal(group.id)}>
                                 <td>{group.meetingPlanName}</td>
                                 <td>{group.leaderName}</td>
@@ -96,58 +82,9 @@ class Group extends React.Component {
                     </tbody>
                 </table>
 
-                <Modal
-                    isOpen={this.state.isGroupDetailModalOpen}
-                    onRequestClose={this.closeGroupDetailModal}
-                    contentLabel="Group Detail"
-                >
-                    <h2>Group Detail</h2>
-                    <button onClick={this.closeGroupDetailModal}>Close</button>
-
-                    <h3>Group Users</h3>
-                    <table className="group-users-table">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Student ID</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.selectedGroupUsers.map(user => (
-                                <tr key={user.userId}>
-                                    <td>{user.userName}</td>
-                                    <td>{user.studentId}</td>
-                                    <td>{user.role}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    <h3>Group Meetings</h3>
-                    <table className="group-meetings-table">
-                        <thead>
-                            <tr>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>State</th>
-                                <th>Report</th>
-                                <th>Meeting Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.selectedGroupMeetings.map(meeting => (
-                                <tr key={meeting.groupId}>
-                                    <td>{meeting.startTime}</td>
-                                    <td>{meeting.endTime}</td>
-                                    <td>{meeting.state}</td>
-                                    <td>{meeting.report}</td>
-                                    <td>{meeting.meetingDate}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </Modal>
+                {isGroupDetailModalOpen && (
+                    <GroupDetailsModal groupId={selectedGroupId} groupData={groupData} fetch={this.fetchGroupMeetings} onClose={this.closeGroupDetailModal} />
+                )}
             </div>
         );
     }

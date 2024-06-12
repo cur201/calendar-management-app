@@ -181,3 +181,9 @@ input:disabled {
     color: var(--main-light);
     background-color: var(--button-primary);
 }
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+}
