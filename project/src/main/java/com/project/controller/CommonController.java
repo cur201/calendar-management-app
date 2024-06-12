@@ -7,10 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.dto.GroupDto;
+import com.project.dto.GroupUserDto;
 import com.project.entities.GroupTbl;
 import com.project.entities.GroupUser;
 import com.project.entities.MeetingPlan;
@@ -22,6 +26,7 @@ import com.project.services.GroupUserService;
 import com.project.services.MeetingPlanService;
 import com.project.services.TimeSlotService;
 import com.project.services.UserService;
+import com.project.mappers.GroupMapper;
 
 @RestController
 @RequestMapping("/common")
@@ -31,14 +36,16 @@ public class CommonController {
     private final GroupService groupService;
     private final TimeSlotService timeSlotService;
     private final GroupUserService groupUserService;
+    private final GroupMapper groupMapper;
 
-    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService, GroupUserService groupUserService)
+    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService, GroupUserService groupUserService, GroupMapper groupMapper)
     {
         this.meetingPlanService = meetingPlanService;
         this.userService = userService;
         this.groupService = groupService;
         this.timeSlotService = timeSlotService;
         this.groupUserService = groupUserService;
+        this.groupMapper = groupMapper;
     }
 
     @GetMapping("/get-user/{id}")
@@ -94,5 +101,25 @@ public class CommonController {
     public ResponseEntity<List<GroupUser>> getGroupUsersByGroupId(@PathVariable Long groupId) {
         List<GroupUser> groupUsers = groupUserService.getGroupUserByGroupId(groupId);
         return ResponseEntity.ok(groupUsers);
+    }
+
+    @PostMapping("/update-group-user")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
+    public ResponseEntity<GroupUserDto> updateGroupUser(@RequestBody GroupUserDto groupUserDto) {
+        GroupUserDto updateGroupUser = groupUserService.updateGroupUser(groupUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateGroupUser);
+    }
+
+    @PostMapping("/update-group")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
+    public ResponseEntity<?> updateGroup(@RequestBody GroupDto updateGroupDto){
+        try{
+            GroupDto updateGroup = groupService.updateGroup(updateGroupDto);
+            GroupTbl groupTbl = groupMapper.toGroup(updateGroup);
+            return ResponseEntity.ok(groupTbl);
+        }catch (Exception e){
+            String errorMessage = "Failed to update group: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
     }
 }

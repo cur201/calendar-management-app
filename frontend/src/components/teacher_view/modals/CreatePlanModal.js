@@ -1,10 +1,9 @@
 import React from "react";
 import Select from "react-select";
-import { request } from "../../axios_helper";
+import { request } from "../../../axios_helper";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./CreatePlanModal.css";
-import PopUpModal from "../common/PopUpModal";
+import PopUpModal from "../../common/PopUpModal";
 
 const weekdayOptions = [
     { value: "MONDAY", label: "Monday" },

@@ -164,19 +164,6 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/update-group")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<?> updateGroup(@RequestBody GroupDto updateGroupDto){
-        try{
-            GroupDto updateGroup = groupService.updateGroup(updateGroupDto);
-            GroupTbl groupTbl = groupMapper.toGroup(updateGroup);
-            return ResponseEntity.ok(groupTbl);
-        }catch (Exception e){
-            String errorMessage = "Failed to update group: " + e.getMessage();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-        }
-    }
-
     @DeleteMapping("/delete-group/{id}")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<?> deleteGroup(@PathVariable Long id){
@@ -203,14 +190,6 @@ public class TeacherController {
         GroupUserDto addedGroupUser = groupUserService.addGroupUser(groupUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedGroupUser);
     }
-
-    @PostMapping("/update-group-user")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<GroupUserDto> updateGroupUser(@RequestBody GroupUserDto groupUserDto) {
-        GroupUserDto updateGroupUser = groupUserService.updateGroupUser(groupUserDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(updateGroupUser);
-    }
-
 
     @DeleteMapping("/delete-group-user/{userId}/{groupId}")
     @PreAuthorize("hasAuthority('TEACHER')")

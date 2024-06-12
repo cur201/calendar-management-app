@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StudentMeetingPlan from "./MeetingPlan";
 import Event from "./Event";
-import Group from "./Group";
+import StudentGroup from "./Group";
 
 const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />;
 const eventIcon = <FontAwesomeIcon icon={faCalendarCheck} />;
@@ -59,7 +59,7 @@ export default class StudentDashboard extends Dashboard {
         case "scheduled-event":
         return <Event />;
         case "groups":
-        return <Group />
+        return <StudentGroup />
 
         default:
         return <div>Select a component to show</div>;
