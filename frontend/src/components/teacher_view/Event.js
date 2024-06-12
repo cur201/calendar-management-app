@@ -1,6 +1,6 @@
 import { request, setAuthToken } from "../../axios_helper";
 import Event from "../common/Event";
-import AddMeetingModal from "./AddMeetingModal";
+import AddMeetingModal from "./modals/AddMeetingModal";
 
 export default class TeacherEvent extends Event {
     state = {

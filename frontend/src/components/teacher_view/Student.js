@@ -5,14 +5,15 @@ import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import AddStudentModal from "./AddStudentModal";
+import AddStudentModal from "./modals/AddStudentModal";
+import StudentMeetingModal from "./modals/StudentMeetingModal";
 
 class Student extends React.Component {
     state = {
         students: [],
         isAddStudentModalOpen: false,
-        isMeetingModalOpen: false,
-        selectedStudentMeetings: [],
+        isStudentMeetingModalOpen: false,
+        selectedStudentId: "",
         selectedStudentName: "",
     };
 
@@ -55,7 +56,7 @@ class Student extends React.Component {
     }
 
     openAddStudentModal = () => {
-        console.log("Show")
+        console.log("Show");
         this.setState({ isAddStudentModalOpen: true });
     };
 
@@ -64,30 +65,20 @@ class Student extends React.Component {
         this.componentDidMount(); // Refresh the page
     };
 
-    openMeetingModal = (studentId, studentName) => {
-        request("GET", `/teacher/get-meeting-by-student-id/${studentId}`, null)
-            .then((response) => {
-                this.setState({
-                    selectedStudentMeetings: response.data,
-                    selectedStudentName: studentName,
-                    isMeetingModalOpen: true,
-                });
-            })
-            .catch((error) => {
-                if (error.response.status === 401) {
-                    setAuthToken(null);
-                } else {
-                    console.error("Error fetching meetings", error);
-                }
-            });
+    openStudentMeetingModal = (studentId, studentName) => {
+        this.setState({
+            isStudentMeetingModalOpen: true,
+            selectedStudentId: studentId,
+            selectedStudentName: studentName,
+        });
     };
 
-    closeMeetingModal = () => {
-        this.setState({ isMeetingModalOpen: false });
+    closeStudentMeetingModal = () => {
+        this.setState({ isStudentMeetingModalOpen: false });
     };
 
     render() {
-        const { isAddStudentModalOpen } = this.state;
+        const { isAddStudentModalOpen, isStudentMeetingModalOpen, selectedStudentId, selectedStudentName } = this.state;
         return (
             <div className="view-container">
                 <div className="top-controls">
@@ -110,7 +101,7 @@ class Student extends React.Component {
                         {this.state.students.map((student) => (
                             <tr
                                 key={student.id}
-                                onClick={() => this.openMeetingModal(student.id, student.name)}
+                                onClick={() => this.openStudentMeetingModal(student.id, student.name)}
                                 style={{ cursor: "pointer" }}
                             >
                                 <td>{student.id}</td>
@@ -121,39 +112,13 @@ class Student extends React.Component {
                         ))}
                     </tbody>
                 </table>
-                <Modal
-                    isOpen={this.state.isMeetingModalOpen}
-                    onRequestClose={this.closeMeetingModal}
-                    contentLabel="Student Meetings"
-                >
-                    <h2>Meetings of {this.state.selectedStudentName}</h2>
-                    <table className="meeting-table rounded-more">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>State</th>
-                                <th>Report</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.selectedStudentMeetings.map((meeting) => (
-                                <tr key={meeting.id}>
-                                    <td>{meeting.id}</td>
-                                    <td>{meeting.startTime}</td>
-                                    <td>{meeting.endTime}</td>
-                                    <td>{meeting.state}</td>
-                                    <td>{meeting.report}</td>
-                                    <td>{meeting.meetingDate}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <button onClick={this.closeMeetingModal}>Close</button>
-                </Modal>
-
+                {isStudentMeetingModalOpen && (
+                    <StudentMeetingModal
+                        studentId={selectedStudentId}
+                        studentName={selectedStudentName}
+                        onClose={this.closeStudentMeetingModal}
+                    />
+                )}
                 {isAddStudentModalOpen && <AddStudentModal onClose={this.closeAddStudentModal} />}
             </div>
         );

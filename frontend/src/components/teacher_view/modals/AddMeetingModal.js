@@ -1,7 +1,7 @@
 import "react-tabs/style/react-tabs.css";
-import { request } from "../../axios_helper";
-import PopUpModal from "../common/PopUpModal";
-import Select from "../common/input/Select";
+import { request } from "../../../axios_helper";
+import PopUpModal from "../../common/PopUpModal";
+import Select from "../../common/input/Select";
 
 class AddMeetingModal extends PopUpModal {
     constructor(props) {

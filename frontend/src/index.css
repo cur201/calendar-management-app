@@ -116,6 +116,13 @@ h2 {
     margin: 0;
 }
 
+h3 {
+    font-size: 1.5rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    margin: 0;
+}
+
 .circle-button {
     width: 2.5rem;
     padding: 0;

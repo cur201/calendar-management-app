@@ -12,8 +12,8 @@ class PopUpModal extends React.Component {
     render() {
         const { onClose } = this.props;
         return (
-            <div className="popup-form">
-                <div className="popup-inner rounded-more soft-shadow">
+            <div className="popup-form" onClick={onClose} >
+                <div className="popup-inner rounded-more soft-shadow" onClick={(event) => {event.stopPropagation()}} >
                     <div className="popup-titlebar">
                         <h2>{this.props.title}</h2>
                         <button className="popup-close-button" onClick={onClose} >

@@ -2,7 +2,7 @@ import React from "react";
 import { request, setAuthToken } from "../../axios_helper";
 import MeetingPlan from "../common/MeetingPlan";
 import "./MeetingPlan.css";
-import CreatePlanModal from "./CreatePlanModal";
+import CreatePlanModal from "./modals/CreatePlanModal";
 import { ToastContainer } from "react-toastify";
 
 export default class TeacherMeetingPlan extends MeetingPlan {

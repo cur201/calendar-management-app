@@ -7,7 +7,6 @@ import {
   faCalendarCheck,
   faUserGroup,
   faBell,
-  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import TeacherMeetingPlan from "./MeetingPlan";
 import Event from "./Event";
@@ -17,7 +16,6 @@ const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />;
 const eventIcon = <FontAwesomeIcon icon={faCalendarCheck} />;
 const studentIcon = <FontAwesomeIcon icon={faUserGroup} />;
 const notiIcon = <FontAwesomeIcon icon={faBell} />;
-const logoutIcon = <FontAwesomeIcon icon={faRightFromBracket} />;
 
 export default class TeacherDashboard extends Dashboard {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -49,7 +47,6 @@ export default class TeacherDashboard extends Dashboard {
         title={"Notifications"}
         href="/dashboard/notifications"
       />,
-      <NavItem icon={logoutIcon} title={"Log out"} href="/logout" />,
     ];
   }
 

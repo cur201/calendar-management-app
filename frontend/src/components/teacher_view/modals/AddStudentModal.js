@@ -1,9 +1,9 @@
 import React from "react";
 import "react-tabs/style/react-tabs.css";
-import { request } from "../../axios_helper";
-import Select from "../common/input/Select"
+import { request } from "../../../axios_helper";
+import Select from "../../common/input/Select"
 import Papa from "papaparse";
-import PopUpModal from "../common/PopUpModal";
+import PopUpModal from "../../common/PopUpModal";
 
 class AddStudentModal extends React.Component {
     constructor(props) {
@@ -179,7 +179,7 @@ class AddStudentModal extends React.Component {
                         Import CSV file
                     </button>
                 </div>
-                {addMode == "manual" ? (
+                {addMode === "manual" ? (
                     <>
                         <div className="input-group">
                             <label>Student Email</label>
@@ -234,7 +234,7 @@ class AddStudentModal extends React.Component {
                     </>
                 )}
                 <div className="button-container">
-                    {addMode == "manual" ? (
+                    {addMode === "manual" ? (
                         <button type="button" className="primary-button" onClick={this.handleAddStudent}>
                             Add
                         </button>

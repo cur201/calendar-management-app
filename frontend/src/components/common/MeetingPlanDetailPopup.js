@@ -86,6 +86,8 @@ class MeetingPlanDetailPopup extends PopUpModal {
 
         return (
             <PopUpModal title={editable ? "Edit Meeting Plan" : meetingPlan.name} onClose={onClose}>
+                <div className="input-group">
+                </div>
                 {editable ? (
                     <>
                         <p>
