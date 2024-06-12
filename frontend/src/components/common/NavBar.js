@@ -2,11 +2,7 @@ import "./NavBar.css";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faRightFromBracket,
-  faIdCard,
-} from "@fortawesome/free-solid-svg-icons";
-
+import { faRightFromBracket, faIdCard } from "@fortawesome/free-solid-svg-icons";
 
 export const NavItem = ({ icon, title, href }) => {
     return (
@@ -19,22 +15,22 @@ export const NavItem = ({ icon, title, href }) => {
 
 export class NavBar extends React.Component {
     render() {
-      const name = window.localStorage.getItem("userName");
-      let role = window.localStorage.getItem("userRole");
-      role = role[0].toUpperCase() + role.slice(1).toLowerCase();
+        const name = window.localStorage.getItem("userName");
+        let role = window.localStorage.getItem("userRole");
+        role = role[0].toUpperCase() + role.slice(1).toLowerCase();
         return (
             <div className="navbar flex">
                 <div id="logo">
                     <h3>Meeting Manager</h3>
-                    <span style={{fontSize: ".8rem"}}>{role + " view"}</span>
+                    <span style={{ fontSize: ".8rem" }}>{role + " view"}</span>
                 </div>
                 <div className="line-break"></div>
                 <div className="line-break"></div>
                 <div className="navbar-seperator">MENU</div>
                 {this.props.items}
                 <div className="spacing"></div>
-                <NavItem icon={<FontAwesomeIcon icon={faIdCard} />} title={name} href="/profile"/>
-                <NavItem icon={<FontAwesomeIcon icon={faRightFromBracket} />} title={"Log out"} href="/logout"/>
+                <NavItem icon={<FontAwesomeIcon icon={faIdCard} />} title={name} href="/profile" />
+                <NavItem icon={<FontAwesomeIcon icon={faRightFromBracket} />} title={"Log out"} href="/logout" />
             </div>
         );
     }

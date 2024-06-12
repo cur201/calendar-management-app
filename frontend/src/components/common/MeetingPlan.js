@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./MeetingPlan.css";
 import MeetingPlanDetailPopup from "./MeetingPlanDetailPopup";
+import MediaQuery from "react-responsive";
 
 const clockIcon = <FontAwesomeIcon icon={faClock} />;
 
@@ -81,6 +82,15 @@ export default class MeetingPlan extends React.Component {
                 <div className="top-controls">
                     <h1>Meeting plans</h1>
                     <div className="spacing"></div>
+                    <MediaQuery maxWidth={1224}>
+                        {this.readOnly ? (
+                            ""
+                        ) : (
+                            <button className="create-button circle-button" onClick={this.handleCreateNew}>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </button>
+                        )}
+                    </MediaQuery>
                     {this.searchable ? (
                         <div className="search-container">
                             <input
@@ -96,13 +106,15 @@ export default class MeetingPlan extends React.Component {
                     ) : (
                         ""
                     )}
-                    {this.readOnly ? (
-                        ""
-                    ) : (
-                        <button className="create-button circle-button" onClick={this.handleCreateNew}>
-                            <FontAwesomeIcon icon={faPlus} />
-                        </button>
-                    )}
+                    <MediaQuery minWidth={1224}>
+                        {this.readOnly ? (
+                            ""
+                        ) : (
+                            <button className="create-button circle-button" onClick={this.handleCreateNew}>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </button>
+                        )}
+                    </MediaQuery>
                 </div>
                 <div>
                     <div className="grid-container">
@@ -112,7 +124,7 @@ export default class MeetingPlan extends React.Component {
                                 key={index}
                                 onClick={() => this.handleItemClick(item)}
                             >
-                                <h3>{item.name}</h3>
+                                <h4>{item.name}</h4>
                                 <div className="duration">
                                     {clockIcon} <div className="spacing"></div> {item.duration}
                                 </div>
@@ -132,7 +144,11 @@ export default class MeetingPlan extends React.Component {
                         </button>
                     </div>
                     {selectedMeetingPlan && (
-                        <MeetingPlanDetailPopup meetingPlan={selectedMeetingPlan} onClose={this.closeDetailPopup} readOnly={this.readOnly}/>
+                        <MeetingPlanDetailPopup
+                            meetingPlan={selectedMeetingPlan}
+                            onClose={this.closeDetailPopup}
+                            readOnly={this.readOnly}
+                        />
                     )}
                 </div>
                 {this.content()}

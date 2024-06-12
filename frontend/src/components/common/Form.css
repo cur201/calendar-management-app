@@ -1,11 +1,13 @@
 .form-container {
     box-sizing: border-box;
     position: fixed;
-    top: 30vh;
-    left: 50vw;
+    top: 50%;
+    left: 50%;
 
-    width: 500px;
-    transform: translate(-50%, -200px);
+    width: calc(100vw - 16px);
+    /* height: calc(100vh - 16px); */
+
+    transform: translate(-50%, -50%);
 
     backdrop-filter: blur(20px);
 
@@ -16,6 +18,16 @@
     padding: 40px;
 
     text-align: center;
+}
+
+@media (min-width: 1224px) {
+    .form-container {
+        width: 500px;
+        height: auto;
+        top: 30vh;
+        left: 50vw;
+        transform: translate(-50%, -200px);
+    }
 }
 
 .form-container * {

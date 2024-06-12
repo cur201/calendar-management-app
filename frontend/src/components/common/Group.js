@@ -71,7 +71,7 @@ class Group extends React.Component {
         return (
             <div className="view-container">
                 <div className="top-controls">
-                    <h1>Group List</h1>
+                    <h1>Student groups</h1>
                 </div>
                 <table className="student-table rounded-more">
                     <thead>

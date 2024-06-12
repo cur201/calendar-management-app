@@ -4,8 +4,9 @@ import MeetingPlan from "../common/MeetingPlan";
 import "./MeetingPlan.css";
 import CreatePlanModal from "./modals/CreatePlanModal";
 import { ToastContainer } from "react-toastify";
+import withNavigate from "../common/Utils";
 
-export default class TeacherMeetingPlan extends MeetingPlan {
+class _TeacherMeetingPlan extends MeetingPlan {
     constructor(props) {
         super(props);
         this.state.showPopup = false;
@@ -43,6 +44,10 @@ export default class TeacherMeetingPlan extends MeetingPlan {
         this.fetchMeetingPlans();
     };
 
+    handleItemClick = (meetingPlan) => {
+        this.props.navigate(`./${meetingPlan.id}`, { replace: true });
+    }
+
     handleSearchChange = (event) => {
         this.setState({ searchTerm: event.target.value });
     };
@@ -76,3 +81,8 @@ export default class TeacherMeetingPlan extends MeetingPlan {
     }
 
 }
+
+
+const TeacherMeetingPlan = withNavigate(_TeacherMeetingPlan)
+
+export default TeacherMeetingPlan;

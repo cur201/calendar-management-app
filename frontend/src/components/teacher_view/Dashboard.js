@@ -11,7 +11,6 @@ import {
 import TeacherMeetingPlan from "./MeetingPlan";
 import Event from "./Event";
 import Student from "./Student";
-import Group from "./Group";
 
 const meetingIcon = <FontAwesomeIcon icon={faCalendarDays} />;
 const eventIcon = <FontAwesomeIcon icon={faCalendarCheck} />;
@@ -44,11 +43,6 @@ export default class TeacherDashboard extends Dashboard {
         href="/dashboard/students"
       />,
       <NavItem
-        icon={studentIcon}
-        title={"Groups"}
-        href="/dashboard/groups"
-      />,
-      <NavItem
         icon={notiIcon}
         title={"Notifications"}
         href="/dashboard/notifications"
@@ -65,8 +59,6 @@ export default class TeacherDashboard extends Dashboard {
         return <Event />;
       case "students":
         return <Student />
-      case "groups":
-        return <Group />
 
       default:
         return <div>Select a component to show</div>;

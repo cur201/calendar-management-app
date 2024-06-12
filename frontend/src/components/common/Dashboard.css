@@ -1,10 +1,10 @@
 .nav-container {
     display: grid;
-    grid-template-columns: 300px auto;
     height: 100vh;
     gap: 10px;
-    padding: 8px;
+    padding: var(--gap);
     box-sizing: border-box;
+    grid-template-columns: 50px auto;
 }
 
 .nav-container > * {
@@ -15,11 +15,21 @@
 .nav-window-container {
     position: relative;
     overflow: hidden scroll;
-    height: calc(100vh - 16px);
     background: linear-gradient(0deg, var(--bg-body) 96%, #efefef 100%);
+    padding: 10px;
 }
 
 .nav-window {
-    padding: 0 50px;
+    /* padding: 0 50px; */
+}
 
+
+@media (min-width: 1224px){
+    .nav-container {
+        grid-template-columns: 300px auto;
+    }
+
+    .nav-window-container {
+        padding: 50px;
+    }
 }
