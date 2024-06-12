@@ -14,7 +14,7 @@ export default class Event extends React.Component {
         this.state = {
             data: [],
             currentPage: 0,
-            currentTab: "Wait for approve",
+            currentTab: "Pending",
             groupInfo: {},
             userInfo: {},
             meetingPlanInfo: {},
@@ -81,8 +81,10 @@ export default class Event extends React.Component {
     render() {
         const { data, currentTab, groupInfo, userInfo, isModalOpen, modalContent, selectedEvent } = this.state;
 
-        const tabs = ["Wait for approve", "Accepted", "Canceled", "Finished"];
-        const filteredMeetings = data.filter((meeting) => meeting.state === currentTab);
+        const tabs = ["Pending", "Accepted", "Canceled", "Finished"];
+        const filteredMeetings = data.filter(
+            (meeting) => meeting.state === (currentTab === "Pending" ? "Wait for approve" : currentTab)
+        );
 
         return (
             <div className="view-container">
