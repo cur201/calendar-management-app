@@ -250,21 +250,6 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/update-meeting")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
-            Long userId = userDto.getId();
-            Meeting updatedMeeting = meetingService.updateMeeting(meetingDto, userId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedMeeting);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
     @DeleteMapping("/delete-meeting/{meetingId}")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<String> deleteMeeting(@PathVariable("meetingId") Long meetingId) {

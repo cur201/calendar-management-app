@@ -52,7 +52,7 @@ class EventDetailPopup extends PopUpModal {
             visible: 1,
         };
 
-        request("POST", "/teacher/update-meeting", updatedEvent)
+        request("POST", "/common/update-meeting", updatedEvent)
             .then((response) => {
                 // Handle the response accordingly
                 console.log("Event details updated successfully", response.data);

@@ -3,7 +3,6 @@
 import React from 'react';
 import { request, setAuthToken } from '../../axios_helper';
 import Modal from "react-modal";
-import { FaEllipsisV } from 'react-icons/fa';
 import GroupDetailsModal from "./modal/GroupDetailsModal";
 import "../teacher_view/Student.css";
 
