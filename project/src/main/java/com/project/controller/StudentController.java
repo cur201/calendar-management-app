@@ -69,12 +69,5 @@ public class StudentController {
         return ResponseEntity.ok(meetingPlans);
     }
 
-    @GetMapping("/get-group-by-student-id/{studentId}")
-    @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<List<GroupTbl>> getGroupByStudentId(@PathVariable("studentId") Long studentId) {
-        List<GroupTbl> groups = groupService.getGroupsByUserId(studentId);
-        return ResponseEntity.ok(groups);
-    }
-
     //TODO::Add API for group action(Consider later)
 }

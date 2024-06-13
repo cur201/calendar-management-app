@@ -264,15 +264,6 @@ public class TeacherController {
 
     //TODO::Finish search Student API
     ///--------------------------------------------Student API---------------------------------///
-    @GetMapping("/get-user-by-meeting-plan-id/{meetingPlanId}")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<User>> getUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
-        List<User> users = userService.getUsersByMeetingPlanId(meetingPlanId);
-        if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(users);
-    }
 
     @GetMapping("/get-all-student/{teacherId}")
     @PreAuthorize("hasAuthority('TEACHER')")

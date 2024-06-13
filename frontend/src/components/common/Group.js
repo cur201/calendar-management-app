@@ -26,6 +26,7 @@ class Group extends React.Component {
 
                 return {
                     id: group.id,
+                    meetingPlanId: group.meetingPlanId,
                     meetingPlanName: meetingPlanResponse.data.name,
                     leaderName: leaderResponse.data.name,
                     leaderId: group.leaderId,
@@ -79,8 +80,6 @@ class Group extends React.Component {
             console.error('Selected group not found.');
             return;
         }
-
-        console.log(selectedGroup);
     
         const { meetingPlanId } = selectedGroup;
         if (!meetingPlanId) {
@@ -95,12 +94,23 @@ class Group extends React.Component {
             const groupsWithLeaderInfo = await Promise.all(availableGroups.map(async (group) => {
                 const leaderResponse = await request("GET", `/common/get-user/${group.leaderId}`);
                 const specificGroupUserResponse = await request("GET", `/common/get-specific-group-user/${group.leaderId}/${group.id}`);
+                console.log(`Leader info for group ${group.id}:`, leaderResponse.data);
+                console.log(`Specific group user info for leader ${group.leaderId} in group ${group.id}:`, specificGroupUserResponse.data);
+                const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${group.id}`);
+                const groupUsers = groupUsersResponse.data;
+                console.log(`Group users for group ${group.id}:`, groupUsers);
+                if (groupUsers.length === 0) {
+                    return null;
+                }
                 return {
                     ...group,
                     leaderName: leaderResponse.data.name,
                     studentId: specificGroupUserResponse.data.studentId,
                 };
             }));
+
+            const filteredGroups = groupsWithLeaderInfo.filter(group => group !== null);
+            console.log('Filtered groups:', filteredGroups);
     
             this.setState({ availableGroups: groupsWithLeaderInfo, isAddToGroupModalOpen: true, selectedUserIdForAdd: userId });
         } catch (error) {

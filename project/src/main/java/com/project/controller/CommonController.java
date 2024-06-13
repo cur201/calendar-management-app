@@ -99,8 +99,6 @@ public class CommonController {
         }
     }
 
-
-
     @GetMapping("/get-timeslot-by-meetingplan-id")
     @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
     public ResponseEntity<List<TimeSlot>> getTimeSlotByMeetingPlanId(@RequestParam Long meetingPlanId){
@@ -155,5 +153,22 @@ public class CommonController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @GetMapping("/get-user-by-meeting-plan-id/{meetingPlanId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
+    public ResponseEntity<List<User>> getUsersByMeetingPlanId(@PathVariable Long meetingPlanId) {
+        List<User> users = userService.getUsersByMeetingPlanId(meetingPlanId);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/get-group-by-student-id/{studentId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
+    public ResponseEntity<List<GroupTbl>> getGroupByStudentId(@PathVariable("studentId") Long studentId) {
+        List<GroupTbl> groups = groupService.getGroupsByUserId(studentId);
+        return ResponseEntity.ok(groups);
     }
 }

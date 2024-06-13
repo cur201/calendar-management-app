@@ -1,6 +1,7 @@
 import React from "react";
 import { request, setAuthToken } from "../../../axios_helper";
 import PopUpModal from "../../common/PopUpModal";
+import "./ButtonDropdown.css";
 
 class GroupDetailsModal extends React.Component {
     constructor(props) {
@@ -10,6 +11,10 @@ class GroupDetailsModal extends React.Component {
             selectedGroupUsers: [],
             selectedGroupMeetings: [],
             selectedGroupId: null,
+            showOptionsPopup: false,
+            selectedUserId: null,
+            showAddMemberDropdown: false,
+            addMemberData: [],
         };
         this.fetchGroupMeetings = this.props.fetch
     }
@@ -44,11 +49,131 @@ class GroupDetailsModal extends React.Component {
         });
     }
 
+    handleOptionClick = (userId) => {
+        this.setState((prevState) => ({
+            showOptionsPopup: !prevState.showOptionsPopup,
+            selectedUserId: userId,
+        }));
+    };
+
+    handleCloseOptionsPopup = () => {
+        this.setState({ showOptionsPopup: false, selectedUserId: null });
+    };
+
+    handleAddMemberClick = async () => {
+        try {
+            const selectedGroup = this.state.groupData.find(group => group.id === this.state.selectedGroupId);
+            console.log(selectedGroup);
+            if (!selectedGroup) {
+                console.error('Selected group not found.');
+                return;
+            }
+
+            const { meetingPlanId } = selectedGroup;
+            if (!meetingPlanId) {
+                console.error('Meeting Plan ID is undefined.');
+                return;
+            }
+
+            const response = await request("GET", `/teacher/get-group-by-meeting-plan-id/${meetingPlanId}`);
+            const groups = response.data;
+
+            let addMemberData = [];
+
+            for (const group of groups) {
+                const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${group.id}`);
+                const groupUsers = groupUsersResponse.data;
+
+                for (const groupUser of groupUsers) {
+                    const userResponse = await request("GET", `/common/get-user/${groupUser.userId}`);
+                    const user = userResponse.data;
+
+                    addMemberData.push({
+                        groupUserId: groupUser.id,
+                        userId: groupUser.userId,
+                        groupId: groupUser.groupId,
+                        studentId: groupUser.studentId,
+                        name: user.name,
+                        email: user.username,
+                    });
+                }
+            }
+
+            this.setState({ addMemberData, showAddMemberDropdown: true });
+        } catch (error) {
+            console.error('Error fetching group data:', error);
+        }
+    };
+
+    handleAddMemberSelection = async (user) => {
+        const selectedGroup = this.state.groupData.find(group => group.id === this.state.selectedGroupId);
+    
+        if (!selectedGroup) {
+            console.error('Selected group not found.');
+            return;
+        }
+    
+        const body = {
+            id: user.groupUserId,
+            userId: user.userId,
+            studentId: user.studentId,
+            groupId: selectedGroup.id,
+        };
+    
+        try {
+            await request("POST", "/common/update-group-user", body);
+            window.location.reload(); 
+        } catch (error) {
+            console.error('Error updating group user:', error);
+        }
+    };
+
+    handleChangeGroupClick = () => {
+        console.log("Change group clicked");
+        this.handleCloseOptionsPopup();
+    };
+
+    handleChangeRoleClick = () => {
+        console.log("Change role clicked");
+        this.handleCloseOptionsPopup();
+    };
+
+    handleRemoveFromGroupClick = () => {
+        console.log("Remove from the group clicked");
+        this.handleCloseOptionsPopup();
+    };
+
     render() {
         const { studentMeetings, studentName } = this.state;
 
         return (
             <PopUpModal title="Group details" onClose={this.props.onClose}>
+                <button onClick={this.handleAddMemberClick}>Add member</button>
+                {this.state.showAddMemberDropdown && (
+                    <table className="add-member-dropdown">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Group ID</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.addMemberData.map((user) => (
+                                <tr key={user.groupUserId} onClick={() => this.handleAddMemberSelection(user)}>
+                                    <td>{user.userId}</td>
+                                    <td>{user.groupId}</td>
+                                    <td>{user.studentId}</td>
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+
                 <h3>Group Users</h3>
                 <table className="group-users-table">
                     <thead>
@@ -56,6 +181,7 @@ class GroupDetailsModal extends React.Component {
                             <th>Student Name</th>
                             <th>Student ID</th>
                             <th>Role</th>
+                            <th>Option</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +190,18 @@ class GroupDetailsModal extends React.Component {
                                 <td>{user.userName}</td>
                                 <td>{user.studentId}</td>
                                 <td>{user.role}</td>
+                                <td>
+                                    <div className="options-dropdown">
+                                        <button onClick={() => this.handleOptionClick(user.userId)}>Options</button>
+                                        {this.state.showOptionsPopup && this.state.selectedUserId === user.userId && (
+                                            <div className="options-dropdown-content">
+                                                <button onClick={this.handleChangeGroupClick}>Change group</button>
+                                                <button onClick={this.handleChangeRoleClick}>Change role</button>
+                                                <button onClick={this.handleRemoveFromGroupClick}>Remove from the group</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
