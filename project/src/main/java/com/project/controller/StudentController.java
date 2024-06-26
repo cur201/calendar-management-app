@@ -1,10 +1,10 @@
 package com.project.controller;
 
 import com.project.dto.MeetingDto;
-import com.project.entities.GroupTbl;
+// import com.project.entities.GroupTbl;
 import com.project.entities.Meeting;
 import com.project.entities.MeetingPlan;
-import com.project.services.GroupService;
+// import com.project.services.GroupService;
 import com.project.services.MeetingPlanService;
 import com.project.services.MeetingService;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,13 @@ import java.util.List;
 public class StudentController {
     private final MeetingService meetingService;
     private final MeetingPlanService meetingPlanService;
-    private final GroupService groupService;
+    // private final GroupService groupService;
 
-    public StudentController(MeetingService meetingService, MeetingPlanService meetingPlanService, GroupService groupService) {
+    // public StudentController(MeetingService meetingService, MeetingPlanService meetingPlanService, GroupService groupService) {
+    public StudentController(MeetingService meetingService, MeetingPlanService meetingPlanService){
         this.meetingService = meetingService;
         this.meetingPlanService = meetingPlanService;
-        this.groupService = groupService;
+        // this.groupService = groupService;
     }
 
 

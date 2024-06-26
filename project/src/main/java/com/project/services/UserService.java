@@ -3,10 +3,11 @@ package com.project.services;
 import com.project.dto.CredentialsDto;
 import com.project.dto.SignUpDto;
 import com.project.dto.UserDto;
-import com.project.dto.StudentMeetingPlanDto;
-import com.project.entities.GroupTbl;
-import com.project.entities.GroupUser;
-import com.project.entities.MeetingPlan;
+// import com.project.dto.StudentMeetingPlanDto;
+// import com.project.entities.GroupTbl;
+// import com.project.entities.GroupUser;
+// import com.project.entities.MeetingPlan;
+import com.project.entities.StudentProjectDetail;
 import com.project.entities.User;
 import com.project.exceptions.AppException;
 import com.project.exceptions.UserNotFoundException;
@@ -14,6 +15,7 @@ import com.project.mappers.UserMapper;
 import com.project.repositories.GroupRepository;
 import com.project.repositories.GroupUserRepository;
 import com.project.repositories.MeetingPlansRepository;
+import com.project.repositories.StudentProjectDetailRepository;
 import com.project.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,9 +35,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final MeetingPlansRepository meetingPlansRepository;
-    private final GroupRepository groupRepository;
-    private final GroupUserRepository groupUserRepository;
+    private final StudentProjectDetailRepository studentProjectDetailRepository;
+    // private final MeetingPlansRepository meetingPlansRepository;
+    // private final GroupRepository groupRepository;
+    // private final GroupUserRepository groupUserRepository;
     public UserDto findByLogin(String login) {
         User user = userRepository.findByUsername(login)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
@@ -81,40 +84,50 @@ public class UserService {
                              .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
     }   
 
-    public List<StudentMeetingPlanDto> getStudentsByTeacher(Long teacherId) {
+    // public List<StudentMeetingPlanDto> getStudentsByTeacher(Long teacherId) {
+    //     User teacher = userRepository.findByIdAndRole(teacherId, "TEACHER");
+    //     if (teacher == null) {
+    //         throw new RuntimeException("Teacher not found with id: " + teacherId);
+    //     }
+
+    //     List<MeetingPlan> meetingPlans = meetingPlansRepository.findByOwnerUserIdAndVisible(teacherId, 1);
+    //     List<StudentMeetingPlanDto> results = new ArrayList<>();
+
+    //     for (MeetingPlan meetingPlan : meetingPlans) {
+    //         List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlan.getId(), 1);
+
+    //         for (GroupTbl group : groups) {
+    //             List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(group.getId());
+    //             // String courseName = group.getCourseName();
+    //             // System.out.println(courseName);
+
+    //             for (GroupUser groupUser : groupUsers) {
+    //                 User student = userRepository.findByIdAndRole(groupUser.getUserId(), "STUDENT");
+    //                 if (student != null) {
+    //                     StudentMeetingPlanDto dto = new StudentMeetingPlanDto();
+    //                     dto.setStudentId(student.getId());
+    //                     dto.setStudentName(student.getName());
+    //                     dto.setMeetingPlanId(meetingPlan.getId());
+    //                     dto.setMeetingPlanName(meetingPlan.getName());
+    //                     dto.setGroupId(group.getId());
+    //                     // dto.setCourseName(courseName);
+
+    //                     results.add(dto);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return results;
+    // }
+
+    public List<StudentProjectDetail> getStudentsByTeacher(Long teacherId) {
         User teacher = userRepository.findByIdAndRole(teacherId, "TEACHER");
         if (teacher == null) {
             throw new RuntimeException("Teacher not found with id: " + teacherId);
         }
-
-        List<MeetingPlan> meetingPlans = meetingPlansRepository.findByOwnerUserIdAndVisible(teacherId, 1);
-        List<StudentMeetingPlanDto> results = new ArrayList<>();
-
-        for (MeetingPlan meetingPlan : meetingPlans) {
-            List<GroupTbl> groups = groupRepository.findGroupByMeetingPlanIdAndVisible(meetingPlan.getId(), 1);
-
-            for (GroupTbl group : groups) {
-                List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(group.getId());
-                String courseName = group.getCourseName();
-                System.out.println(courseName);
-
-                for (GroupUser groupUser : groupUsers) {
-                    User student = userRepository.findByIdAndRole(groupUser.getUserId(), "STUDENT");
-                    if (student != null) {
-                        StudentMeetingPlanDto dto = new StudentMeetingPlanDto();
-                        dto.setStudentId(student.getId());
-                        dto.setStudentName(student.getName());
-                        dto.setMeetingPlanId(meetingPlan.getId());
-                        dto.setMeetingPlanName(meetingPlan.getName());
-                        dto.setGroupId(group.getId());
-                        dto.setCourseName(courseName);
-
-                        results.add(dto);
-                    }
-                }
-            }
-        }
-
+        List<StudentProjectDetail> results = studentProjectDetailRepository.findByInstructorId(teacherId);
+        System.out.println(results);
         return results;
     }
 }

@@ -49,7 +49,8 @@ class AddStudentModal extends React.Component {
             selectedMeetingPlan,
         } = this.state;
         const requestBody = [{ studentEmail, studentName, classId, courseId, courseName, studentId, projectName }];
-        await request("POST", `/teacher/add-user-to-meeting-plan?meetingPlanId=${selectedMeetingPlan}`, requestBody);
+        // await request("POST", `/teacher/add-student?meetingPlanId=${selectedMeetingPlan}`, requestBody);
+        await request("POST", `/teacher/add-student`, requestBody);
         this.props.closeModal();
     };
 
@@ -121,7 +122,8 @@ class AddStudentModal extends React.Component {
             projectName: row.projectName,
         }));
 
-        await request("POST", `/teacher/add-user-to-meeting-plan?meetingPlanId=${selectedMeetingPlan}`, requestBody);
+        // await request("POST", `/teacher/add-student?meetingPlanId=${selectedMeetingPlan}`, requestBody);
+        await request("POST", `/teacher/add-student`, requestBody);
         this.props.closeModal();
     };
 
@@ -155,14 +157,14 @@ class AddStudentModal extends React.Component {
 
         return (
             <PopUpModal title="Add students" onClose={this.props.onClose}>
-                <div className="input-group">
+                {/* <div className="input-group">
                     <label>Meeting Plan</label>
                     <Select onChange={this.handleMeetingPlanChange}>
                         {meetingPlans.map((plan) => (
                             <option value={plan.id}>{plan.name}</option>
                         ))}
                     </Select>
-                </div>
+                </div> */}
                 <div>
                     <button
                         onClick={() => {

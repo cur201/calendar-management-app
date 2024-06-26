@@ -32,11 +32,16 @@ public class TeacherController {
     private final MeetingService meetingService;
     private final UserService userService;
     private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
-    private final TimeSlotService timeSlotService;
+    private final StudentProjectDetailService studentProjectDetailService;
+    // private final TimeSlotService timeSlotService;
 
+    // public TeacherController(MeetingPlanService meetingPlanService, MeetingPlanMapper meetingPlanMapper,
+    //                          GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
+    //                          MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper, TimeSlotService timeSlotService) {
     public TeacherController(MeetingPlanService meetingPlanService, MeetingPlanMapper meetingPlanMapper,
-                             GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
-                             MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper, TimeSlotService timeSlotService) {
+                            GroupService groupService, GroupMapper groupMapper, GroupUserService groupUserService,
+                            MeetingService meetingService, UserService userService, UserDtoUserDetailsMapper userDtoUserDetailsMapper, 
+                            StudentProjectDetailService studentProjectDetailService){
         this.meetingPlanService = meetingPlanService;
         this.meetingPlanMapper = meetingPlanMapper;
         this.groupService = groupService;
@@ -45,7 +50,8 @@ public class TeacherController {
         this.meetingService = meetingService;
         this.userService = userService;
         this.userDtoUserDetailsMapper = userDtoUserDetailsMapper;
-        this.timeSlotService = timeSlotService;
+        this.studentProjectDetailService = studentProjectDetailService;
+        // this.timeSlotService = timeSlotService;
     }
 
     ///-----------------------------------------------Meeting Plan API------------------------------------///
@@ -234,7 +240,6 @@ public class TeacherController {
         return ResponseEntity.ok(meetings);
     }
     
-    //TODO:: Add check conflict timeline
     @PostMapping("/add-meeting")
     @PreAuthorize("hasAuthority('TEACHER')")
     public ResponseEntity<Meeting> addMeeting(@RequestBody MeetingDto meetingDto) {
@@ -267,62 +272,94 @@ public class TeacherController {
 
     @GetMapping("/get-all-student/{teacherId}")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public List<StudentMeetingPlanDto> getStudentsByTeacher(@PathVariable Long teacherId) {
+    // public List<StudentMeetingPlanDto> getStudentsByTeacher(@PathVariable Long teacherId) {
+    public List<StudentProjectDetail> getStudentsByTeacher(@PathVariable Long teacherId) {
         return userService.getStudentsByTeacher(teacherId);
     }
 
-    @PostMapping("/add-user-to-meeting-plan")
+    @PostMapping("/add-student")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<String>> addUserToMeetingPlan(@RequestBody List<StudentInfoDto> studentInfoDtos, Long meetingPlanId) {
-        List<String> results = new ArrayList<>();
-        for( StudentInfoDto studentInfo: studentInfoDtos)
-        {
-            UserDto newUserDto = new UserDto();
-            String studentEmail = studentInfo.getStudentEmail();
-            String studentName = studentInfo.getStudentName();
-            Long classId = studentInfo.getClassId();
+    public ResponseEntity<List<String>> addStudent(@RequestBody List<StudentInfoDto> studentInfoDtos) {
 
-            boolean checkExistEmail = userService.checkExistUsername(studentEmail);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDto userDto = userDtoUserDetailsMapper.convertFromUserDetailsToUserDto(userDetails);
+            Long teacherId = userDto.getId();
 
-            if(checkExistEmail == false){
-                //Create new account with default password 123
-                SignUpDto signUpDto = new SignUpDto(studentName, studentEmail, "123".toCharArray(), "STUDENT");
-                newUserDto = userService.register(signUpDto);
-                results.add("Create account: " + studentName);
-            }else{
-                newUserDto = userService.findByLogin(studentEmail);
+            List<String> results = new ArrayList<>();
+            for( StudentInfoDto studentInfo: studentInfoDtos)
+            {
+                UserDto newUserDto = new UserDto();
+                String studentEmail = studentInfo.getStudentEmail();
+                String studentName = studentInfo.getStudentName();
+                Long classId = studentInfo.getClassId();
+    
+                boolean checkExistEmail = userService.checkExistUsername(studentEmail);
+    
+                if(checkExistEmail == false){
+                    //Create new account with default password 123
+                    SignUpDto signUpDto = new SignUpDto(studentName, studentEmail, "123".toCharArray(), "STUDENT");
+                    newUserDto = userService.register(signUpDto);
+                    results.add("Create account: " + studentName);
+                }else{
+                    newUserDto = userService.findByLogin(studentEmail);
+                }
+    
+                //Check if account already in one group in that meeting plan
+                // boolean isExist = groupUserService.isUserWithClassIdInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId, classId);
+                boolean isExist = studentProjectDetailService.isStudentProjectDetailExist(newUserDto.getId(), classId);
+
+                System.out.println("Student id: " + newUserDto.getId());
+                System.out.println("ClassId: " + classId);
+                System.out.println("isExist student: " + isExist);
+
+                if (!isExist) {
+                    // Add new group
+                    // GroupDto newGroupDto = new GroupDto();
+                    // newGroupDto.setMeetingPlanId(meetingPlanId);
+                    // newGroupDto.setLeaderId(newUserDto.getId());
+    
+                    StudentProjectDetailDto newStudentProjectDetailDto = new StudentProjectDetailDto();
+    
+                    newStudentProjectDetailDto.setUserId(newUserDto.getId());
+                    newStudentProjectDetailDto.setStudentCode(studentInfo.getStudentId());
+                    newStudentProjectDetailDto.setClassId(classId);
+                    newStudentProjectDetailDto.setCourseId(studentInfo.getCourseId());
+                    newStudentProjectDetailDto.setCourseName(studentInfo.getCourseName());
+                    newStudentProjectDetailDto.setProjectName(studentInfo.getProjectName());
+                    newStudentProjectDetailDto.setInstructorId(teacherId);
+                    newStudentProjectDetailDto.setVisible(1L);
+                    
+                    studentProjectDetailService.saveStudentProjectDetail(newStudentProjectDetailDto);
+
+                    // GroupDto newGroup = groupService.addGroup(newGroupDto);
+    
+                    // Add new group user
+                    // GroupUser groupUser = new GroupUser();
+                    // groupUser.setUserId(newUserDto.getId());
+                    // groupUser.setGroupId(newGroup.getId());
+                    // groupUser.setStudentId(studentInfo.getStudentId());
+                    // groupUserService.saveGroupUser(groupUser);
+    
+                    User newMeetingPlanUser = new User(null, newUserDto.getName(), newUserDto.getUsername(),
+                            newUserDto.getPassword(), newUserDto.getRole(), 1L);
+                    results.add("Added " + newMeetingPlanUser + ".");
+                }else{
+                    results.add("User with this classID already exists for email: " + studentEmail);
+                }
             }
-
-            //Check if account already in one group in that meeting plan
-            boolean isInGroup = groupUserService.isUserWithClassIdInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId, classId);
-            if (!isInGroup) {
-                // Add new group
-                GroupDto newGroupDto = new GroupDto();
-                newGroupDto.setMeetingPlanId(meetingPlanId);
-                newGroupDto.setLeaderId(newUserDto.getId());
-                newGroupDto.setClassId(classId);
-                newGroupDto.setCourseId(studentInfo.getCourseId());
-                newGroupDto.setCourseName(studentInfo.getCourseName());
-                newGroupDto.setProjectName(studentInfo.getProjectName());
-                newGroupDto.setVisible(1L);
-                GroupDto newGroup = groupService.addGroup(newGroupDto);
-
-                // Add new group user
-                GroupUser groupUser = new GroupUser();
-                groupUser.setUserId(newUserDto.getId());
-                groupUser.setGroupId(newGroup.getId());
-                groupUser.setStudentId(studentInfo.getStudentId());
-                groupUserService.saveGroupUser(groupUser);
-
-                User newMeetingPlanUser = new User(null, newUserDto.getName(), newUserDto.getUsername(),
-                        newUserDto.getPassword(), newUserDto.getRole(), 1L);
-                results.add("Added " + newMeetingPlanUser + " to the meeting plan " + meetingPlanId + ".");
-            }else{
-                results.add("User with this classID already exists for email: " + studentEmail);
-            }
+            return ResponseEntity.ok(results);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(results);
     }
 
+    @PostMapping("/add-student-to-meeting-plan")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<String>> addStudentToMeetingPlan(@RequestBody List<StudentProjectDetail> studentProjectDetails) {
+        List<String> results = new ArrayList<>();
+        return ResponseEntity.ok(results);
+    }
 
 }

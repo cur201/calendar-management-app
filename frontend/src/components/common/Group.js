@@ -127,10 +127,10 @@ class Group extends React.Component {
         const user = this.state.selectedGroupUsers.find(user => user.userId === this.state.selectedUserIdForAdd);
 
         const requestBody = {
-            id: user.groupUserId,  // Use the correct group user ID
+            id: user.groupUserId,  
             userId: user.userId,
             studentId: user.studentId,
-            groupId: this.state.selectedGroupId,  // This should be the currently selected group ID
+            groupId: this.state.selectedGroupId,  
         };
 
         await request("POST", "/common/update-group-user", requestBody);

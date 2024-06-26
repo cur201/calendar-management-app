@@ -19,8 +19,4 @@ public class GroupDto {
     private Long leaderId;
     private Time approveTime;
     private Long visible;
-    private Long classId;
-    private String courseId;
-    private String courseName;
-    private String projectName;
 }

@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class GroupUserDto {
     private Long id;
     private Long userId;
-    private String studentId;
     private Long groupId;
 }

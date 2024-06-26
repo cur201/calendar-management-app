@@ -33,16 +33,4 @@ public class GroupTbl {
 
     @Column(name = "visible", nullable = false)
     private Long visible;
-
-    @Column(name = "class_id", nullable = true)
-    private Long classId;
-
-    @Column(name = "course_id", nullable = true)
-    private String courseId;
-
-    @Column(name = "course_name", nullable = true)
-    private String courseName;
-
-    @Column(name = "project_name", nullable = true)
-    private String projectName;
 }
