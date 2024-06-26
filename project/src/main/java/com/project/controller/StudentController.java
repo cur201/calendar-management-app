@@ -56,13 +56,6 @@ public class StudentController {
         return ResponseEntity.ok(meetings);
     }
 
-    @GetMapping("/get-meeting-by-student-id/{studentId}")
-    @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<List<Meeting>> getMeetingsByStudentId(@PathVariable("studentId") Long studentId) {
-        List<Meeting> meetings = meetingService.findMeetingByUserId(studentId);
-        return ResponseEntity.ok(meetings);
-    }
-
     @GetMapping("/get-meeting-plan-by-student-id/{studentId}")
     @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<List<MeetingPlan>> getMeetingPlanByStudentId(@PathVariable("studentId") Long studentId) {

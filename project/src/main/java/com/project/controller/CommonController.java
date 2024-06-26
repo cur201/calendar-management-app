@@ -140,6 +140,13 @@ public class CommonController {
         }
     }
 
+    @GetMapping("/get-meeting-by-student-id/{studentId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<List<Meeting>> getMeetingsByStudentId(@PathVariable("studentId") Long studentId) {
+        List<Meeting> meetings = meetingService.findMeetingByUserId(studentId);
+        return ResponseEntity.ok(meetings);
+    }
+
     @PostMapping("/update-meeting")
     @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')") 
     public ResponseEntity<Meeting> updateMeeting(@RequestBody MeetingDto meetingDto) {

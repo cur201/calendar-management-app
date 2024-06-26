@@ -44,7 +44,11 @@ public class GroupUserService {
     }
 
     public boolean isUserWithClassIdInAnyGroupInMeetingPlan(Long userId, Long meetingPlanId, Long classId) {
+        System.out.println("userId = " + userId);
+        System.out.println("meetingPlanId = " + meetingPlanId);
+        System.out.println("classId = " + classId);
         List<GroupUser> groupUsers = groupUserRepository.findByUserIdAndMeetingPlanIdAndClassId(userId, meetingPlanId, classId);
+        System.out.println("groupUser: " + groupUsers);
         return !groupUsers.isEmpty();
     }
 

@@ -12,7 +12,8 @@ class StudentMeetingModal extends React.Component {
     }
 
     componentDidMount() {
-        request("GET", `/teacher/get-meeting-by-student-id/${this.props.studentId}`, null)
+        const userId = localStorage.getItem("userId")
+        request("GET", `/teacher/get-meeting-by-student-id-and-teacher-id/${this.props.studentId}/${userId}`, null)
             .then((response) => {
                 this.setState({
                     studentMeetings: response.data,

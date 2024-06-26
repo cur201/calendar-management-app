@@ -67,6 +67,10 @@ public class MeetingService {
         return meetingRepository.findMeetingByGroupIdIn(groupIds);
     }
 
+    public List<Meeting> findMeetingByUserIdAndTeacherId(Long userId, Long teacherId) {
+        return meetingRepository.findMeetingsByUserIdAndOwnerUserId(userId, teacherId);
+    }
+
     public Meeting updateMeeting(MeetingDto meetingDto, Long teacherId) {
         Optional<Meeting> existingMeetingOptional = meetingRepository.findById(meetingDto.getId());
         if (existingMeetingOptional.isPresent()) {

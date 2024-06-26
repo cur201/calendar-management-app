@@ -139,13 +139,20 @@ class Group extends React.Component {
         this.openGroupDetailModal(this.state.selectedGroupId);
     }
 
+    renderTopControls() {
+        return (
+            <div className="top-controls">
+                <h1>Student groups</h1>
+                <div className="spacing" />
+            </div>
+        );
+    }
+
     render() {
         const { isGroupDetailModalOpen, selectedGroupId, groupData } = this.state;
         return (
             <div className="view-container">
-                <div className="top-controls">
-                    <h1>Student groups</h1>
-                </div>
+                {this.renderTopControls()}
                 <table className="student-table rounded-more">
                     <thead>
                         <tr>

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 @RestController
 @RequestMapping("/teacher")
 public class TeacherController {
@@ -233,12 +234,12 @@ public class TeacherController {
         return ResponseEntity.ok(meetings);
     }
 
-    @GetMapping("/get-meeting-by-student-id/{studentId}")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<Meeting>> getMeetingsByStudentId(@PathVariable("studentId") Long studentId) {
-        List<Meeting> meetings = meetingService.findMeetingByUserId(studentId);
+    @GetMapping("/get-meeting-by-student-id-and-teacher-id/{studentId}/{teacherId}")
+    public ResponseEntity<List<Meeting>> getMeetingsByStudentIdAndTeacherId(@PathVariable("studentId") Long studentId, @PathVariable("teacherId") Long teacherId) {
+        List<Meeting> meetings = meetingService.findMeetingByUserIdAndTeacherId(studentId, teacherId);
         return ResponseEntity.ok(meetings);
     }
+    
     
     @PostMapping("/add-meeting")
     @PreAuthorize("hasAuthority('TEACHER')")
@@ -306,8 +307,6 @@ public class TeacherController {
                     newUserDto = userService.findByLogin(studentEmail);
                 }
     
-                //Check if account already in one group in that meeting plan
-                // boolean isExist = groupUserService.isUserWithClassIdInAnyGroupInMeetingPlan(newUserDto.getId(), meetingPlanId, classId);
                 boolean isExist = studentProjectDetailService.isStudentProjectDetailExist(newUserDto.getId(), classId);
 
                 System.out.println("Student id: " + newUserDto.getId());
@@ -315,11 +314,6 @@ public class TeacherController {
                 System.out.println("isExist student: " + isExist);
 
                 if (!isExist) {
-                    // Add new group
-                    // GroupDto newGroupDto = new GroupDto();
-                    // newGroupDto.setMeetingPlanId(meetingPlanId);
-                    // newGroupDto.setLeaderId(newUserDto.getId());
-    
                     StudentProjectDetailDto newStudentProjectDetailDto = new StudentProjectDetailDto();
     
                     newStudentProjectDetailDto.setUserId(newUserDto.getId());
@@ -332,15 +326,6 @@ public class TeacherController {
                     newStudentProjectDetailDto.setVisible(1L);
                     
                     studentProjectDetailService.saveStudentProjectDetail(newStudentProjectDetailDto);
-
-                    // GroupDto newGroup = groupService.addGroup(newGroupDto);
-    
-                    // Add new group user
-                    // GroupUser groupUser = new GroupUser();
-                    // groupUser.setUserId(newUserDto.getId());
-                    // groupUser.setGroupId(newGroup.getId());
-                    // groupUser.setStudentId(studentInfo.getStudentId());
-                    // groupUserService.saveGroupUser(groupUser);
     
                     User newMeetingPlanUser = new User(null, newUserDto.getName(), newUserDto.getUsername(),
                             newUserDto.getPassword(), newUserDto.getRole(), 1L);
@@ -357,9 +342,38 @@ public class TeacherController {
 
     @PostMapping("/add-student-to-meeting-plan")
     @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<List<String>> addStudentToMeetingPlan(@RequestBody List<StudentProjectDetail> studentProjectDetails) {
-        List<String> results = new ArrayList<>();
-        return ResponseEntity.ok(results);
+    public ResponseEntity<List<String>> addStudentToMeetingPlan(@RequestBody List<StudentProjectDetail> studentProjectDetails, Long meetingPlanId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            List<String> results = new ArrayList<>();
+
+            for(StudentProjectDetail studentDetail: studentProjectDetails) {
+                boolean isExist = groupUserService.isUserWithClassIdInAnyGroupInMeetingPlan(studentDetail.getUserId(), meetingPlanId, studentDetail.getClassId());
+                System.out.println("isExist: " + isExist);
+                if (!isExist) {
+                    // Add new group
+                    GroupDto newGroupDto = new GroupDto();
+                    newGroupDto.setMeetingPlanId(meetingPlanId);
+                    newGroupDto.setLeaderId(studentDetail.getUserId());
+                    newGroupDto.setVisible(1L);
+                    GroupDto newGroup = groupService.addGroup(newGroupDto);
+
+                    // Add new group user
+                    GroupUser groupUser = new GroupUser();
+                    groupUser.setUserId(studentDetail.getUserId());
+                    groupUser.setGroupId(newGroup.getId());
+                    groupUserService.saveGroupUser(groupUser);
+                    groupUserService.saveGroupUser(groupUser);
+
+                    results.add("Added studentId" + studentDetail.getUserId() + " to the meeting plan " + meetingPlanId + ".");
+                } else{
+                    results.add("User with this classID already exists for ID: " + studentDetail.getUserId());
+                }
+            }
+            return ResponseEntity.ok(results);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
 }

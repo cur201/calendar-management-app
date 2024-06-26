@@ -30,6 +30,13 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
         "WHERE m.groupId = :groupId AND m.visible = 1 AND g.visible = 1 AND mp.visible = 1 AND u.visible = 1")
     Long findOwnerUserIdByMeetingGroupId(@Param("groupId") Long groupId);
 
+    @Query("SELECT m FROM Meeting m " +
+        "JOIN GroupUser gu ON gu.groupId = m.groupId " +
+        "JOIN GroupTbl g ON g.id = m.groupId " +
+        "JOIN MeetingPlan mp ON mp.id = g.meetingPlanId " +
+        "WHERE gu.userId = :userId AND mp.ownerUserId = :ownerUserId AND m.visible = 1")
+    List<Meeting> findMeetingsByUserIdAndOwnerUserId(@Param("userId") Long userId, @Param("ownerUserId") Long ownerUserId);
+
     @Query("SELECT m from MeetingPlan mp " + 
         "JOIN GroupTbl g ON g.meetingPlanId = mp.id " +
         "JOIN User u ON  mp.ownerUserId = u.id " +
