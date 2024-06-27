@@ -34,6 +34,7 @@ class Group extends React.Component {
                     id: group.id,
                     meetingPlanId: group.meetingPlanId,
                     meetingPlanName: meetingPlanResponse.data.name,
+                    leaderDetailId: group.leaderDetailId,
                     leaderName: leaderResponse.data.name,
                     leaderId: group.leaderId,
                     leaderCode: leaderDetailResponse.data.studentCode,

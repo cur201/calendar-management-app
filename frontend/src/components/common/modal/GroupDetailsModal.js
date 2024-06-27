@@ -160,13 +160,65 @@ class GroupDetailsModal extends React.Component {
         }
     };
 
-    handleChangeGroupClick = () => {
-        console.log("Change group clicked");
-        this.handleCloseOptionsPopup();
-    };
+    handleChangeRoleClick = async (user) => {
+        const { selectedUserId, selectedGroupId } = this.state;
+        try {
+            const selectedGroup = this.state.groupData.find(group => group.id === selectedGroupId);
+            if (!selectedGroup) {
+                console.error('Selected group not found.');
+                return;
+            }
+    
+            if (selectedUserId === selectedGroup.leaderId) {
+                const confirm = window.confirm("The account is currently the leader of a group. Continue?");
+                if (!confirm) {
+                    return;
+                }
+            }
 
-    handleChangeRoleClick = () => {
-        console.log("Change role clicked");
+            const leaderId = user.userId;
+            const meetingPlanId = selectedGroup.meetingPlanId;
+            const leaderDetailId = user.studentDetailId;
+            const getGroup = await request("GET", `/common/get-group-by-student-id-and-meeting-plan/${leaderId}/${meetingPlanId}/${leaderDetailId}`);
+            const targetGroup = getGroup.data;
+
+            if (!targetGroup) {
+                console.error('Target group not found.');
+                return;
+            }
+
+            let tempLeaderId;
+            let tempDetailId;
+            console.log("selected group: ", selectedGroup);
+            tempLeaderId = selectedGroup.leaderId;
+            tempDetailId = selectedGroup.leaderDetailId;
+
+            const body = {
+                id: selectedGroup.id,
+                leaderId: targetGroup.leaderId,
+                meetingPlanId: selectedGroup.meetingPlanId,
+                leaderDetailId: targetGroup.leaderDetailId,
+                visible: 1,
+            };
+            
+            const otherbody = {
+                id: targetGroup.id,
+                leaderId: tempLeaderId,
+                meetingPlanId: targetGroup.meetingPlanId,
+                leaderDetailId: tempDetailId,
+                visible: 1,
+            };
+            try {
+                await request("POST", `/common/update-group`, body);
+                await request("POST", `/common/update-group`, otherbody);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error updating leader:', error);
+            }
+        } catch (error) {
+            console.error('Error updating group user:', error);
+        }
+
         this.handleCloseOptionsPopup();
     };
 
@@ -198,8 +250,6 @@ class GroupDetailsModal extends React.Component {
                 console.error('Target group not found.');
                 return;
             }
-
-            console.log('user ', user);
 
             const body = {
                 id: targetGroupUser.id,
@@ -274,8 +324,7 @@ class GroupDetailsModal extends React.Component {
                                         <button onClick={() => this.handleOptionClick(user.userId)}>Options</button>
                                         {this.state.showOptionsPopup && this.state.selectedUserId === user.userId && (
                                             <div className="options-dropdown-content">
-                                                <button onClick={this.handleChangeGroupClick}>Change group</button>
-                                                <button onClick={this.handleChangeRoleClick}>Change role</button>
+                                                <button onClick={() => this.handleChangeRoleClick(user)}>Set as Leader</button>
                                                 <button onClick={() => this.handleRemoveFromGroupClick(user)}>Remove from the group</button>
                                             </div>
                                         )}
