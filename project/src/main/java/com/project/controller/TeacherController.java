@@ -199,18 +199,6 @@ public class TeacherController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedGroupUser);
     }
 
-    @DeleteMapping("/delete-group-user/{userId}/{groupId}")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    public ResponseEntity<String> deleteGroupUser(@PathVariable Long userId, @PathVariable Long groupId) {
-        boolean deleted = groupUserService.deleteGroupUser(userId, groupId);
-        if (deleted) {
-            return ResponseEntity.ok("Group user deleted successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group user not found");
-        }
-    }
-
-
     ///--------------------------------------Meeting API------------------------------------------///
     @GetMapping("/get-meeting-by-owner-user-id")
     @PreAuthorize("hasAuthority('TEACHER')")
@@ -363,7 +351,7 @@ public class TeacherController {
                     GroupUser groupUser = new GroupUser();
                     groupUser.setUserId(studentDetail.getUserId());
                     groupUser.setGroupId(newGroup.getId());
-                    groupUserService.saveGroupUser(groupUser);
+                    groupUser.setStudentDetailId(studentDetail.getId());
                     groupUserService.saveGroupUser(groupUser);
 
                     results.add("Added studentId" + studentDetail.getUserId() + " to the meeting plan " + meetingPlanId + ".");

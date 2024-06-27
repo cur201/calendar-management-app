@@ -81,4 +81,9 @@ public class GroupService {
         return groupRepository.findById(groupId)
                         .orElseThrow(() -> new UserNotFoundException("Group not found with id " + groupId));
     }
+
+    public GroupTbl getGroupByLeaderIdAndMeetingPlanIdAnhLeaderDetailId(Long leaderId, Long meetingPlanId, Long leaderDetailId) throws Exception {
+        return groupRepository.findByLeaderIdAndMeetingPlanIdAndLeaderDetailId(leaderId, meetingPlanId, leaderDetailId)
+                        .orElseThrow(() -> new Exception("Group not found with Leader detail id " + leaderDetailId));
+    }
 }

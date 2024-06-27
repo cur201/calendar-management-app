@@ -13,4 +13,5 @@ public class GroupUserDto {
     private Long id;
     private Long userId;
     private Long groupId;
+    private Long studentDetailId;
 }

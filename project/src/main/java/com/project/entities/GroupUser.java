@@ -25,4 +25,7 @@ public class GroupUser implements Serializable {
 
     @Column(name = "group_id", nullable = false)
     private Long groupId;
+
+    @Column(name = "student_detail_id", nullable = false)
+    private Long studentDetailId;
 }

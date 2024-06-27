@@ -21,32 +21,44 @@ class GroupDetailsModal extends React.Component {
 
     async componentDidMount() {
         const groupId = this.props.groupId;
-        const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${groupId}`);
-        const groupUsers = groupUsersResponse.data;
+        try {
+            const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${groupId}`);
+            const groupUsers = groupUsersResponse.data;
+    
+            // Logging groupId
+            console.log('Group ID:', groupId);
+    
+            const groupUsersWithNames = await Promise.all(
+                groupUsers.map(async (groupUser) => {
+                    const userResponse = await request("GET", `/common/get-user/${groupUser.userId}`);
+                    const user = userResponse.data;
 
-        const groupUsersWithNames = await Promise.all(
-            groupUsers.map(async (groupUser) => {
-                const userResponse = await request("GET", `/common/get-user/${groupUser.userId}`);
-                return {
-                    ...groupUser,
-                    userName: userResponse.data.name,
-                    role:
-                        groupUser.userId === this.state.groupData.find((group) => group.id === groupId).leaderId
-                            ? "Leader"
-                            : "Member",
-                };
-            })
-        );
+                    const studentDetail = await request("GET", `/common/get-student-project-detail/${groupUser.studentDetailId}`);
+                    const studentDetailInfo = studentDetail.data;
 
-        // Placeholder for the group meetings response
-        const groupMeetingsResponse = await this.fetchGroupMeetings(groupId);
-        const groupMeetings = groupMeetingsResponse.data;
-
-        this.setState({
-            selectedGroupUsers: groupUsersWithNames,
-            selectedGroupMeetings: groupMeetings,
-            selectedGroupId: groupId,
-        });
+                    const selectedGroup = this.state.groupData.find((group) => group.id === groupId);
+                    const leaderId = selectedGroup ? selectedGroup.leaderId : null;
+    
+                    return {
+                        ...groupUser,
+                        userName: user.name,
+                        studentId: studentDetailInfo.studentCode,
+                        role: groupUser.userId === leaderId ? "Leader" : "Member",
+                    };
+                })
+            );
+    
+            const groupMeetingsResponse = await this.fetchGroupMeetings(groupId);
+            const groupMeetings = groupMeetingsResponse.data;
+    
+            this.setState({
+                selectedGroupUsers: groupUsersWithNames,
+                selectedGroupMeetings: groupMeetings,
+                selectedGroupId: groupId,
+            });
+        } catch (error) {
+            console.error('Error fetching group data:', error);
+        }
     }
 
     handleOptionClick = (userId) => {
@@ -87,12 +99,18 @@ class GroupDetailsModal extends React.Component {
                 for (const groupUser of groupUsers) {
                     const userResponse = await request("GET", `/common/get-user/${groupUser.userId}`);
                     const user = userResponse.data;
+                    const studentDetailId = groupUser.studentDetailId;
+                    const studentDetailInfo = await request("GET", `/common/get-student-project-detail/${studentDetailId}`);
+                    const studentDetail = studentDetailInfo.data;
 
                     addMemberData.push({
                         groupUserId: groupUser.id,
                         userId: groupUser.userId,
                         groupId: groupUser.groupId,
-                        studentId: groupUser.studentId,
+                        classId: studentDetailInfo.data.classId,
+                        projectName: studentDetailInfo.data.projectName,
+                        studentDetailId: groupUser.studentDetailId,
+                        studentId: studentDetail.studentCode,
                         name: user.name,
                         email: user.username,
                     });
@@ -112,16 +130,30 @@ class GroupDetailsModal extends React.Component {
             console.error('Selected group not found.');
             return;
         }
+
+        if (user.classId !== selectedGroup.classId) {
+            console.error('Class ID does not match, cannot merge this user to this group.');
+            return;
+        }
+
+        if (user.projectName !== selectedGroup.projectName) {
+            if (!user.projectName || !selectedGroup.projectName) {
+                
+            } else {
+                console.error('Project name does not match, cannot merge this user to this group.');
+                return;
+            }
+        }
     
         const body = {
             id: user.groupUserId,
             userId: user.userId,
-            studentId: user.studentId,
             groupId: selectedGroup.id,
+            studentDetailId: user.studentDetailId,
         };
     
         try {
-            await request("POST", "/common/update-group-user", body);
+            await request("POST", "/common/update-group-user", body, null);
             window.location.reload(); 
         } catch (error) {
             console.error('Error updating group user:', error);
@@ -138,8 +170,51 @@ class GroupDetailsModal extends React.Component {
         this.handleCloseOptionsPopup();
     };
 
-    handleRemoveFromGroupClick = () => {
-        console.log("Remove from the group clicked");
+    handleRemoveFromGroupClick = async (user) => {
+        const { selectedUserId, selectedGroupId } = this.state;
+        try {
+            const selectedGroup = this.state.groupData.find(group => group.id === selectedGroupId);
+            if (!selectedGroup) {
+                console.error('Selected group not found.');
+                return;
+            }
+    
+            if (selectedUserId === selectedGroup.leaderId) {
+                const confirm = window.confirm("The account is currently the leader of a group. Continue?");
+                if (!confirm) {
+                    return;
+                }
+            }
+
+            const leaderId = user.userId;
+            const meetingPlanId = selectedGroup.meetingPlanId;
+            const leaderDetailId = user.studentDetailId;
+            const response = await request("GET", `/common/get-group-by-student-id-and-meeting-plan/${leaderId}/${meetingPlanId}/${leaderDetailId}`);
+            const targetGroup = response.data;
+    
+            if (!targetGroup) {
+                console.error('Target group not found.');
+                return;
+            }
+
+            const body = {
+                id: user.groupUserId,
+                userId: user.userId,
+                groupId: targetGroup.id,
+                studentDetailId: user.studentDetailId,
+            };
+
+            try {
+                await request("POST", "/common/update-group-user", body, null);
+                window.location.reload(); 
+            } catch (error) {
+                console.error('Error updating group user:', error);
+            }
+    
+        } catch (error) {
+            console.error('Error updating group user:', error);
+        }
+
         this.handleCloseOptionsPopup();
     };
 
@@ -197,7 +272,7 @@ class GroupDetailsModal extends React.Component {
                                             <div className="options-dropdown-content">
                                                 <button onClick={this.handleChangeGroupClick}>Change group</button>
                                                 <button onClick={this.handleChangeRoleClick}>Change role</button>
-                                                <button onClick={this.handleRemoveFromGroupClick}>Remove from the group</button>
+                                                <button onClick={() => this.handleRemoveFromGroupClick(user)}>Remove from the group</button>
                                             </div>
                                         )}
                                     </div>

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<GroupTbl, Long> {
 
@@ -14,4 +15,6 @@ public interface GroupRepository extends JpaRepository<GroupTbl, Long> {
     List<GroupTbl> findGroupByMeetingPlanIdAndVisible(Long meetingPlanId, int visible);
 
     List<GroupTbl> findByIdIn(List<Long> ids);
+
+    Optional<GroupTbl> findByLeaderIdAndMeetingPlanIdAndLeaderDetailId(Long leaderId, Long meetingPlanId, Long leaderDetailId);
 }

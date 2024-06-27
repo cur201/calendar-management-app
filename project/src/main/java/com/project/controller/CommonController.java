@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -185,6 +186,18 @@ public class CommonController {
         return ResponseEntity.ok(groups);
     }
 
+    @GetMapping("/get-group-by-student-id-and-meeting-plan/{leaderId}/{meetingPlanId}/{leaderDetailId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<?> getGroupByLeaderIdAndMeetingPlanIdAnhLeaderDetailId(@PathVariable("leaderId") Long leaderId, @PathVariable("meetingPlanId") Long meetingPlanId, 
+                                                                @PathVariable("leaderDetailId") Long leaderDetailId) {
+        try {
+            GroupTbl groupTbl = groupService.getGroupByLeaderIdAndMeetingPlanIdAnhLeaderDetailId(leaderId, meetingPlanId, leaderDetailId);
+            return ResponseEntity.ok(groupTbl);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+
     @GetMapping("/get-student-project-detail/{studentProjectDetailId}")
     @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
     public ResponseEntity<?> getStudentProjectDetail(@PathVariable("studentProjectDetailId") Long studentProjectDetailId) {
@@ -193,6 +206,17 @@ public class CommonController {
             return ResponseEntity.ok(studentProjectDetail);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+
+    @DeleteMapping("/delete-group-user/{userId}/{groupId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<String> deleteGroupUser(@PathVariable Long userId, @PathVariable Long groupId) {
+        boolean deleted = groupUserService.deleteGroupUser(userId, groupId);
+        if (deleted) {
+            return ResponseEntity.ok("Group user deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group user not found");
         }
     }
     
