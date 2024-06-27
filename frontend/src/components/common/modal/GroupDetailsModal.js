@@ -189,16 +189,20 @@ class GroupDetailsModal extends React.Component {
             const leaderId = user.userId;
             const meetingPlanId = selectedGroup.meetingPlanId;
             const leaderDetailId = user.studentDetailId;
-            const response = await request("GET", `/common/get-group-by-student-id-and-meeting-plan/${leaderId}/${meetingPlanId}/${leaderDetailId}`);
-            const targetGroup = response.data;
-    
+            const getGroup = await request("GET", `/common/get-group-by-student-id-and-meeting-plan/${leaderId}/${meetingPlanId}/${leaderDetailId}`);
+            const targetGroup = getGroup.data;
+            const groupUser = await request("GET", `/common/get-specific-group-user/${user.userId}/${user.groupId}`);
+            const targetGroupUser = groupUser.data;
+
             if (!targetGroup) {
                 console.error('Target group not found.');
                 return;
             }
 
+            console.log('user ', user);
+
             const body = {
-                id: user.groupUserId,
+                id: targetGroupUser.id,
                 userId: user.userId,
                 groupId: targetGroup.id,
                 studentDetailId: user.studentDetailId,
