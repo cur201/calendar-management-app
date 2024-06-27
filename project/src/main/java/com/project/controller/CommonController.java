@@ -24,6 +24,7 @@ import com.project.entities.GroupTbl;
 import com.project.entities.GroupUser;
 import com.project.entities.Meeting;
 import com.project.entities.MeetingPlan;
+import com.project.entities.StudentProjectDetail;
 import com.project.entities.TimeSlot;
 import com.project.entities.User;
 import com.project.exceptions.UserNotFoundException;
@@ -31,6 +32,7 @@ import com.project.services.GroupService;
 import com.project.services.GroupUserService;
 import com.project.services.MeetingPlanService;
 import com.project.services.MeetingService;
+import com.project.services.StudentProjectDetailService;
 import com.project.services.TimeSlotService;
 import com.project.services.UserService;
 import com.project.mappers.GroupMapper;
@@ -47,8 +49,11 @@ public class CommonController {
     private final GroupMapper groupMapper;
     private final UserDtoUserDetailsMapper userDtoUserDetailsMapper;
     private final MeetingService meetingService;
+    private final StudentProjectDetailService studentProjectDetailService;
 
-    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, TimeSlotService timeSlotService, GroupUserService groupUserService, GroupMapper groupMapper, UserDtoUserDetailsMapper userDtoUserDetailsMapper, MeetingService meetingService)
+    public CommonController(MeetingPlanService meetingPlanService, UserService userService, GroupService groupService, 
+    TimeSlotService timeSlotService, GroupUserService groupUserService, GroupMapper groupMapper, 
+    UserDtoUserDetailsMapper userDtoUserDetailsMapper, MeetingService meetingService, StudentProjectDetailService studentProjectDetailService)
     {
         this.meetingPlanService = meetingPlanService;
         this.userService = userService;
@@ -58,6 +63,7 @@ public class CommonController {
         this.groupMapper = groupMapper;
         this.userDtoUserDetailsMapper = userDtoUserDetailsMapper;
         this.meetingService = meetingService;
+        this.studentProjectDetailService = studentProjectDetailService;
     }
 
     @GetMapping("/get-user/{id}")
@@ -178,4 +184,16 @@ public class CommonController {
         List<GroupTbl> groups = groupService.getGroupsByUserId(studentId);
         return ResponseEntity.ok(groups);
     }
+
+    @GetMapping("/get-student-project-detail/{studentProjectDetailId}")
+    @PreAuthorize("hasAuthority('TEACHER') and hasAuthority('STUDENT')")
+    public ResponseEntity<?> getStudentProjectDetail(@PathVariable("studentProjectDetailId") Long studentProjectDetailId) {
+        try {
+            StudentProjectDetail studentProjectDetail = studentProjectDetailService.getStudentProjectDetailById(studentProjectDetailId);
+            return ResponseEntity.ok(studentProjectDetail);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+    
 }

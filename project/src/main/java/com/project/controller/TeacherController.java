@@ -355,6 +355,7 @@ public class TeacherController {
                     GroupDto newGroupDto = new GroupDto();
                     newGroupDto.setMeetingPlanId(meetingPlanId);
                     newGroupDto.setLeaderId(studentDetail.getUserId());
+                    newGroupDto.setLeaderDetailId(studentDetail.getId());
                     newGroupDto.setVisible(1L);
                     GroupDto newGroup = groupService.addGroup(newGroupDto);
 

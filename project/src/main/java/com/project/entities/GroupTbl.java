@@ -33,4 +33,7 @@ public class GroupTbl {
 
     @Column(name = "visible", nullable = false)
     private Long visible;
+
+    @Column(name = "leader_detail_id", nullable = false)
+    private Long leaderDetailId;
 }

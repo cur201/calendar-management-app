@@ -23,21 +23,31 @@ class Group extends React.Component {
             groupData.map(async (group) => {
                 const leaderResponse = await request("GET", `/common/get-user/${group.leaderId}`);
                 const meetingPlanResponse = await request("GET", `/common/get-meeting-plan/${group.meetingPlanId}`);
+                const leaderDetailResponse = await request("GET", `/common/get-student-project-detail/${group.leaderDetailId}`);
+                const groupUsersResponse = await request("GET", `/common/get-group-user-in-group/${group.id}`);
+
+                if (groupUsersResponse.data.length === 0) {
+                    return null;
+                }
 
                 return {
                     id: group.id,
                     meetingPlanId: group.meetingPlanId,
                     meetingPlanName: meetingPlanResponse.data.name,
                     leaderName: leaderResponse.data.name,
-                    leaderId: group.leaderId,
-                    classId: group.classId,
-                    courseName: group.courseName,
-                    projectName: group.projectName,
+                    leaderId: leaderDetailResponse.data.studentCode,
+                    classId: leaderDetailResponse.data.classId,
+                    courseName: leaderDetailResponse.data.courseName,
+                    projectName: leaderDetailResponse.data.projectName,
                 };
             })
         );
 
-        this.setState({ groupData: processedData });
+        const filteredData = processedData.filter(group => group !== null);
+
+        console.log('Filtered Data:', filteredData);
+
+        this.setState({ groupData: filteredData });
     }
 
     async openGroupDetailModal(groupId) {
@@ -156,22 +166,24 @@ class Group extends React.Component {
                 <table className="student-table rounded-more">
                     <thead>
                         <tr>
-                            <th>Meeting Plan Name</th>
                             <th>Leader Name</th>
+                            <th>Leader ID</th>
                             <th>Class ID</th>
                             <th>Course Name</th>
                             <th>Project Name</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.groupData.map((group) => (
-                            <tr key={group.id} onClick={() => this.openGroupDetailModal(group.id)}>
-                                <td>{group.meetingPlanName}</td>
-                                <td>{group.leaderName}</td>
-                                <td>{group.classId}</td>
-                                <td>{group.courseName}</td>
-                                <td>{group.projectName}</td>
-                            </tr>
+                        {groupData.map((group) => (
+                            group && (
+                                <tr key={group.id} onClick={() => this.openGroupDetailModal(group.id)}>
+                                    <td>{group.leaderName}</td>
+                                    <td>{group.leaderId}</td>
+                                    <td>{group.classId}</td>
+                                    <td>{group.courseName}</td>
+                                    <td>{group.projectName}</td>
+                                </tr>
+                            )
                         ))}
                     </tbody>
                 </table>

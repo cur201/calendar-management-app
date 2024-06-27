@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.dto.StudentProjectDetailDto;
 import com.project.entities.StudentProjectDetail;
+import com.project.exceptions.UserNotFoundException;
 import com.project.mappers.StudentProjectDetailMapper;
 import com.project.repositories.StudentProjectDetailRepository;
 
@@ -25,5 +26,10 @@ public class StudentProjectDetailService {
     public void saveStudentProjectDetail(StudentProjectDetailDto studentProjectDetailDto) {
         StudentProjectDetail newStudentProjectDetail = studentProjectDetailMapper.toStudentProjectDetail(studentProjectDetailDto);
         studentProjectDetailRepository.save(newStudentProjectDetail);
+    }
+
+    public StudentProjectDetail getStudentProjectDetailById(Long studentProjectDetailId) throws Exception {
+        return studentProjectDetailRepository.findById(studentProjectDetailId)
+                                             .orElseThrow(() -> new Exception("Student Project Detail not found with ID: " + studentProjectDetailId));
     }
 }
