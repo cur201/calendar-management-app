@@ -46,7 +46,7 @@ public class MeetingService {
         Meeting newMeeting = meetingMapper.toMeeting(meetingDto);
         String meetingState = newMeeting.getState();
         if ("Accepted".equals(meetingState)) {
-            boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId());
+            boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId(), meetingDto.getId());
             if (isConflict) {
                 throw new AppException("Conflict meeting with userID " + teacherId, HttpStatus.BAD_REQUEST);
             } else {
@@ -80,7 +80,7 @@ public class MeetingService {
             System.out.println("Meeting State: " + meetingState);
             updatedMeeting.setId(existingMeeting.getId());
             if ("Accepted".equals(meetingState)) {
-                boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId());
+                boolean isConflict = this.isConflictMeeting(meetingDto.getStartTime(), meetingDto.getEndTime(), meetingDto.getMeetingDate(), teacherId, meetingDto.getGroupId(), meetingDto.getId());
                 System.out.println("isConflict: " + isConflict);
                 if (isConflict) {
                     throw new AppException("Conflict meeting with userID " + teacherId, HttpStatus.BAD_REQUEST);
@@ -105,8 +105,8 @@ public class MeetingService {
         return false;
     }
 
-    public boolean isConflictMeeting(LocalTime startTime, LocalTime endTime, LocalDate meetingDate, Long teacherId, Long groupId) {
-        List<Meeting> isConflictMeetingWithTeacher = meetingRepository.findConflictMeetingByOwnerUserId(teacherId, startTime, endTime, meetingDate);
+    public boolean isConflictMeeting(LocalTime startTime, LocalTime endTime, LocalDate meetingDate, Long teacherId, Long groupId, Long meetingId) {
+        List<Meeting> isConflictMeetingWithTeacher = meetingRepository.findConflictMeetingByOwnerUserId(teacherId, startTime, endTime, meetingDate, meetingId);
         if (!isConflictMeetingWithTeacher.isEmpty()) return true;
 
         List<GroupUser> groupUsers = groupUserRepository.findGroupUserByGroupId(groupId);
@@ -114,7 +114,7 @@ public class MeetingService {
             System.out.println("Student Id: " + groupUser.getUserId());
             System.out.println("Start time: " + startTime);
             System.out.println("End time: " + endTime);
-            List<Meeting> isConflictMeetingWithStudent = meetingRepository.findConflictMeetingByStudentId(groupUser.getUserId(), startTime, endTime, meetingDate);
+            List<Meeting> isConflictMeetingWithStudent = meetingRepository.findConflictMeetingByStudentId(groupUser.getUserId(), startTime, endTime, meetingDate, meetingId);
             System.out.println("Conflict meeting with student: " + isConflictMeetingWithStudent);
             if (!isConflictMeetingWithStudent.isEmpty()) return true;
         }

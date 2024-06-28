@@ -10,7 +10,7 @@ class StudentGroup extends Group {
         const studentId = localStorage.getItem("userId");
         request(
             "GET",
-            `/student/get-group-by-student-id/${studentId}`,
+            `/common/get-group-by-student-id/${studentId}`,
             null,
         ).then((response) => {
             const groupData = response.data;

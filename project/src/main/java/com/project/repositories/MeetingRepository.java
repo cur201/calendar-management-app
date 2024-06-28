@@ -41,13 +41,13 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
         "JOIN GroupTbl g ON g.meetingPlanId = mp.id " +
         "JOIN User u ON  mp.ownerUserId = u.id " +
         "JOIN Meeting m ON m.groupId = g.id " +
-        "WHERE u.id = :userId AND m.startTime < :timeEnd AND m.endTime > :timeStart AND m.meetingDate = :meetingDate AND m.state = 'Accepted'")
-    List<Meeting> findConflictMeetingByOwnerUserId(@Param("userId") Long userId, @Param("timeStart") LocalTime timeStart, @Param("timeEnd") LocalTime timeEnd, @Param("meetingDate") LocalDate meetingDate);
+        "WHERE u.id = :userId AND m.startTime < :timeEnd AND m.endTime > :timeStart AND m.meetingDate = :meetingDate AND m.state = 'Accepted' AND m.id != :meetingId")
+    List<Meeting> findConflictMeetingByOwnerUserId(@Param("userId") Long userId, @Param("timeStart") LocalTime timeStart, @Param("timeEnd") LocalTime timeEnd, @Param("meetingDate") LocalDate meetingDate, @Param("meetingId") Long meetingId);
 
     @Query("SELECT m from User u " + 
         "JOIN GroupUser gu ON gu.userId = u.id " +
         "JOIN GroupTbl g ON  g.id = gu.groupId " +
         "JOIN Meeting m ON m.groupId = g.id " +
-        "WHERE u.id = :userId AND m.startTime < :timeEnd AND m.endTime > :timeStart AND m.meetingDate = :meetingDate AND m.state = 'Accepted'")
-    List<Meeting> findConflictMeetingByStudentId(@Param("userId") Long userId, @Param("timeStart") LocalTime timeStart, @Param("timeEnd") LocalTime timeEnd, @Param("meetingDate") LocalDate meetingDate);
+        "WHERE u.id = :userId AND m.startTime < :timeEnd AND m.endTime > :timeStart AND m.meetingDate = :meetingDate AND m.state = 'Accepted' AND m.id != :meetingId")
+    List<Meeting> findConflictMeetingByStudentId(@Param("userId") Long userId, @Param("timeStart") LocalTime timeStart, @Param("timeEnd") LocalTime timeEnd, @Param("meetingDate") LocalDate meetingDate, @Param("meetingId") Long meetingId);
 }
